@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+BASEDIR=$PWD
+
+# get busybox and klibc
+rm -rf $BASEDIR/root
+http_proxy=$APT_HTTP_PROXY multistrap -d $BASEDIR/root -f multistrap.conf
+
+tar -C $BASEDIR/root/boot/ -czvf firmware.tar.gz .

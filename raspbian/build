@@ -1,0 +1,105 @@
+#!/bin/bash -e
+
+ROOTDIR=root
+
+rm -rf --one-file-system $ROOTDIR
+
+http_proxy=$APT_HTTP_PROXY multistrap -d $ROOTDIR -f multistrap.conf
+
+cp /usr/bin/qemu-arm-static $ROOTDIR/usr/bin/
+
+echo "Running preinst scripts..."
+
+for script in $ROOTDIR/var/lib/dpkg/info/*.preinst; do
+        [ "$script" = "$ROOTDIR/var/lib/dpkg/info/vpnc.preinst" ] && continue
+        echo "I: run preinst script ${script##$ROOTDIR}"
+        DPKG_MAINTSCRIPT_NAME=preinst \
+        DPKG_MAINTSCRIPT_PACKAGE="`basename $script .preinst`" \
+        fakechroot fakeroot chroot $ROOTDIR ${script##$ROOTDIR} install
+done
+
+#fakechroot fakeroot chroot $ROOTDIR
+
+echo "Running dpkg --configure -a"
+
+# don't run makedev
+rm -f $ROOTDIR/var/lib/dpkg/info/makedev.postinst
+
+# do this instead
+cd $ROOTDIR/dev
+fakeroot MAKEDEV std
+cd ../..
+
+DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
+ LC_ALL=C LANGUAGE=C LANG=C fakechroot fakeroot chroot $ROOTDIR /usr/bin/dpkg --configure -a || true
+
+
+echo "Preparing root..."
+
+# no root password
+fakechroot fakeroot chroot $ROOTDIR passwd -d root
+
+# initialize /etc/fstab
+echo proc /proc proc defaults 0 0 > $ROOTDIR/etc/fstab
+
+# hostname
+echo $ROOTDIR > $ROOTDIR/etc/hostname
+
+# write /etc/hosts
+cat <<EOF > $ROOTDIR/etc/hosts
+127.0.0.1       localhost
+127.0.1.1       $ROOTDIR
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+EOF
+
+
+echo "Configuring network..."
+
+# reset default udev persistent-net rule
+rm -f $ROOTDIR/etc/udev/rules.d/*_persistent-net.rules
+
+# /etc/resolv.conf symlink
+rm -f $ROOTDIR/etc/resolv.conf
+fakechroot fakeroot chroot $ROOTDIR ln -s "/run/systemd/resolve/resolv.conf" "/etc/resolv.conf"
+
+fakechroot fakeroot chroot $ROOTDIR systemctl reenable systemd-networkd
+fakechroot fakeroot chroot $ROOTDIR systemctl reenable systemd-resolved
+fakechroot fakeroot chroot $ROOTDIR systemctl reenable systemd-timesyncd
+fakechroot fakeroot chroot $ROOTDIR systemctl reenable systemd-networkd-wait-online.service
+
+# time used by timesyncd if no other is available
+touch $ROOTDIR/var/lib/systemd/clock
+
+cat <<EOF > $ROOTDIR/etc/systemd/network/eth0.network
+[Match]
+Name=eth0
+[Network]
+DHCP=yes
+EOF
+
+echo "Installing modules..."
+
+tar -xf ../kernel/kernel-root.tar.gz -C $ROOTDIR
+tar -xf ../kernel/kernel7-root.tar.gz -C $ROOTDIR
+
+echo "Cleaning up..."
+
+./cleanup $ROOTDIR excludes.conf
+mkdir -p $ROOTDIR/etc/dpkg/dpkg.cfg.d
+cp excludes.conf $ROOTDIR/etc/dpkg/dpkg.cfg.d/
+
+fakechroot fakeroot chroot $ROOTDIR udevadm hwdb --update --usr
+
+echo "Packing rootfs..."
+
+ln -sf /sbin/init $ROOTDIR/init
+ln -sf /proc/mounts $ROOTDIR/etc/mtab
+
+fakechroot fakeroot chroot $ROOTDIR sh -c "cd / && find * -xdev | grep -v -e ^run/ | grep -v -e ^proc/ | grep -v -e ^sys/ | grep -v -e ^boot/ | grep -v -e ^usr/bin/qemu-arm-static$ | cpio --create -H newc" | gzip -9 > initrd

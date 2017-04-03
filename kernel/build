@@ -1,0 +1,59 @@
+#!/bin/sh -e
+
+# build <kernel> <commit> <config>
+
+BASEDIR=$PWD
+
+# clean old build
+rm -rf $BASEDIR/root/ $BASEDIR/boot/
+mkdir -p $BASEDIR/root/ $BASEDIR/boot/overlays/
+
+
+case "$1" in
+    "kernel")
+        echo "Building kernel for RPi 0/1"
+        DEFCONFIG=bcmrpi_defconfig
+        ;;
+    "kernel7")
+        echo "Building kernel for RPi 2/3"
+        DEFCONFIG=bcm2709_defconfig
+        ;;
+    *)
+        echo "Specify kernel or kernel7"
+        exit
+        ;;
+esac
+
+if [ ! -d tools ]; then
+    git clone --depth 1 https://github.com/raspberrypi/tools
+fi
+COMPILER=$BASEDIR/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
+
+if [ ! -d linux ]; then
+    git clone --depth 1 -b rpi-4.9.y https://github.com/raspberrypi/linux
+fi
+
+# build kernel
+cd linux
+git clean -d -f -x
+
+# configure
+cp ../$1.config .config
+#make -j8 ARCH=arm CROSS_COMPILE=$COMPILER $DEFCONFIG
+
+# build
+make -j8 ARCH=arm CROSS_COMPILE=$COMPILER zImage modules dtbs
+
+# install modules
+make -j8 ARCH=arm CROSS_COMPILE=$COMPILER INSTALL_MOD_PATH=$BASEDIR/root modules_install
+
+# install /boot files
+scripts/mkknlimg arch/arm/boot/zImage $BASEDIR/boot/$1.img
+cp arch/arm/boot/dts/*.dtb $BASEDIR/boot/
+cp arch/arm/boot/dts/overlays/*.dtb* $BASEDIR/boot/overlays/
+cp arch/arm/boot/dts/overlays/README $BASEDIR/boot/overlays/
+
+cd ..
+
+tar -C $BASEDIR/root/ -czvf $1-root.tar.gz .
+tar -C $BASEDIR/boot/ -czvf $1-boot.tar.gz .

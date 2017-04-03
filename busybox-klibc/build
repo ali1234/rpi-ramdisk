@@ -1,0 +1,31 @@
+#!/bin/sh -e
+
+BASEDIR=$PWD
+INITRD_ROOT="$BASEDIR"/initrd.dir
+SYS_ROOT="$BASEDIR"/root
+
+# get busybox and klibc
+rm -rf "$SYS_ROOT"
+http_proxy=$APT_HTTP_PROXY multistrap -d "$SYS_ROOT" -f multistrap.conf
+
+# make initrd
+rm -rf "$INITRD_ROOT"
+mkdir -p "$INITRD_ROOT"/bin
+mkdir -p "$INITRD_ROOT"/lib
+
+cp -f "$SYS_ROOT"/bin/busybox "$INITRD_ROOT"/bin/
+for util in awk cpio free grep gunzip unlzop ls mkdir mount rm sh umount ; do
+    ln "$INITRD_ROOT"/bin/busybox "$INITRD_ROOT"/bin/"$util"
+done
+
+# copy in run-init and needed libraries
+cp -f "$SYS_ROOT"/usr/lib/klibc/bin/run-init "$INITRD_ROOT"/bin/
+cp -f "$SYS_ROOT"/lib/klibc-* "$INITRD_ROOT"/lib/
+
+cp init "$INITRD_ROOT"/init
+
+chmod a+x "$INITRD_ROOT"/init
+
+fakeroot sh -c "cd $INITRD_ROOT && find * | cpio --create -H newc" | xz --check=crc32 -9 > initrd
+
+

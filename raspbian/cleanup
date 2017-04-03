@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+
+import sys, fnmatch, os
+
+excludes = []
+
+with open(sys.argv[2]) as excludefile:
+    for line in excludefile:
+        line = line.strip()
+        if line.startswith('#'):
+            continue
+        x = line.split('=')
+        if len(x) == 2:
+            if x[0] == 'path-exclude':
+                excludes.append((os.path.join(sys.argv[1], x[1][1:]), True))
+            elif x[0] == 'path-include':
+                excludes.append((os.path.join(sys.argv[1], x[1][1:]), False))
+
+def test_excludes(fname, excludes):
+    delete = False
+    for e in excludes:
+        if fnmatch.fnmatchcase(fname, e[0]):
+            delete = e[1]
+    return delete
+
+for dirname, subdirs, files in os.walk(sys.argv[1], topdown=False):
+    for fname in files:
+        fname = os.path.join(dirname, fname)
+        if test_excludes(fname, excludes):
+            os.remove(fname)
+            print fname
+    for fname in subdirs:
+        fname = os.path.join(dirname, fname)
+        if test_excludes(fname, excludes):
+            try:
+                os.rmdir(fname)
+                print fname
+            except OSError:
+                print fname, 'not empty, not removed.'
