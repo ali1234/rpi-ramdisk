@@ -60,7 +60,7 @@ ff02::3 ip6-allhosts
 EOF
 
 
-echo "Configuring network..."
+echo "Configuring wired network..."
 
 # reset default udev persistent-net rule
 rm -f $ROOTDIR/etc/udev/rules.d/*_persistent-net.rules
@@ -83,6 +83,34 @@ Name=eth0
 [Network]
 DHCP=yes
 EOF
+
+
+echo "Configuring wireless network..."
+
+cat <<EOF > $ROOTDIR/etc/systemd/network/wlan0.network
+[Match]
+Name=wlan0
+[Network]
+DHCP=yes
+EOF
+
+cat <<EOF > $ROOTDIR/etc/systemd/system/wpa_supplicant@.service
+[Unit]
+Description=WPA supplicant daemon (interface-specific version)
+Requires=sys-subsystem-net-devices-%i.device
+After=sys-subsystem-net-devices-%i.device
+Before=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+ExecStart=/sbin/wpa_supplicant -c/etc/wpa_supplicant/wpa_supplicant-%I.conf -Dnl80211,wext -i%I
+
+[Install]
+Alias=multi-user.target.wants/wpa_supplicant@%i.service
+EOF
+
+fakechroot fakeroot chroot $ROOTDIR systemctl reenable wpa_supplicant@wlan0.service
 
 echo "Installing modules..."
 
