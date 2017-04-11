@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+docker build -t rpi-ramdisk .
+docker run --name rpi-ramdisk -it rpi-ramdisk
+docker cp rpi-ramdisk:/rpi-ramdisk/boot-raspbian.zip .
+docker cp rpi-ramdisk:/rpi-ramdisk/boot-busybox-klibc.zip .
+
