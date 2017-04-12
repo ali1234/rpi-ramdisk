@@ -1,9 +1,0 @@
-#!/bin/sh -e
-
-cd kernel; ./build kernel; ./build kernel7; cd ..
-cd raspbian; ./build; cd ..
-cd busybox-klibc; ./build; cd ..
-cd firmware; ./build; cd ..
-
-./deploy raspbian
-./deploy busybox-klibc

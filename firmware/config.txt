@@ -1,0 +1,13 @@
+dtoverlay=pi3-disable-bt
+dtparam=i2c_arm=on
+
+# RTC
+dtoverlay=i2c-rtc,ds3231
+
+# Internal Audio
+#dtparam=audio=on
+
+gpu_mem=64
+lcd_rotate=2
+
+initramfs initrd
