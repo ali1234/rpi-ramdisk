@@ -6,7 +6,14 @@ kernel: kernel-boot.tar.gz kernel-root.tar.gz
 
 kernel7: kernel7-boot.tar.gz kernel7-root.tar.gz
 
-%-boot.tar.gz %-root.tar.gz: %.config linux/.git/logs/HEAD tools/.git/logs/HEAD
+linux:
+	git clone --depth 1 -b rpi-4.9.y https://github.com/raspberrypi/linux.git
+
+tools:
+	git clone --depth 1 https://github.com/raspberrypi/tools.git
+
+.NOTPARALLEL:
+%-boot.tar.gz %-root.tar.gz: %.config linux.timestamp tools.timestamp
 	git -C linux clean -d -f -x
 	rm -rf root/
 	rm -rf boot/
@@ -21,24 +28,21 @@ kernel7: kernel7-boot.tar.gz kernel7-root.tar.gz
 	tar -C root/ -czvf $*-root.tar.gz .
 	tar -C boot/ -czvf $*-boot.tar.gz .
 
-linux/.git/logs/HEAD: linux force
+.PRECIOUS: %.timestamp
+%.timestamp: % FORCE
+	@if [ ! -f $*.timestamp ]; then echo $*/.git/logs/HEAD changed; touch -r $*/.git/logs/HEAD $*.timestamp; fi
+	@if [ $*/.git/logs/HEAD -nt $*.timestamp ]; then echo $*/.git/logs/HEAD changed; touch -r $*/.git/logs/HEAD $*.timestamp; fi
+	@for file in $$(git -C $* ls-files -mo --exclude-standard); do if [ $*/$$file -nt $*.timestamp ]; then echo $*/$$file changed; touch -r $*/$$file $*.timestamp; fi; done
+
+FORCE: ;
+
+pull: linux tools
 	git -C linux pull
-
-linux:
-	git clone --depth 1 -b rpi-4.9.y https://github.com/raspberrypi/linux
-
-tools/.git/logs/HEAD: tools force
 	git -C tools pull
-
-tools:
-	git clone --depth 1 https://github.com/raspberrypi/tools
-
-force: ;
 
 clean:
 	git -C linux clean -d -f -x
-	rm -rf root/ boot/ kernel-boot.tar.gz kernel-root.tar.gz kernel7-boot.tar.gz kernel7-root.tar.gz
+	rm -rf root/ boot/ kernel-boot.tar.gz kernel-root.tar.gz kernel7-boot.tar.gz kernel7-root.tar.gz *.timestamp
 
-.PHONY: kernel kernel7 force clean
+.PHONY: kernel kernel7 clean pull
 
-.NOTPARALLEL:
