@@ -1,4 +1,4 @@
-initrd
-initrd.dir/
-root/
+/initrd
+/initrd.dir/
+/root/
 
