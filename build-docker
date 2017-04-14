@@ -1,7 +1,6 @@
 #!/bin/sh -e
 
 docker build -t rpi-ramdisk .
-docker rm -f rpi-ramdisk
-docker run --name rpi-ramdisk -it make -j8
+docker run --name rpi-ramdisk -it rpi-ramdisk make -j8
 docker cp rpi-ramdisk:boot-raspbian.zip .
 docker cp rpi-ramdisk:boot-busybox-klibc.zip .
