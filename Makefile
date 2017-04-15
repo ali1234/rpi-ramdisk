@@ -7,15 +7,13 @@ $(SUBDIRS):
 
 raspbian: kernel
 
-boot-%: kernel firmware %
-	mkdir -p $@/
-	cp $*/initrd $@/
-	tar -xf firmware/firmware.tar.gz -C $@/
-	tar -xf kernel/kernel-boot.tar.gz -C $@/
-	tar -xf kernel/kernel7-boot.tar.gz -C $@/
-
-boot-%.zip: boot-%
-	cd $< && zip -r ../$@ *
+boot-%.zip: kernel firmware %
+	mkdir -p boot-$*/
+	cp $*/initrd boot-$*/
+	tar -xf firmware/firmware.tar.gz -C boot-$*/
+	tar -xf kernel/kernel-boot.tar.gz -C boot-$*/
+	tar -xf kernel/kernel7-boot.tar.gz -C boot-$*/
+	cd boot-$*/ && zip -r ../$@ *
 
 clean:
 	$(MAKE) -C kernel clean
