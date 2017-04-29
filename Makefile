@@ -13,7 +13,7 @@ boot-%.zip: kernel firmware %
 	tar -xf firmware/firmware.tar.gz -C boot-$*/
 	tar -xf kernel/kernel-boot.tar.gz -C boot-$*/
 	tar -xf kernel/kernel7-boot.tar.gz -C boot-$*/
-	cd boot-$*/ && zip -r ../$@ *
+	cd boot-$*/ && zip -qr ../$@ *
 
 clean:
 	$(MAKE) -C kernel clean
