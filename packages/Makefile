@@ -13,6 +13,7 @@ sysroot: multistrap.conf
 	./relativelinks.py sysroot/
 	# work around for libtool badness
 	cd sysroot/opt/ && ln -s ../../gstreamer/opt/gst gst
+	touch sysroot
 
 $(SUBDIRS):
 	$(MAKE) -C $@
