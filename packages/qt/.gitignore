@@ -1,0 +1,8 @@
+/qt.tar.gz
+/qt
+/qt-host
+/*.timestamp
+/qtbase
+/qtxmlpatterns
+/qtdeclarative
+
