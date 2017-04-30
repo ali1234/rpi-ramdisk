@@ -5,7 +5,7 @@ SUBDIRS=kernel firmware raspbian busybox-klibc
 $(SUBDIRS):
 	$(MAKE) -C $@
 
-raspbian: kernel
+raspbian: kernel packages
 
 boot-%.zip: kernel firmware %
 	mkdir -p boot-$*/
@@ -16,10 +16,7 @@ boot-%.zip: kernel firmware %
 	cd boot-$*/ && zip -qr ../$@ *
 
 clean:
-	$(MAKE) -C kernel clean
-	$(MAKE) -C firmware clean
-	$(MAKE) -C raspbian clean
-	$(MAKE) -C busybox-klibc clean
+	for dir in $(SUBDIRS); do $(MAKE) -C $$dir clean; done
 	rm -rf boot-*
 
 .PHONY: $(SUBDIRS) clean
