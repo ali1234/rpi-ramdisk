@@ -1,6 +1,6 @@
 all: boot-raspbian.zip boot-busybox-klibc.zip
 
-SUBDIRS=kernel firmware raspbian busybox-klibc
+SUBDIRS=kernel firmware packages raspbian busybox-klibc
 
 $(SUBDIRS):
 	$(MAKE) -C $@

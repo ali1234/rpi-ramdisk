@@ -1,0 +1,6 @@
+/orc
+/gstreamer
+/gst-plugins-*
+/opt
+/gst.tar.gz
+/*.timestamp
