@@ -9,8 +9,6 @@ RUN apt-get update -qy && apt-get -qy install \
  multistrap fakeroot fakechroot \
  qemu-user-static binfmt-support
 
-RUN ln -sf /rpi-ramdisk/raspbian/root/lib/ld-linux-armhf.so.3 /lib
-
 WORKDIR /rpi-ramdisk
 
 COPY . .

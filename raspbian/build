@@ -7,6 +7,7 @@ rm -rf --one-file-system $ROOTDIR
 http_proxy=$APT_HTTP_PROXY multistrap -d $ROOTDIR -f multistrap.conf
 
 cp /usr/bin/qemu-arm-static $ROOTDIR/usr/bin/
+export QEMU_LD_PREFIX=$(readlink -f $ROOTDIR)
 
 echo "Running preinst scripts..."
 
