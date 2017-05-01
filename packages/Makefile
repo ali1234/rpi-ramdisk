@@ -15,7 +15,7 @@ sysroot: multistrap.conf
 	cd sysroot/opt/ && ln -s ../../gstreamer/opt/gst gst
 	touch sysroot
 
-$(SUBDIRS):
+$(SUBDIRS): toolchain sysroot
 	$(MAKE) -C $@
 
 clean:
