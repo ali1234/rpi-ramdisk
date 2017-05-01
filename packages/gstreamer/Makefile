@@ -20,7 +20,7 @@ export PKG_CONFIG_DIR :=
 export PKG_CONFIG_LIBDIR := $(SYSROOT)/usr/lib/pkgconfig:$(SYSROOT)/usr/lib/arm-linux-gnueabihf/pkgconfig:$(SYSROOT)/usr/share/pkgconfig:$(SYSROOT)$(PREFIX)/lib/pkgconfig
 export PKG_CONFIG_SYSROOT_DIR := $(SYSROOT)
 
-export XDG_DATA_DIRS := $(SYSROOT)/usr:$(SYSROOT)$(PREFIX)
+export XDG_DATA_DIRS := $(SYSROOT)/usr/share:$(SYSROOT)$(PREFIX)/share
 
 ARCH_CFLAGS := -pipe -march=armv7-a -marm -mthumb-interwork -mfpu=neon-vfpv4 -mtune=cortex-a7 -mabi=aapcs-linux -mfloat-abi=hard
 
