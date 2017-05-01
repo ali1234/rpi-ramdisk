@@ -8,7 +8,7 @@ RUN apt-get update -qy && apt-get -qy install \
  build-essential git bc python zip wget gettext \
  autoconf automake libtool pkg-config autopoint \
  bison flex libglib2.0-dev gobject-introspection \
- multistrap fakeroot fakechroot \
+ multistrap fakeroot fakechroot cpio \
  qemu-user-static binfmt-support
 
 WORKDIR /rpi-ramdisk
