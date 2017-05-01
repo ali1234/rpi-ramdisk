@@ -12,7 +12,7 @@ sysroot: multistrap.conf
 	http_proxy=$APT_HTTP_PROXY multistrap -d sysroot/ -f multistrap.conf
 	./relativelinks.py sysroot/
 	# work around for libtool badness
-	cd sysroot/opt/ && ln -s ../../gstreamer/opt/gst gst
+	cd sysroot/opt/ && ln -s ../../gstreamer/root/opt/gst gst
 	touch sysroot
 
 $(SUBDIRS): toolchain sysroot

@@ -3,7 +3,8 @@ GSTBRANCH := 1.10
 export BASEDIR := $(shell readlink -f .)
 export PATH := $(shell readlink -f ..)/toolchain/bin:$(PATH)
 export SYSROOT := $(shell readlink -f ..)/sysroot
-export PREFIX := /opt/gst
+PREFIX := /opt/gst
+STAGE := $(BASEDIR)/root
 
 GSTREPOS := gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly
 REPOS := orc $(GSTREPOS)
@@ -39,7 +40,7 @@ export LD_LIBRARY_PATH := $(SYSROOT)/opt/vc/lib
 ## Configuration options:
 
 # cross compiler options
-CROSS_OPTS := --host=arm-linux-gnueabihf --build=x86_64-linux-gnu --prefix=$(PREFIX) --with-sysroot=$(BASEDIR)
+CROSS_OPTS := --host=arm-linux-gnueabihf --build=x86_64-linux-gnu --prefix=$(PREFIX) --with-sysroot=$(SYSROOT)
 
 # common options for every build
 COMMON_OPTS := --disable-dependency-tracking --disable-maintainer-mode --disable-fatal-warnings --disable-debug --disable-docbook --disable-gtk-doc --disable-gtk-doc-html --disable-gtk-doc-pdf --disable-examples --disable-benchmarks
@@ -60,7 +61,7 @@ DISPMANX_OPTS := --disable-opengl --enable-gles2 --enable-egl --disable-glx --en
 OMX_OPTS := --with-omx-target=rpi --with-omx-header-path=${SYSROOT}/opt/vc/include/IL
 
 # options for "make install"
-INSTALL_OPTS := DESTDIR=$(BASEDIR)
+INSTALL_OPTS := DESTDIR=$(STAGE)
 
 
 all: gst.tar.gz
@@ -74,7 +75,7 @@ orc:
 gst.tar.gz: orc.timestamp $(shell for repo in $(GSTREPOS); do echo $$repo.timestamp; done )
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
 
-	rm -rf --one-file-system opt/
+	rm -rf --one-file-system $(STAGE)
 
 	cd orc && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS)
 	$(MAKE) -C orc
@@ -102,9 +103,12 @@ gst.tar.gz: orc.timestamp $(shell for repo in $(GSTREPOS); do echo $$repo.timest
 
 #	cd opt/ && find -name '*.so' -exec chrpath -d {} \;
 
-	cd opt/ && tar --exclude=gst/doc --exclude=gst/include --exclude=*.la --exclude=gst/lib/pkgconfig \
-		--exclude=gst/share/man --exclude=gst/share/locale --exclude=gst/share/aclocal \
-		--exclude=gst/share/bash-completion -czf ../gst.tar.gz gst/
+	mkdir -p $(STAGE)/etc/ld.so.conf.d
+	echo $(PREFIX)/lib > $(STAGE)/etc/ld.so.conf.d/opt-gst.conf
+
+	tar -C $(STAGE) --exclude=.$(PREFIX)/doc --exclude=.$(PREFIX)/include --exclude=*.la --exclude=.$(PREFIX)/lib/pkgconfig \
+		--exclude=.$(PREFIX)/share/man --exclude=.$(PREFIX)/share/locale --exclude=.$(PREFIX)/share/aclocal \
+		--exclude=.$(PREFIX)/share/bash-completion -czf gst.tar.gz .
 
 .PRECIOUS: %.timestamp
 %.timestamp: % FORCE
@@ -120,6 +124,6 @@ pull: $(REPOS)
 
 clean:
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
-	rm -rf --one-file-system opt/ *.timestamp gst.tar.gz
+	rm -rf --one-file-system $(STAGE) *.timestamp gst.tar.gz
 
 .PHONY: clean
