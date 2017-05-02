@@ -121,6 +121,56 @@ tar -xf ../packages/gstreamer/gst.tar.gz -C $ROOTDIR
 
 $ROOTDIR/sbin/ldconfig.real -r $ROOTDIR
 
+echo "Creating QML Demo..."
+
+cat <<EOF > $ROOTDIR/etc/systemd/system/qmldemo.service
+[Unit]
+Description=QML Demo Scene
+After=network.target
+Wants=network.target
+
+[Service]
+Environment=QT_QPA_EVDEV_KEYBOARD_PARAMETERS=grab=1
+ExecStart=/opt/qt/bin/qmlscene /root/test.qml
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat <<EOF > $ROOTDIR/root/test.qml
+import QtQuick 2.1
+
+Rectangle {
+    id: rectangle
+    color: "red"
+    width: 200
+    height: 200
+
+    Text {
+        id: text
+        text: "This is QML code.\n(Tap to pause)"
+        font.pointSize: 34
+        anchors.centerIn: parent
+        PropertyAnimation {
+            id: animation
+            target: text
+            property: "rotation"
+            from: 0; to: 360; duration: 5000
+            loops: Animation.Infinite
+        }
+    }
+    MouseArea {
+        anchors.fill: parent
+        onClicked: animation.paused ? animation.resume() : animation.pause()
+    }
+    Component.onCompleted: animation.start()
+}
+EOF
+
+fakechroot fakeroot chroot $ROOTDIR systemctl reenable qmldemo.service
+
+
 echo "Cleaning up..."
 
 ./cleanup $ROOTDIR excludes.conf > /dev/null
