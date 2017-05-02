@@ -119,6 +119,8 @@ echo "Installing opt packages..."
 tar -xf ../packages/qt/qt.tar.gz -C $ROOTDIR
 tar -xf ../packages/gstreamer/gst.tar.gz -C $ROOTDIR
 
+$ROOTDIR/sbin/ldconfig.real -r $ROOTDIR
+
 echo "Cleaning up..."
 
 ./cleanup $ROOTDIR excludes.conf > /dev/null
