@@ -114,9 +114,14 @@ echo "Installing modules..."
 tar -xf ../kernel/kernel-root.tar.gz -C $ROOTDIR
 tar -xf ../kernel/kernel7-root.tar.gz -C $ROOTDIR
 
+echo "Installing opt packages..."
+
+tar -xf ../packages/qt/qt.tar.gz -C $ROOTDIR
+tar -xf ../packages/gstreamer/gst.tar.gz -C $ROOTDIR
+
 echo "Cleaning up..."
 
-./cleanup $ROOTDIR excludes.conf
+./cleanup $ROOTDIR excludes.conf > /dev/null
 mkdir -p $ROOTDIR/etc/dpkg/dpkg.cfg.d
 cp excludes.conf $ROOTDIR/etc/dpkg/dpkg.cfg.d/
 
