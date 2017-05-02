@@ -77,29 +77,29 @@ gst.tar.gz: orc.timestamp $(shell for repo in $(GSTREPOS); do echo $$repo.timest
 
 	rm -rf --one-file-system $(STAGE)
 
-	cd orc && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS)
-	$(MAKE) -C orc
-	$(MAKE) -C orc $(INSTALL_OPTS) install
+	cd orc && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(REDIRECT)
+	$(MAKE) -C orc $(REDIRECT)
+	$(MAKE) -C orc $(INSTALL_OPTS) install $(REDIRECT)
 
-	cd gstreamer && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS)
-	$(MAKE) -C gstreamer
-	$(MAKE) -C gstreamer $(INSTALL_OPTS) install
+	cd gstreamer && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(REDIRECT)
+	$(MAKE) -C gstreamer $(REDIRECT)
+	$(MAKE) -C gstreamer $(INSTALL_OPTS) install $(REDIRECT)
 
-	cd gst-plugins-base && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS)
-	$(MAKE) -C gst-plugins-base
-	$(MAKE) -C gst-plugins-base $(INSTALL_OPTS) install
+	cd gst-plugins-base && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(REDIRECT)
+	$(MAKE) -C gst-plugins-base $(REDIRECT)
+	$(MAKE) -C gst-plugins-base $(INSTALL_OPTS) install $(REDIRECT)
 
-	cd gst-plugins-good && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS)
-	$(MAKE) -C gst-plugins-good
-	$(MAKE) -C gst-plugins-good $(INSTALL_OPTS) install
+	cd gst-plugins-good && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(REDIRECT)
+	$(MAKE) -C gst-plugins-good $(REDIRECT)
+	$(MAKE) -C gst-plugins-good $(INSTALL_OPTS) install $(REDIRECT)
 
-	cd gst-plugins-bad && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(DISPMANX_OPTS)
-	$(MAKE) -C gst-plugins-bad
-	$(MAKE) -C gst-plugins-bad $(INSTALL_OPTS) install
+	cd gst-plugins-bad && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(DISPMANX_OPTS) $(REDIRECT)
+	$(MAKE) -C gst-plugins-bad $(REDIRECT)
+	$(MAKE) -C gst-plugins-bad $(INSTALL_OPTS) install $(REDIRECT)
 
-	cd gst-plugins-ugly && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS)
-	$(MAKE) -C gst-plugins-ugly
-	$(MAKE) -C gst-plugins-ugly $(INSTALL_OPTS) install
+	cd gst-plugins-ugly && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(REDIRECT)
+	$(MAKE) -C gst-plugins-ugly $(REDIRECT)
+	$(MAKE) -C gst-plugins-ugly $(INSTALL_OPTS) install $(REDIRECT)
 
 #	cd opt/ && find -name '*.so' -exec chrpath -d {} \;
 
