@@ -16,13 +16,10 @@ the ramdisk must be customized for its task during the build process.
 
 ### Debian-based systems
 
+FIXME: This dependency list is incomplete.
+
     sudo apt-get install qemu-user-static binfmt-support \
                          multistrap fakeroot fakechroot
-
-In order for qemu to work correctly inside fakechroot you must create a symlink
-in `/lib` pointing to this repo. From the top of the repo you can run:
-
-    sudo ln -sf $(pwd)/raspbian/root/lib/ld-linux-armhf.so.3 /lib
 
 ### Docker
 
