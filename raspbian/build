@@ -24,12 +24,8 @@ done
 echo "Running dpkg --configure -a"
 
 # don't run makedev
+# we will create device nodes later, after we are done with the system dev
 rm -f $ROOTDIR/var/lib/dpkg/info/makedev.postinst
-
-# do this instead
-cd $ROOTDIR/dev
-fakeroot MAKEDEV std
-cd ../..
 
 DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
  LC_ALL=C LANGUAGE=C LANG=C fakechroot fakeroot chroot $ROOTDIR /usr/bin/dpkg --configure -a || true
@@ -126,9 +122,19 @@ cp excludes.conf $ROOTDIR/etc/dpkg/dpkg.cfg.d/
 
 fakechroot fakeroot chroot $ROOTDIR udevadm hwdb --update --usr
 
-echo "Packing rootfs..."
+echo "Misc housekeeping..."
 
 ln -sf /sbin/init $ROOTDIR/init
 ln -sf /proc/mounts $ROOTDIR/etc/mtab
+
+echo "Creating minimal device nodes..."
+
+# this must be done last. if the fakeroot devices exist on the system,
+# fakechroot wont be able to read from them, which breaks systemd setup.
+cd $ROOTDIR/dev
+fakeroot MAKEDEV std
+cd ../..
+
+echo "Packing rootfs..."
 
 fakechroot fakeroot chroot $ROOTDIR sh -c "cd / && find * -xdev | grep -v -e ^run/ | grep -v -e ^proc/ | grep -v -e ^sys/ | grep -v -e ^boot/ | grep -v -e ^usr/bin/qemu-arm-static$ | cpio --create -H newc" | gzip -9 > initrd
