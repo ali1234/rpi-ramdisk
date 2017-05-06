@@ -8,7 +8,7 @@ firmware.tar.gz: root multistrap.conf config.txt cmdline.txt
 root: multistrap
 
 multistrap:
-	http_proxy=$(APT_HTTP_PROXY) multistrap -d root -f multistrap.conf
+	http_proxy=$(APT_HTTP_PROXY) /usr/sbin/multistrap -d root -f multistrap.conf
 
 clean:
 	rm -rf firmware.tar.gz root/

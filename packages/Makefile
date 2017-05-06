@@ -9,7 +9,7 @@ toolchain:
 
 sysroot: multistrap.conf
 	rm -rf --one-file-system sysroot/
-	http_proxy=$APT_HTTP_PROXY multistrap -d sysroot/ -f multistrap.conf
+	http_proxy=$APT_HTTP_PROXY /usr/sbin/multistrap -d sysroot/ -f multistrap.conf
 	./relativelinks.py sysroot/
 	# work around for libtool badness
 	cd sysroot/opt/ && ln -s ../../gstreamer/root/opt/gst gst

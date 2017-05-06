@@ -22,7 +22,7 @@ initrd.dir: root multistrap.conf init
 root: multistrap
 
 multistrap:
-	http_proxy=$(APT_HTTP_PROXY) multistrap -d root -f multistrap.conf
+	http_proxy=$(APT_HTTP_PROXY) /usr/sbin/multistrap -d root -f multistrap.conf
 
 clean:
 	rm -rf initrd initrd.dir/ root/

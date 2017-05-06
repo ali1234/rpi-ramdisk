@@ -4,7 +4,7 @@ ROOTDIR=root
 
 rm -rf --one-file-system $ROOTDIR
 
-http_proxy=$APT_HTTP_PROXY multistrap -d $ROOTDIR -f multistrap.conf
+http_proxy=$APT_HTTP_PROXY /usr/sbin/multistrap -d $ROOTDIR -f multistrap.conf
 
 cp /usr/bin/qemu-arm-static $ROOTDIR/usr/bin/
 export QEMU_LD_PREFIX=$(readlink -f $ROOTDIR)
@@ -189,7 +189,7 @@ echo "Creating minimal device nodes..."
 # this must be done last. if the fakeroot devices exist on the system,
 # fakechroot wont be able to read from them, which breaks systemd setup.
 cd $ROOTDIR/dev
-fakeroot MAKEDEV std
+fakeroot /sbin/MAKEDEV std
 cd ../..
 
 echo "Packing rootfs..."
