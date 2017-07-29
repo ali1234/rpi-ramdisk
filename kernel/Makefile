@@ -52,6 +52,15 @@ pull: linux tools
 	git -C linux pull
 	git -C tools pull
 
+updateconfig:
+	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) mrproper
+	cp kernel.config linux/.config
+	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) oldconfig
+	cp linux/.config kernel.config
+	cp kernel7.config linux/.config
+	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) oldconfig
+	cp linux/.config kernel7.config
+
 clean:
 	git -C linux clean -dfxq
 	rm -rf root/ boot/ kernel-boot.tar.gz kernel-root.tar.gz kernel7-boot.tar.gz kernel7-root.tar.gz *.timestamp
