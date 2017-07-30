@@ -23,6 +23,7 @@ qt.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 	rm -rf --one-file-system $(STAGE) $(HOSTPREFIX)
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
 
+	cp qmake.conf qtbase/mkspecs/devices/linux-rasp-pi2-g++/qmake.conf
 	cd qtbase && ./configure -release -opengl es2 -device linux-rasp-pi2-g++ \
 		-qpa eglfs -no-libinput -no-linuxfb -no-xcb -no-kms -no-gbm -no-gtk -no-widgets -no-compile-examples \
 		-device-option CROSS_COMPILE=$(TOOLCHAIN) -sysroot $(SYSROOT) \
