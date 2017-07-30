@@ -74,9 +74,9 @@ fakechroot fakeroot chroot $ROOTDIR systemctl reenable systemd-networkd-wait-onl
 # time used by timesyncd if no other is available
 touch $ROOTDIR/var/lib/systemd/clock
 
-cat <<EOF > $ROOTDIR/etc/systemd/network/eth0.network
+cat <<EOF > $ROOTDIR/etc/systemd/network/en.network
 [Match]
-Name=eth0
+Name=en*
 [Network]
 DHCP=yes
 EOF
@@ -117,9 +117,9 @@ tar -xf ../kernel/kernel7-root.tar.gz -C $ROOTDIR
 echo "Installing opt packages..."
 
 tar -xf ../packages/qt/qt.tar.gz -C $ROOTDIR
-tar -xf ../packages/gstreamer/gst.tar.gz -C $ROOTDIR
+#tar -xf ../packages/gstreamer/gst.tar.gz -C $ROOTDIR
 
-$ROOTDIR/sbin/ldconfig.real -r $ROOTDIR
+$ROOTDIR/sbin/ldconfig -r $ROOTDIR
 
 echo "Creating QML Demo..."
 
