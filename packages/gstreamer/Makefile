@@ -1,4 +1,4 @@
-GSTBRANCH := 1.10
+GSTBRANCH := 1.12
 
 export BASEDIR := $(shell readlink -f .)
 export PATH := $(shell readlink -f ..)/toolchain/bin:$(PATH)
@@ -6,8 +6,7 @@ export SYSROOT := $(shell readlink -f ..)/sysroot
 PREFIX := /opt/gst
 STAGE := $(BASEDIR)/root
 
-GSTREPOS := gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly
-REPOS := orc $(GSTREPOS)
+REPOS := gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly
 
 ifeq ("$(VERBOSE_GST_BUILD)","1")
 REDIRECT :=
@@ -55,7 +54,7 @@ NODEBUG_OPTS := --enable-gobject-cast-checks=no --enable-glib-asserts=no --disab
 PLUGIN_OPTS := --enable-orc --disable-x --disable-xvideo --disable-xshm --disable-wayland --disable-fbdev --disable-jack --disable-pulse --disable-cairo --disable-gdk_pixbuf --disable-festival --disable-flite --disable-fluidsynth
 
 # options for dispmanx in bad
-DISPMANX_OPTS := --disable-opengl --enable-gles2 --enable-egl --disable-glx --enable-dispmanx --with-gles2-module-name=/opt/vc/lib/libGLESv2.so --with-egl-module-name=/opt/vc/lib/libEGL.so
+DISPMANX_OPTS := --disable-opengl --enable-gles2 --enable-egl --disable-glx --enable-dispmanx --with-gles2-module-name=/opt/vc/lib/libbrcmGLESv2.so --with-egl-module-name=/opt/vc/lib/libbrcmEGL.so
 
 # options for OMX
 OMX_OPTS := --with-omx-target=rpi --with-omx-header-path=${SYSROOT}/opt/vc/include/IL
@@ -66,20 +65,13 @@ INSTALL_OPTS := DESTDIR=$(STAGE)
 
 all: gst.tar.gz
 
-$(GSTREPOS):
+$(REPOS):
 	git clone --depth 1 -b $(GSTBRANCH) git://anongit.freedesktop.org/git/gstreamer/$@
 
-orc:
-	git clone --depth 1 git://anongit.freedesktop.org/git/gstreamer/orc
-
-gst.tar.gz: orc.timestamp $(shell for repo in $(GSTREPOS); do echo $$repo.timestamp; done )
+gst.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
 
 	rm -rf --one-file-system $(STAGE)
-
-	cd orc && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(REDIRECT)
-	$(MAKE) -C orc $(REDIRECT)
-	$(MAKE) -C orc $(INSTALL_OPTS) install $(REDIRECT)
 
 	cd gstreamer && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(REDIRECT)
 	$(MAKE) -C gstreamer $(REDIRECT)
