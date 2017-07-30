@@ -168,7 +168,7 @@ Rectangle {
 }
 EOF
 
-fakechroot fakeroot chroot $ROOTDIR systemctl reenable qmldemo.service
+#fakechroot fakeroot chroot $ROOTDIR systemctl reenable qmldemo.service
 
 
 echo "Cleaning up..."
