@@ -71,6 +71,8 @@ $(REPOS):
 gst.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
 
+	cp gst-bad-configure.ac gst-plugins-bad/configure.ac
+
 	rm -rf --one-file-system $(STAGE)
 
 	cd gstreamer && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(REDIRECT)
