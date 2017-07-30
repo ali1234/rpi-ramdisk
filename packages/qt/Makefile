@@ -5,7 +5,7 @@ PREFIX := /opt/qt
 STAGE := $(BASEDIR)/root
 HOSTPREFIX := $(BASEDIR)/qt-host
 
-QTBRANCH := 5.8
+QTBRANCH := 5.9
 REPOS := qtbase qtxmlpatterns qtdeclarative
 
 ifeq ("$(VERBOSE_QT_BUILD)","1")
