@@ -1,4 +1,4 @@
-FROM ubuntu:xenial
+FROM ubuntu:zesty
 
 RUN dpkg --add-architecture i386
 
