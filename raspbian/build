@@ -9,8 +9,10 @@ http_proxy=$APT_HTTP_PROXY /usr/sbin/multistrap -d $ROOTDIR -f multistrap.conf
 cp /usr/bin/qemu-arm-static $ROOTDIR/usr/bin/
 export QEMU_LD_PREFIX=$(readlink -f $ROOTDIR)
 
+# If you want to use fakeroot/fakechroot for some reason,
+# you will need to install them in multistrap.conf.
 #MYCHROOT="fakechroot fakeroot chroot"
-MYCHROOT="proot -0 -q qemu-arm-static -r"
+MYCHROOT="proot -0 -q qemu-arm-static -w / -r"
 
 echo "Running preinst scripts..."
 
