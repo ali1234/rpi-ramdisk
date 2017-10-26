@@ -30,6 +30,10 @@ echo "Running dpkg --configure -a"
 # we will create device nodes later, after we are done with the system dev
 rm -f $ROOTDIR/var/lib/dpkg/info/makedev.postinst
 
+# work around https://pad.lv/1727874
+rm -f $ROOTDIR/var/lib/dpkg/info/raspbian-archive-keyring.postinst
+ln -sf /usr/share/keyrings/raspbian-archive-keyring.gpg $ROOTDIR/etc/apt/trusted.gpg.d/
+
 DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
  LC_ALL=C LANGUAGE=C LANG=C $MYCHROOT $ROOTDIR /usr/bin/dpkg --configure -a || true
 
