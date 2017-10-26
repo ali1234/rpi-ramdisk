@@ -9,6 +9,9 @@ http_proxy=$APT_HTTP_PROXY /usr/sbin/multistrap -d $ROOTDIR -f multistrap.conf
 cp /usr/bin/qemu-arm-static $ROOTDIR/usr/bin/
 export QEMU_LD_PREFIX=$(readlink -f $ROOTDIR)
 
+#MYCHROOT="fakechroot fakeroot chroot"
+MYCHROOT="proot -0 -q qemu-arm-static -r"
+
 echo "Running preinst scripts..."
 
 for script in $ROOTDIR/var/lib/dpkg/info/*.preinst; do
@@ -16,10 +19,8 @@ for script in $ROOTDIR/var/lib/dpkg/info/*.preinst; do
         echo "I: run preinst script ${script##$ROOTDIR}"
         DPKG_MAINTSCRIPT_NAME=preinst \
         DPKG_MAINTSCRIPT_PACKAGE="`basename $script .preinst`" \
-        fakechroot fakeroot chroot $ROOTDIR ${script##$ROOTDIR} install
+        $MYCHROOT $ROOTDIR ${script##$ROOTDIR} install
 done
-
-#fakechroot fakeroot chroot $ROOTDIR
 
 echo "Running dpkg --configure -a"
 
@@ -28,13 +29,13 @@ echo "Running dpkg --configure -a"
 rm -f $ROOTDIR/var/lib/dpkg/info/makedev.postinst
 
 DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
- LC_ALL=C LANGUAGE=C LANG=C fakechroot fakeroot chroot $ROOTDIR /usr/bin/dpkg --configure -a || true
+ LC_ALL=C LANGUAGE=C LANG=C $MYCHROOT $ROOTDIR /usr/bin/dpkg --configure -a || true
 
 
 echo "Preparing root..."
 
 # no root password
-fakechroot fakeroot chroot $ROOTDIR passwd -d root
+$MYCHROOT $ROOTDIR passwd -d root
 
 # initialize /etc/fstab
 echo proc /proc proc defaults 0 0 > $ROOTDIR/etc/fstab
@@ -64,12 +65,12 @@ rm -f $ROOTDIR/etc/udev/rules.d/*_persistent-net.rules
 
 # /etc/resolv.conf symlink
 rm -f $ROOTDIR/etc/resolv.conf
-fakechroot fakeroot chroot $ROOTDIR ln -s "/run/systemd/resolve/resolv.conf" "/etc/resolv.conf"
+$MYCHROOT $ROOTDIR ln -s "/run/systemd/resolve/resolv.conf" "/etc/resolv.conf"
 
-fakechroot fakeroot chroot $ROOTDIR systemctl reenable systemd-networkd
-fakechroot fakeroot chroot $ROOTDIR systemctl reenable systemd-resolved
-fakechroot fakeroot chroot $ROOTDIR systemctl reenable systemd-timesyncd
-fakechroot fakeroot chroot $ROOTDIR systemctl reenable systemd-networkd-wait-online.service
+$MYCHROOT $ROOTDIR systemctl reenable systemd-networkd
+$MYCHROOT $ROOTDIR systemctl reenable systemd-resolved
+$MYCHROOT $ROOTDIR systemctl reenable systemd-timesyncd
+$MYCHROOT $ROOTDIR systemctl reenable systemd-networkd-wait-online.service
 
 # time used by timesyncd if no other is available
 touch $ROOTDIR/var/lib/systemd/clock
@@ -168,7 +169,7 @@ Rectangle {
 }
 EOF
 
-#fakechroot fakeroot chroot $ROOTDIR systemctl reenable qmldemo.service
+#$MYCHROOT $ROOTDIR systemctl reenable qmldemo.service
 
 
 echo "Cleaning up..."
@@ -177,7 +178,7 @@ echo "Cleaning up..."
 mkdir -p $ROOTDIR/etc/dpkg/dpkg.cfg.d
 cp excludes.conf $ROOTDIR/etc/dpkg/dpkg.cfg.d/
 
-fakechroot fakeroot chroot $ROOTDIR udevadm hwdb --update --usr
+$MYCHROOT $ROOTDIR udevadm hwdb --update --usr
 
 echo "Misc housekeeping..."
 
@@ -194,4 +195,10 @@ cd ../..
 
 echo "Packing rootfs..."
 
-fakechroot fakeroot chroot $ROOTDIR sh -c "cd / && find * -xdev | grep -v -e ^run/ | grep -v -e ^proc/ | grep -v -e ^sys/ | grep -v -e ^boot/ | grep -v -e ^usr/bin/qemu-arm-static$ | cpio --create -H newc" | gzip -9 > initrd
+$MYCHROOT $ROOTDIR sh -c "cd / && find * -xdev -not \( \
+              -path host-rootfs -prune \
+              -path run -prune \
+              -path proc -prune \
+              -path sys -prune \
+              -path boot -prune \
+           \) | cpio --create -H newc" | gzip -9 > initrd
