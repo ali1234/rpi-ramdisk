@@ -34,6 +34,9 @@ rm -f $ROOTDIR/var/lib/dpkg/info/makedev.postinst
 rm -f $ROOTDIR/var/lib/dpkg/info/raspbian-archive-keyring.postinst
 ln -sf /usr/share/keyrings/raspbian-archive-keyring.gpg $ROOTDIR/etc/apt/trusted.gpg.d/
 
+# work around PAM error
+ln -s -f /bin/true $ROOTDIR/usr/bin/chfn
+
 DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
  LC_ALL=C LANGUAGE=C LANG=C $MYCHROOT $ROOTDIR /usr/bin/dpkg --configure -a || true
 
