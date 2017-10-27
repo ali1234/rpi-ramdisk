@@ -4,6 +4,12 @@ ROOTDIR=root
 
 rm -rf --one-file-system $ROOTDIR
 
+# workaround https://github.com/RPi-Distro/repo/issues/59
+mkdir -p $ROOTDIR/etc/apt/trusted.gpg.d/
+gpg --no-default-keyring --keyring $ROOTDIR/etc/apt/trusted.gpg.d/foundation-archive-keyring.gpg --fingerprint --recv-keys 82B129927FA3303E
+chmod 0644 $ROOTDIR/etc/apt/trusted.gpg.d/foundation-archive-keyring.gpg
+rm $ROOTDIR/etc/apt/trusted.gpg.d/foundation-archive-keyring.gpg~
+
 http_proxy=$APT_HTTP_PROXY /usr/sbin/multistrap -d $ROOTDIR -f multistrap.conf
 
 cp /usr/bin/qemu-arm-static $ROOTDIR/usr/bin/
