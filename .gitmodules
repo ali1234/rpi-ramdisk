@@ -1,0 +1,7 @@
+[submodule "kernel/linux"]
+	path = kernel/linux
+	url = https://github.com/ali1234/linux.git
+	branch = rpi-4.9.y
+[submodule "kernel/tools"]
+	path = kernel/tools
+	url = https://github.com/raspberrypi/tools.git

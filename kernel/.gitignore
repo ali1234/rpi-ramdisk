@@ -1,7 +1,5 @@
-/linux/
 /root/
 /boot/
-/tools/
 /kernel-boot.tar.gz
 /kernel-root.tar.gz
 /kernel7-boot.tar.gz

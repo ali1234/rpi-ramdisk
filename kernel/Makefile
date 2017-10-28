@@ -17,12 +17,6 @@ kernel: kernel-boot.tar.gz kernel-root.tar.gz
 
 kernel7: kernel7-boot.tar.gz kernel7-root.tar.gz
 
-linux:
-	git clone --depth 1 -b rpi-4.9.y https://github.com/raspberrypi/linux.git
-
-tools:
-	git clone --depth 1 https://github.com/raspberrypi/tools.git
-
 .NOTPARALLEL:
 %-boot.tar.gz %-root.tar.gz: %.config linux.timestamp tools.timestamp
 	git -C linux clean -dfxq
@@ -48,10 +42,6 @@ tools:
 
 FORCE: ;
 
-pull: linux tools
-	git -C linux pull
-	git -C tools pull
-
 updateconfig:
 	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) mrproper
 	cp kernel.config linux/.config
@@ -65,5 +55,5 @@ clean:
 	git -C linux clean -dfxq
 	rm -rf root/ boot/ kernel-boot.tar.gz kernel-root.tar.gz kernel7-boot.tar.gz kernel7-root.tar.gz *.timestamp
 
-.PHONY: kernel kernel7 clean pull
+.PHONY: kernel kernel7 clean
 
