@@ -36,8 +36,8 @@ kernel7: kernel7-boot.tar.gz kernel7-root.tar.gz
 .PRECIOUS: %.timestamp
 %.timestamp: % FORCE
 	@echo Checking timestamps in $*...
-	@if [ ! -f $*.timestamp ]; then echo $*/.git/logs/HEAD changed; touch -r $*/.git/logs/HEAD $*.timestamp; fi
-	@if [ $*/.git/logs/HEAD -nt $*.timestamp ]; then echo $*/.git/logs/HEAD changed; touch -r $*/.git/logs/HEAD $*.timestamp; fi
+	@if [ ! -f $*.timestamp ]; then echo $* timestamp not found; touch -r $$(git -C $* rev-parse --git-dir)/logs/HEAD $*.timestamp; fi
+	@if [ $$(git -C $* rev-parse --git-dir)/logs/HEAD -nt $*.timestamp ]; then echo $* HEAD changed; touch -r $$(git -C $* rev-parse --git-dir)/logs/HEAD $*.timestamp; fi
 	@for file in $$(git -C $* ls-files -mo --exclude-standard); do if [ $*/$$file -nt $*.timestamp ]; then echo $*/$$file changed; touch -r $*/$$file $*.timestamp; fi; done
 
 FORCE: ;
@@ -50,6 +50,10 @@ updateconfig:
 	cp kernel7.config linux/.config
 	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) oldconfig
 	cp linux/.config kernel7.config
+
+updatesubmodules:
+	git submodule update --remote .
+	$(MAKE) updateconfig
 
 clean:
 	git -C linux clean -dfxq
