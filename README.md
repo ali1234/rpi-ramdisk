@@ -26,6 +26,17 @@ This dependency list may be incomplete. If so, please report a bug on github.
                      multistrap fakeroot fakechroot proot cpio \
                      qemu-user-static binfmt-support
 
+Some build dependencies need to be fairly new:
+
+Git >= 2.12 is needed for "rev-parse --absolute-git-dir". It is available in
+Ubuntu 17.10 and newer, or from this PPA if you are on an older release:
+
+  https://launchpad.net/~git-core/+archive/ubuntu/ppa
+
+Qemu >= 2.7 is needed for the getrandom() syscall. It is available in Ubuntu
+17.10 and newer, or from the Ubuntu Cloud Archive:
+
+  https://wiki.ubuntu.com/OpenStack/CloudArchive
 
 ### Docker
 
