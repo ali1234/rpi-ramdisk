@@ -104,14 +104,7 @@ gst.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 		--exclude=.$(PREFIX)/share/man --exclude=.$(PREFIX)/share/locale --exclude=.$(PREFIX)/share/aclocal \
 		--exclude=.$(PREFIX)/share/bash-completion -czf gst.tar.gz .
 
-.PRECIOUS: %.timestamp
-%.timestamp: % FORCE
-	@echo Checking timestamps in $*...
-	@if [ ! -f $*.timestamp ]; then echo $* timestamp not found; touch -r $$(git -C $* rev-parse --absolute-git-dir)/logs/HEAD $*.timestamp; fi
-	@if [ $$(git -C $* rev-parse --absolute-git-dir)/logs/HEAD -nt $*.timestamp ]; then echo $* HEAD changed; touch -r $$(git -C $* rev-parse --absolute-git-dir)/logs/HEAD $*.timestamp; fi
-	@for file in $$(git -C $* ls-files -mo --exclude-standard); do if [ $*/$$file -nt $*.timestamp ]; then echo $*/$$file changed; touch -r $*/$$file $*.timestamp; fi; done
-
-FORCE: ;
+include ../../include/timestamp.mk
 
 pull: $(REPOS)
 	for repo in $(REPOS); do git -C $$repo pull; done
