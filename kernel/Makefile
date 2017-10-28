@@ -32,7 +32,7 @@ tools:
 	cp $*.config linux/.config
 	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) zImage modules dtbs $(REDIRECT)
 	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) INSTALL_MOD_PATH=../root modules_install $(REDIRECT)
-	linux/scripts/mkknlimg linux/arch/arm/boot/zImage boot/$*.img
+	cp linux/arch/arm/boot/zImage boot/$*.img
 	cp linux/arch/arm/boot/dts/*.dtb boot/
 	cp linux/arch/arm/boot/dts/overlays/*.dtb* boot/overlays/
 	cp linux/arch/arm/boot/dts/overlays/README boot/overlays/
