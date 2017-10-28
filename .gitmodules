@@ -5,3 +5,15 @@
 [submodule "kernel/tools"]
 	path = kernel/tools
 	url = git://github.com/raspberrypi/tools.git
+[submodule "packages/qt/qtbase"]
+	path = packages/qt/qtbase
+	url = git://github.com/ali1234/qtbase.git
+	branch = vcfix
+[submodule "packages/qt/qtxmlpatterns"]
+	path = packages/qt/qtxmlpatterns
+	url = git://code.qt.io/qt/qtxmlpatterns.git
+	branch = 5.9
+[submodule "packages/qt/qtdeclarative"]
+	path = packages/qt/qtdeclarative
+	url = git://code.qt.io/qt/qtdeclarative.git
+	branch = 5.9

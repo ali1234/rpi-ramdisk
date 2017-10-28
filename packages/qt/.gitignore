@@ -2,7 +2,4 @@
 /root
 /qt-host
 /*.timestamp
-/qtbase
-/qtxmlpatterns
-/qtdeclarative
 
