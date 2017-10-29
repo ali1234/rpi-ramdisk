@@ -1,10 +1,8 @@
-GSTBRANCH := 1.12
+include ../toolchain.mk
 
-export BASEDIR := $(shell readlink -f .)
-export PATH := $(shell readlink -f ..)/toolchain/bin:$(PATH)
-export SYSROOT := $(shell readlink -f ..)/sysroot
 PREFIX := /opt/gst
-STAGE := $(BASEDIR)/root
+
+GSTBRANCH := 1.12
 
 REPOS := gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly
 
@@ -15,14 +13,9 @@ REDIRECT := > /dev/null
 endif
 
 
-export PKG_CONFIG := $(BASEDIR)/pkg-config
-export PKG_CONFIG_DIR :=
-export PKG_CONFIG_LIBDIR := $(SYSROOT)/usr/lib/pkgconfig:$(SYSROOT)/usr/lib/arm-linux-gnueabihf/pkgconfig:$(SYSROOT)/usr/share/pkgconfig:$(SYSROOT)$(PREFIX)/lib/pkgconfig
-export PKG_CONFIG_SYSROOT_DIR := $(SYSROOT)
-
+# search dirs for G-I
 export XDG_DATA_DIRS := $(SYSROOT)/usr/share:$(SYSROOT)$(PREFIX)/share
-
-ARCH_CFLAGS := -pipe -march=armv7-a -marm -mthumb-interwork -mfpu=neon-vfpv4 -mtune=cortex-a7 -mabi=aapcs-linux -mfloat-abi=hard
+export PKG_CONFIG_LIBDIR := $(SYSROOT)/usr/lib/pkgconfig:$(SYSROOT)/usr/lib/arm-linux-gnueabihf/pkgconfig:$(SYSROOT)/usr/share/pkgconfig:$(SYSROOT)$(PREFIX)/lib/pkgconfig
 
 # put dispmanx/EGL flags into the global state. https://bugzilla.gnome.org/show_bug.cgi?id=770987
 export CPPFLAGS := -I$(SYSROOT)/opt/vc/include -I$(SYSROOT)/opt/vc/include/interface/vcos/pthreads -I$(SYSROOT)/opt/vc/include/interface/vmcs_host/linux
@@ -30,10 +23,6 @@ export LIBS := -L$(SYSROOT)/opt/vc/lib
 
 export CFLAGS := --sysroot=$(SYSROOT) $(ARCH_CFLAGS)
 export LDFLAGS := --sysroot=$(SYSROOT) -Wl,--unresolved-symbols=ignore-in-shared-libs
-
-# Set up Qemu for G-I
-export QEMU_LD_PREFIX := $(SYSROOT)
-export LD_LIBRARY_PATH := $(SYSROOT)/opt/vc/lib
 
 
 ## Configuration options:
