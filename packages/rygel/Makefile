@@ -1,12 +1,9 @@
-RYGELBRANCH=master
+include ../toolchain.mk
+include ../workarounds.mk
 
-export BASEDIR := $(shell readlink -f .)
-export PATH := $(shell readlink -f ..)/toolchain/bin:$(PATH)
-export SYSROOT := $(shell readlink -f ..)/sysroot
 PREFIX := /opt/rygel
-STAGE := $(BASEDIR)/root
 
-REPOS := rygel
+REPOS := gssdp gupnp gupnp-av gupnp-dlna gupnp-tools rygel
 
 ifeq ("$(VERBOSE_RYGEL_BUILD)","1")
 REDIRECT :=
@@ -15,26 +12,11 @@ REDIRECT := > /dev/null
 endif
 
 
-export PKG_CONFIG := $(BASEDIR)/pkg-config
-export PKG_CONFIG_DIR :=
-export PKG_CONFIG_LIBDIR := $(SYSROOT)/usr/lib/pkgconfig:$(SYSROOT)/usr/lib/arm-linux-gnueabihf/pkgconfig:$(SYSROOT)/usr/share/pkgconfig:$(SYSROOT)$(PREFIX)/lib/pkgconfig
-export PKG_CONFIG_SYSROOT_DIR := $(SYSROOT)
-
-export XDG_DATA_DIRS := $(SYSROOT)/usr/share:$(SYSROOT)$(PREFIX)/share
-
-ARCH_CFLAGS := -pipe -march=armv7-a -marm -mthumb-interwork -mfpu=neon-vfpv4 -mtune=cortex-a7 -mabi=aapcs-linux -mfloat-abi=hard
-
-# put dispmanx/EGL flags into the global state. https://bugzilla.gnome.org/show_bug.cgi?id=770987
-#export CPPFLAGS := -I$(SYSROOT)/opt/vc/include -I$(SYSROOT)/opt/vc/include/interface/vcos/pthreads -I$(SYSROOT)/opt/vc/include/interface/vmcs_host/linux
-#export LIBS := -L$(SYSROOT)/opt/vc/lib
+export XDG_DATA_DIRS := $(SYSROOT)/usr/share:$(SYSROOT)$(PREFIX)/share:$(SYSROOT)/opt/gst/share
+export PKG_CONFIG_LIBDIR := $(SYSROOT)/usr/lib/pkgconfig:$(SYSROOT)/usr/lib/arm-linux-gnueabihf/pkgconfig:$(SYSROOT)/usr/share/pkgconfig:$(SYSROOT)$(PREFIX)/lib/pkgconfig:$(SYSROOT)/opt/gst/lib/pkgconfig
 
 export CFLAGS := --sysroot=$(SYSROOT) $(ARCH_CFLAGS)
 export LDFLAGS := --sysroot=$(SYSROOT) -Wl,--unresolved-symbols=ignore-in-shared-libs
-
-# Set up Qemu for G-I
-export QEMU_LD_PREFIX := $(SYSROOT)
-export LD_LIBRARY_PATH := $(SYSROOT)/opt/vc/lib
-
 
 ## Configuration options:
 
@@ -56,13 +38,26 @@ INSTALL_OPTS := DESTDIR=$(STAGE)
 
 all: rygel.tar.gz
 
-$(REPOS):
-	git clone --depth 1 -b $(RYGELBRANCH) git://git.gnome.org/$@
-
 rygel.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
 
 	rm -rf --one-file-system $(STAGE)
+
+	cd gssdp && ./autogen.sh ${CROSS_OPTS} ${COMMON_OPTS} ${NODEBUG_OPTS} ${GI_OPTS}
+	$(MAKE) -C gssdp $(REDIRECT)
+	$(MAKE) -C gssdp $(INSTALL_OPTS) install $(REDIRECT)
+
+	cd gupnp && ./autogen.sh ${CROSS_OPTS} ${COMMON_OPTS} ${NODEBUG_OPTS} ${GI_OPTS}
+	$(MAKE) -C gupnp $(REDIRECT)
+	$(MAKE) -C gupnp $(INSTALL_OPTS) install $(REDIRECT)
+
+	cd gupnp-av && ./autogen.sh ${CROSS_OPTS} ${COMMON_OPTS} ${NODEBUG_OPTS} ${GI_OPTS}
+	$(MAKE) -C gupnp-av $(REDIRECT)
+	$(MAKE) -C gupnp-av $(INSTALL_OPTS) install $(REDIRECT)
+
+	cd gupnp-dlna && ./autogen.sh ${CROSS_OPTS} ${COMMON_OPTS} ${NODEBUG_OPTS} ${GI_OPTS}
+	$(MAKE) -C gupnp-dlna $(REDIRECT)
+	$(MAKE) -C gupnp-dlna $(INSTALL_OPTS) install $(REDIRECT)
 
 	cd rygel && ./autogen.sh ${CROSS_OPTS} ${COMMON_OPTS} ${NODEBUG_OPTS} --without-ui --disable-media-export-plugin --disable-tracker-plugin --disable-external-plugin --disable-ruih-plugin --disable-mpris-plugin --enable-apidocs=no
 	$(MAKE) -C rygel $(REDIRECT)
@@ -78,9 +73,6 @@ rygel.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 		--exclude=.$(PREFIX)/share/bash-completion -czf rygel.tar.gz .
 
 include ../../include/timestamp.mk
-
-pull: $(REPOS)
-	for repo in $(REPOS); do git -C $$repo pull; done
 
 clean:
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done

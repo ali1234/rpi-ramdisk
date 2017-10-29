@@ -37,3 +37,23 @@
 	path = packages/gstreamer/gst-plugins-ugly
 	url = git://anongit.freedesktop.org/git/gstreamer/gst-plugins-ugly
 	branch = 1.12
+[submodule "packages/rygel/gssdp"]
+	path = packages/rygel/gssdp
+	url = git://git.gnome.org/gssdp
+	branch = gssdp_1.0
+[submodule "packages/rygel/gupnp"]
+	path = packages/rygel/gupnp
+	url = git://git.gnome.org/gupnp
+	branch = gupnp-1.0
+[submodule "packages/rygel/gupnp-av"]
+	path = packages/rygel/gupnp-av
+	url = git://git.gnome.org/gupnp-av
+[submodule "packages/rygel/gupnp-dlna"]
+	path = packages/rygel/gupnp-dlna
+	url = git://git.gnome.org/gupnp-dlna
+[submodule "packages/rygel/gupnp-tools"]
+	path = packages/rygel/gupnp-tools
+	url = git://git.gnome.org/gupnp-tools
+[submodule "packages/rygel/rygel"]
+	path = packages/rygel/rygel
+	url = git://git.gnome.org/rygel

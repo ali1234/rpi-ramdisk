@@ -1,5 +1,0 @@
-#!/bin/bash
-
-pkg-config "$@" | sed -e "s|$SYSROOT$BASEDIR|$BASEDIR|g"
-
-exit ${PIPESTATUS[0]}
