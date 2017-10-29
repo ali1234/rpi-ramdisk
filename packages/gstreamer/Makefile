@@ -2,8 +2,6 @@ include ../toolchain.mk
 
 PREFIX := /opt/gst
 
-GSTBRANCH := 1.12
-
 REPOS := gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly
 
 ifeq ("$(VERBOSE_GST_BUILD)","1")
@@ -54,13 +52,8 @@ INSTALL_OPTS := DESTDIR=$(STAGE)
 
 all: gst.tar.gz
 
-$(REPOS):
-	git clone --depth 1 -b $(GSTBRANCH) git://anongit.freedesktop.org/git/gstreamer/$@
-
 gst.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
-
-	cp gst-bad-configure.ac gst-plugins-bad/configure.ac
 
 	rm -rf --one-file-system $(STAGE)
 
@@ -94,9 +87,6 @@ gst.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 		--exclude=.$(PREFIX)/share/bash-completion -czf gst.tar.gz .
 
 include ../../include/timestamp.mk
-
-pull: $(REPOS)
-	for repo in $(REPOS); do git -C $$repo pull; done
 
 clean:
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
