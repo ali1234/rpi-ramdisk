@@ -1,4 +1,5 @@
 include ../toolchain.mk
+include ../workarounds.mk
 
 PREFIX := /opt/gst
 
@@ -21,7 +22,6 @@ export LIBS := -L$(SYSROOT)/opt/vc/lib
 
 export CFLAGS := --sysroot=$(SYSROOT) $(ARCH_CFLAGS)
 export LDFLAGS := --sysroot=$(SYSROOT) -Wl,--unresolved-symbols=ignore-in-shared-libs
-
 
 ## Configuration options:
 
