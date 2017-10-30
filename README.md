@@ -38,19 +38,34 @@ Qemu >= 2.7 is needed for the getrandom() syscall. It is available in Ubuntu
 
   https://wiki.ubuntu.com/OpenStack/CloudArchive
 
-### Docker
 
-Check the `Dockerfile` and `build-docker` scripts which automate the entire
-build process.
+## Submodules
+
+This repository uses git submodules.
+
+### Cloning
+
+This repository uses git submodules. After cloning the repository run:
+
+    git submodule update --init
+
+To pull changes from upstream run:
+
+    git submodule update --remote
+
 
 ## Compiling
 
 Running `make` will build everything. Parallel make e.g. `make -j8` is
 supported and will greatly decrease the kernel build times.
 
-The kernel build output is redirected to `/dev/null` by default. To show it:
+The submodule build output is redirected to `/dev/null` by default. To show it
+for the kernel:
 
     make VERBOSE_KERNEL_BUILD=1
+
+You can also substitute "KERNEL" with "QT", "GSTREAMER", "RYGEL" etc for those
+packages.
 
 For faster kernel builds, ccache can be used. Install it first, then:
 
@@ -60,6 +75,11 @@ To speed up initrd building, you can use apt-cacher-ng. Install it, and then:
 
     export APT_HTTP_PROXY=http://localhost:3142
     make
+
+### Docker
+
+Check the `Dockerfile` and `build-docker` scripts which automate the entire
+build process.
 
 
 ## Booting
