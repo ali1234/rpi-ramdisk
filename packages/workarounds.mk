@@ -14,6 +14,7 @@ export PKG_CONFIG_SYSROOT_DIR := $(SYSROOT)
 export QEMU_LD_PREFIX := $(SYSROOT)
 export LD_LIBRARY_PATH := $(SYSROOT)/opt/vc/lib
 
-# g-ir-scanner ignores CFLAGS so we must put the sysroot into CC to
-# make sure it is used.
-export CC := arm-linux-gnueabihf-gcc --sysroot=$(SYSROOT)
+# tell g-ir-scanner about the sysroot.
+export CFLAGS := --sysroot=$(SYSROOT) $(ARCH_CFLAGS)
+export CPPFLAGS := --sysroot=$(SYSROOT)
+export LDFLAGS := --sysroot=$(SYSROOT) -Wl,--unresolved-symbols=ignore-in-shared-libs
