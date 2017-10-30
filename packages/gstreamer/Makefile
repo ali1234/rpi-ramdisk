@@ -1,11 +1,11 @@
 include ../toolchain.mk
 include ../workarounds.mk
 
-PREFIX := /opt/gst
+PREFIX := /opt/gstreamer
 
 REPOS := gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly
 
-ifeq ("$(VERBOSE_GST_BUILD)","1")
+ifeq ("$(VERBOSE_GSTREAMER_BUILD)","1")
 REDIRECT :=
 else
 REDIRECT := > /dev/null

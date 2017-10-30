@@ -12,8 +12,8 @@ REDIRECT := > /dev/null
 endif
 
 
-export XDG_DATA_DIRS := $(SYSROOT)/usr/share:$(SYSROOT)$(PREFIX)/share:$(SYSROOT)/opt/gst/share
-export PKG_CONFIG_LIBDIR := $(SYSROOT)/usr/lib/pkgconfig:$(SYSROOT)/usr/lib/arm-linux-gnueabihf/pkgconfig:$(SYSROOT)/usr/share/pkgconfig:$(SYSROOT)$(PREFIX)/lib/pkgconfig:$(SYSROOT)/opt/gst/lib/pkgconfig
+export XDG_DATA_DIRS := $(SYSROOT)/usr/share:$(SYSROOT)$(PREFIX)/share:$(SYSROOT)/opt/gstreamer/share
+export PKG_CONFIG_LIBDIR := $(SYSROOT)/usr/lib/pkgconfig:$(SYSROOT)/usr/lib/arm-linux-gnueabihf/pkgconfig:$(SYSROOT)/usr/share/pkgconfig:$(SYSROOT)$(PREFIX)/lib/pkgconfig:$(SYSROOT)/opt/gstreamer/lib/pkgconfig
 
 export CFLAGS := --sysroot=$(SYSROOT) $(ARCH_CFLAGS)
 export LDFLAGS := --sysroot=$(SYSROOT) -Wl,--unresolved-symbols=ignore-in-shared-libs

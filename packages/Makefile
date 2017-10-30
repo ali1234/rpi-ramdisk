@@ -1,4 +1,6 @@
-SUBDIRS := qt gstreamer
+SUBDIRS := qt gstreamer rygel
+
+rygel: gstreamer
 
 all: toolchain sysroot $(SUBDIRS)
 
@@ -12,7 +14,7 @@ sysroot: multistrap.conf
 	http_proxy=$APT_HTTP_PROXY /usr/sbin/multistrap -d sysroot/ -f multistrap.conf
 	./relativelinks.py sysroot/
 	# work around for libtool badness
-	cd sysroot/opt/ && ln -s ../../gstreamer/root/opt/gst gst
+	cd sysroot/opt && for dir in $(SUBDIRS); do ln -s ../../$$dir/root/opt/$$dir $$dir; done
 	touch sysroot
 
 $(SUBDIRS): toolchain sysroot
