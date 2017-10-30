@@ -57,7 +57,7 @@ rygel.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 
 	cd gupnp-dlna && ./autogen.sh ${CROSS_OPTS} ${COMMON_OPTS} ${NODEBUG_OPTS} ${GI_OPTS}
 	$(MAKE) -C gupnp-dlna $(REDIRECT)
-	$(MAKE) -C gupnp-dlna $(INSTALL_OPTS) install $(REDIRECT)
+	$(MAKE) -j1 -C gupnp-dlna $(INSTALL_OPTS) install $(REDIRECT)
 
 	cd rygel && ./autogen.sh ${CROSS_OPTS} ${COMMON_OPTS} ${NODEBUG_OPTS} --without-ui --disable-media-export-plugin --disable-tracker-plugin --disable-external-plugin --disable-ruih-plugin --disable-mpris-plugin --enable-apidocs=no
 	$(MAKE) -C rygel $(REDIRECT)
