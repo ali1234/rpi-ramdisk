@@ -47,9 +47,9 @@ OMX_OPTS := --with-omx-target=rpi --with-omx-header-path=${SYSROOT}/opt/vc/inclu
 INSTALL_OPTS := DESTDIR=$(STAGE)
 
 
-all: gst.tar.gz
+all: gstreamer.tar.gz
 
-gst.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
+gstreamer.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
 
 	rm -rf --one-file-system $(STAGE)
@@ -77,16 +77,16 @@ gst.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 #	cd opt/ && find -name '*.so' -exec chrpath -d {} \;
 
 	mkdir -p $(STAGE)/etc/ld.so.conf.d
-	echo $(PREFIX)/lib > $(STAGE)/etc/ld.so.conf.d/opt-gst.conf
+	echo $(PREFIX)/lib > $(STAGE)/etc/ld.so.conf.d/opt-gstreamer.conf
 
 	tar -C $(STAGE) --exclude=.$(PREFIX)/doc --exclude=.$(PREFIX)/include --exclude=*.la --exclude=.$(PREFIX)/lib/pkgconfig \
 		--exclude=.$(PREFIX)/share/man --exclude=.$(PREFIX)/share/locale --exclude=.$(PREFIX)/share/aclocal \
-		--exclude=.$(PREFIX)/share/bash-completion -czf gst.tar.gz .
+		--exclude=.$(PREFIX)/share/bash-completion -czf gstreamer.tar.gz .
 
 include ../../include/timestamp.mk
 
 clean:
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
-	rm -rf --one-file-system $(STAGE) *.timestamp gst.tar.gz
+	rm -rf --one-file-system $(STAGE) *.timestamp gstreamer.tar.gz
 
 .PHONY: clean
