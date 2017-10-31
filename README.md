@@ -41,10 +41,6 @@ Qemu >= 2.7 is needed for the getrandom() syscall. It is available in Ubuntu
 
 ## Submodules
 
-This repository uses git submodules.
-
-### Cloning
-
 This repository uses git submodules. After cloning the repository run:
 
     git submodule update --init
