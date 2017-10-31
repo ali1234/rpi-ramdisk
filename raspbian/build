@@ -65,6 +65,26 @@ ff02::2 ip6-allrouters
 ff02::3 ip6-allhosts
 EOF
 
+# The following profile fragment makes the terminal rows/cols
+# be correct when logging in over serial
+cat <<EOF > $ROOTDIR/etc/profile.d/resize.sh
+resize() {
+
+  old=\$(stty -g)
+  stty raw -echo min 0 time 5
+
+  printf '\033[18t' > /dev/tty
+  IFS=';t' read -r _ rows cols _ < /dev/tty
+
+  stty "\$old"
+
+  # echo "cols:\$cols"
+  # echo "rows:\$rows"
+  stty cols "\$cols" rows "\$rows"
+}
+
+[ \$(tty) = /dev/ttyAMA0 ] && resize
+EOF
 
 echo "Configuring wired network..."
 
