@@ -134,6 +134,7 @@ echo "Installing opt packages..."
 
 tar -xf ../packages/qt/qt.tar.gz -C $ROOTDIR
 tar -xf ../packages/gstreamer/gstreamer.tar.gz -C $ROOTDIR
+tar -xf ../packages/rygel/rygel.tar.gz -C $ROOTDIR
 
 $ROOTDIR/sbin/ldconfig -r $ROOTDIR
 
