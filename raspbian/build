@@ -12,7 +12,6 @@ rm $ROOTDIR/etc/apt/trusted.gpg.d/foundation-archive-keyring.gpg~
 
 http_proxy=$APT_HTTP_PROXY /usr/sbin/multistrap -d $ROOTDIR -f multistrap.conf
 
-cp /usr/bin/qemu-arm-static $ROOTDIR/usr/bin/
 export QEMU_LD_PREFIX=$(readlink -f $ROOTDIR)
 
 # If you want to use fakeroot/fakechroot for some reason,
