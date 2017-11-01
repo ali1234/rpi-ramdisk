@@ -9,7 +9,7 @@ RUN apt-get update -qy && apt-get -qy install \
  autoconf automake libtool pkg-config autopoint \
  bison flex libglib2.0-dev gobject-introspection \
  multistrap fakeroot fakechroot proot cpio \
- qemu-user-static binfmt-support
+ qemu-user-static binfmt-support makedev
 
 WORKDIR /rpi-ramdisk
 

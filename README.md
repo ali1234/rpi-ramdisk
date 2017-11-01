@@ -24,7 +24,7 @@ This dependency list may be incomplete. If so, please report a bug on github.
                      autoconf automake libtool pkg-config autopoint \
                      bison flex libglib2.0-dev gobject-introspection \
                      multistrap fakeroot fakechroot proot cpio \
-                     qemu-user-static binfmt-support
+                     qemu-user-static binfmt-support makedev
 
 Some build dependencies need to be fairly new:
 
