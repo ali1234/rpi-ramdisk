@@ -1,0 +1,12 @@
+[Unit]
+Description=QML Demo Scene
+After=network.target
+Wants=network.target
+
+[Service]
+Environment=QT_QPA_EVDEV_KEYBOARD_PARAMETERS=grab=1
+ExecStart=/opt/qt/bin/qmlscene /opt/qt/qmldemo.qml
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
