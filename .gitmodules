@@ -57,3 +57,6 @@
 [submodule "packages/rygel/rygel"]
 	path = packages/rygel/rygel
 	url = git://git.gnome.org/rygel
+[submodule "packages/pymtpd/pymtpd"]
+	path = packages/pymtpd/pymtpd
+	url = git://github.com/ali1234/pymtpd

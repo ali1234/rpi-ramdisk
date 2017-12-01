@@ -1,0 +1,12 @@
+[Unit]
+Description=MTP Responder
+After=network.target
+Wants=network.target
+
+[Service]
+Environment=PYTHONPATH=/opt/pymtpd/lib/python3.5/site-packages
+ExecStart=/opt/pymtpd/bin/pymtpd
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
