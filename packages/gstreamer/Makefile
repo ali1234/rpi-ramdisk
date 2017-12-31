@@ -56,23 +56,23 @@ gstreamer.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 
 	cd gstreamer && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(REDIRECT)
 	$(MAKE) -C gstreamer $(REDIRECT)
-	$(MAKE) -C gstreamer $(INSTALL_OPTS) install $(REDIRECT)
+	$(MAKE) -C gstreamer $(INSTALL_OPTS) install-strip $(REDIRECT)
 
 	cd gst-plugins-base && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(REDIRECT)
 	$(MAKE) -C gst-plugins-base $(REDIRECT)
-	$(MAKE) -C gst-plugins-base $(INSTALL_OPTS) install $(REDIRECT)
+	$(MAKE) -C gst-plugins-base $(INSTALL_OPTS) install-strip $(REDIRECT)
 
 	cd gst-plugins-good && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(REDIRECT)
 	$(MAKE) -C gst-plugins-good $(REDIRECT)
-	$(MAKE) -C gst-plugins-good $(INSTALL_OPTS) install $(REDIRECT)
+	$(MAKE) -C gst-plugins-good $(INSTALL_OPTS) install-strip $(REDIRECT)
 
 	cd gst-plugins-bad && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(DISPMANX_OPTS) $(REDIRECT)
 	$(MAKE) -C gst-plugins-bad $(REDIRECT)
-	$(MAKE) -C gst-plugins-bad $(INSTALL_OPTS) install $(REDIRECT)
+	$(MAKE) -C gst-plugins-bad $(INSTALL_OPTS) install-strip $(REDIRECT)
 
 	cd gst-plugins-ugly && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(REDIRECT)
 	$(MAKE) -C gst-plugins-ugly $(REDIRECT)
-	$(MAKE) -C gst-plugins-ugly $(INSTALL_OPTS) install $(REDIRECT)
+	$(MAKE) -C gst-plugins-ugly $(INSTALL_OPTS) install-strip $(REDIRECT)
 
 #	cd opt/ && find -name '*.so' -exec chrpath -d {} \;
 
