@@ -178,4 +178,4 @@ $MYCHROOT $ROOTDIR sh -c "cd / && find * -xdev -not \( \
               -path proc -prune \
               -path sys -prune \
               -path boot -prune \
-           \) | cpio --create -H newc" | gzip -9 > initrd
+           \) | cpio --create -H newc" | xz -C crc32 -9 > initrd
