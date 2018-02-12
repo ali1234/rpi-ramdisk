@@ -32,4 +32,7 @@ clean:
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
 	rm -rf --one-file-system $(STAGE) $(HOSTPREFIX) *.timestamp qt.tar.gz
 
-.PHONY: clean
+install: pymtpd.tar.gz
+	tar -xf pymtpd.tar.gz -C $(DESTDIR)
+
+.PHONY: clean install
