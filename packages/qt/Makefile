@@ -46,8 +46,12 @@ include ../../include/timestamp.mk
 pull:
 	git submodule update --remote .
 
+install: qt.tar.gz
+	tar -xf qt.tar.gz -C $(DESTDIR)
+	$(MYCHROOT) $(DESTDIR) /bin/systemctl reenable qmldemo.service
+
 clean:
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
 	rm -rf --one-file-system $(STAGE) $(HOSTPREFIX) *.timestamp qt.tar.gz
 
-.PHONY: clean
+.PHONY: clean install

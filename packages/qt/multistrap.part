@@ -1,0 +1,4 @@
+# dependencies for qt
+packages=libraspberrypi0 libpng12-0 libicu57 libglib2.0-0 libmtdev1 libts-0.0-0 libfontconfig1 libfreetype6 libssl1.0.2
+
+

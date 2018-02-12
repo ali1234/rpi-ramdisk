@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-ROOTDIR=root
+ROOTDIR=`readlink -f root`
 
 rm -rf --one-file-system $ROOTDIR
 
@@ -145,14 +145,9 @@ tar -xf ../kernel/kernel7-root.tar.gz -C $ROOTDIR
 
 echo "Installing opt packages..."
 
-tar -xf ../packages/qt/qt.tar.gz -C $ROOTDIR
-tar -xf ../packages/gstreamer/gstreamer.tar.gz -C $ROOTDIR
-tar -xf ../packages/rygel/rygel.tar.gz -C $ROOTDIR
+for PACKAGE in $PACKAGES; do make -C ../packages/$PACKAGE DESTDIR="$ROOTDIR" MYCHROOT="$MYCHROOT" install; done
 
 $ROOTDIR/sbin/ldconfig -r $ROOTDIR
-
-#$MYCHROOT $ROOTDIR /bin/systemctl reenable qmldemo.service
-
 
 echo "Cleaning up..."
 

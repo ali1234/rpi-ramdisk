@@ -85,8 +85,11 @@ gstreamer.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 
 include ../../include/timestamp.mk
 
+install: gstreamer.tar.gz
+	$(DESTDIR)/sbin/ldconfig -r $(DESTDIR)
+
 clean:
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
 	rm -rf --one-file-system $(STAGE) *.timestamp gstreamer.tar.gz
 
-.PHONY: clean
+.PHONY: clean install

@@ -71,8 +71,11 @@ rygel.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 
 include ../../include/timestamp.mk
 
+install: rygel.tar.gz
+	tar -xf rygel.tar.gz -C $(DESTDIR)
+
 clean:
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
 	rm -rf --one-file-system $(STAGE) *.timestamp rygel.tar.gz
 
-.PHONY: clean
+.PHONY: clean install

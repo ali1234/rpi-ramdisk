@@ -1,0 +1,17 @@
+[General]
+arch=armhf
+aptsources=
+bootstrap=Raspbian Foundation
+noauth=true
+omitrequired=true
+addimportant=false
+allowrecommends=false
+
+[Raspbian]
+source=http://mirrordirector.raspbian.org/raspbian
+suite=stretch
+
+[Foundation]
+source=http://archive.raspberrypi.org/debian
+suite=stretch
+packages=libraspberrypi-dev libraspberrypi0 libraspberrypi-bin

@@ -37,36 +37,18 @@ source=http://mirrordirector.raspbian.org/raspbian
 keyring=raspbian-archive-keyring
 suite=stretch
 
-# these packages are required for the image to even build
-packages=base-files base-passwd bash coreutils dash debianutils diffutils dpkg
-packages=findutils grep gzip init libc-bin login mount sed tar util-linux cpio
-packages=ncurses-base
-#packages=libfakeroot libfakechroot
-
-# customize the image here
-packages=systemd udev kmod apt net-tools wpasupplicant crda
-
-# dependencies for qt
-packages=libpng12-0 libicu57 libglib2.0-0 libmtdev1 libts-0.0-0 libfontconfig1 libfreetype6 libssl1.0.2
-
-# dependencies for gstreamer
-packages=liborc-0.4-0 libasound2 libmpg123-0 libvorbisenc2 libflac8 libjpeg62-turbo libxml2 libsoup2.4-1
-
-# dependencies for rygel
-packages=libgee-0.8-2 libtiff5 libgdk-pixbuf2.0-0 libmediaart-2.0-0
-
 [Foundation]
 source=http://archive.raspberrypi.org/debian
 keyring=raspberrypi-archive-keyring
 suite=stretch
-packages=libraspberrypi0 firmware-brcm80211
 
 
-# optional repositories. add them to "debootstrap" and "aptsources" in the [General]
-# section above if you want them.
+# Required packages
+packages=base-files base-passwd bash coreutils dash debianutils diffutils dpkg
+packages=findutils grep gzip init libc-bin login mount sed tar util-linux cpio
+packages=ncurses-base
 
-[Mono]
-source=http://download.mono-project.com/repo/debian
-suite=raspbianstretch
-sections=main
-packages=mono-runtime
+# Optional base packages
+packages=systemd udev kmod apt net-tools wpasupplicant crda
+packages=firmware-brcm80211
+
