@@ -15,10 +15,13 @@ boot-%.zip: kernel firmware %
 	tar -xf kernel/kernel7-boot.tar.gz -C boot-$*/
 	cd boot-$*/ && zip -qr ../$@ *
 
+%.config: configs/%.config
+	cp configs/$@ .config
+
 clean:
 	for dir in $(SUBDIRS); do $(MAKE) -C $$dir clean; done
 	rm -rf boot-*
 
-.PHONY: $(SUBDIRS) clean
+.PHONY: $(SUBDIRS) clean %.config
 
 .NOTPARALLEL:
