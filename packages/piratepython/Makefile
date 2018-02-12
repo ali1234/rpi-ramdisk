@@ -14,8 +14,12 @@ pymtpd.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 	rm -rf --one-file-system $(STAGE)
 
 	mkdir -p $(STAGE)/etc/systemd/system
+
 	cp piratepython.service $(STAGE)/etc/systemd/system/
 	cp pp-restart.service $(STAGE)/etc/systemd/system/
+
+	mkdir -p $(STAGE)/mtp
+	cp main.py $(STAGE)/mtp
 
 	tar -C $(STAGE) --exclude=.$(PREFIX)/doc --exclude=.$(PREFIX)/include -czf piratepython.tar.gz .
 

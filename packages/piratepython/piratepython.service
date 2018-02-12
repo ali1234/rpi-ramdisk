@@ -1,0 +1,11 @@
+[Unit]
+Description=PiratePython main.py
+After=network.target
+Wants=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /mtp/main.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
