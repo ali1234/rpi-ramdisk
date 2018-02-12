@@ -1,3 +1,4 @@
 /gcc*.tar.xz
 /toolchain
 /sysroot
+/sysroot.conf
