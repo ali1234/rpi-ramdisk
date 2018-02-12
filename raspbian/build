@@ -145,7 +145,10 @@ tar -xf ../kernel/kernel7-root.tar.gz -C $ROOTDIR
 
 echo "Installing opt packages..."
 
-for PACKAGE in $PACKAGES; do make -C ../packages/$PACKAGE DESTDIR="$ROOTDIR" MYCHROOT="$MYCHROOT" install; done
+for PACKAGE in $PACKAGES
+ do echo installing $PACKAGE ...
+    make -C ../packages/$PACKAGE DESTDIR="$ROOTDIR" MYCHROOT="$MYCHROOT" install
+done
 
 $ROOTDIR/sbin/ldconfig -r $ROOTDIR
 

@@ -12,7 +12,7 @@ endif
 
 all: pymtpd.tar.gz
 
-pymtpd.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
+pymtpd.tar.gz: pymtpd.service $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 	rm -rf --one-file-system $(STAGE)
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
 

@@ -5,7 +5,7 @@ Wants=network.target
 
 [Service]
 Environment=PYTHONPATH=/opt/pymtpd/lib/python3.5/site-packages
-ExecStart=/opt/pymtpd/bin/pymtpd
+ExecStart=/opt/pymtpd/bin/pymtpd -n PiratePython --udc 20980000.usb -s storage /mtp
 Restart=on-failure
 
 [Install]
