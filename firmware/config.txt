@@ -7,6 +7,9 @@ dtoverlay=i2c-rtc,ds3231
 # Internal Audio
 #dtparam=audio=on
 
+# USB Device
+dtoverlay=dwc2
+
 gpu_mem=64
 lcd_rotate=2
 
