@@ -1,5 +1,6 @@
 dtoverlay=pi3-disable-bt
 dtparam=i2c_arm=on
+dtparam=spi=on
 
 # RTC
 dtoverlay=i2c-rtc,ds3231
