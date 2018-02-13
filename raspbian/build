@@ -49,12 +49,12 @@ $MYCHROOT $ROOTDIR passwd -d root
 echo proc /proc proc defaults 0 0 > $ROOTDIR/etc/fstab
 
 # hostname
-echo $ROOTDIR > $ROOTDIR/etc/hostname
+echo $HOSTNAME > $ROOTDIR/etc/hostname
 
 # write /etc/hosts
 cat <<EOF > $ROOTDIR/etc/hosts
 127.0.0.1       localhost
-127.0.1.1       $ROOTDIR
+127.0.1.1       $HOSTNAME
 
 # The following lines are desirable for IPv6 capable hosts
 ::1     ip6-localhost ip6-loopback
