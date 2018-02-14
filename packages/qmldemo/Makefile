@@ -5,6 +5,7 @@ PREFIX := /opt/qt
 all: qmldemo.tar.gz
 
 qmldemo.tar.gz: qmldemo.service qmldemo.qml
+	rm -rf --one-file-system $(STAGE)
 	mkdir -p $(STAGE)/etc/systemd/system
 	mkdir -p $(STAGE)/opt/qt
 	cp qmldemo.service $(STAGE)/etc/systemd/system/
