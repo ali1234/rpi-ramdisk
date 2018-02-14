@@ -4,6 +4,8 @@ all: toolchain sysroot $(PACKAGES)
 
 rygel: gstreamer
 
+qmlrss: qt
+
 toolchain:
 	wget -N https://releases.linaro.org/components/toolchain/binaries/6.3-2017.05/arm-linux-gnueabihf/gcc-linaro-6.3.1-2017.05-x86_64_arm-linux-gnueabihf.tar.xz
 	tar -xf gcc-linaro-6.3.1-2017.05-x86_64_arm-linux-gnueabihf.tar.xz

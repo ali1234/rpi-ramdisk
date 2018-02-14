@@ -35,10 +35,6 @@ qt.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 	mkdir -p $(STAGE)/etc/ld.so.conf.d
 	echo $(PREFIX)/lib > $(STAGE)/etc/ld.so.conf.d/opt-qt.conf
 
-	mkdir -p $(STAGE)/etc/systemd/system
-	cp qmldemo.service $(STAGE)/etc/systemd/system/
-	cp qmldemo.qml $(STAGE)/opt/qt/
-
 	tar -C $(STAGE) --exclude=.$(PREFIX)/doc --exclude=.$(PREFIX)/include -czf qt.tar.gz .
 
 include ../../include/timestamp.mk
@@ -48,7 +44,6 @@ pull:
 
 install: qt.tar.gz
 	tar -xf qt.tar.gz -C $(DESTDIR)
-	$(MYCHROOT) $(DESTDIR) /bin/systemctl reenable qmldemo.service
 
 clean:
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
