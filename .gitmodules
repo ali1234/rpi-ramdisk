@@ -60,3 +60,6 @@
 [submodule "packages/pymtpd/pymtpd"]
 	path = packages/pymtpd/pymtpd
 	url = git://github.com/ali1234/pymtpd
+[submodule "packages/qmlrss/qmlrss"]
+	path = packages/qmlrss/qmlrss
+	url = git://github.com/ali1234/qmlrss
