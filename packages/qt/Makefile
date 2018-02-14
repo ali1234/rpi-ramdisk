@@ -13,7 +13,7 @@ endif
 
 all: qt.tar.gz
 
-qt.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
+qt.tar.gz: sysroot.part $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 	rm -rf --one-file-system $(STAGE) $(HOSTPREFIX)
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
 

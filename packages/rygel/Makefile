@@ -35,7 +35,7 @@ INSTALL_OPTS := DESTDIR=$(STAGE)
 
 all: rygel.tar.gz
 
-rygel.tar.gz: $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
+rygel.tar.gz: sysroot.part $(shell for repo in $(REPOS); do echo $$repo.timestamp; done )
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
 
 	rm -rf --one-file-system $(STAGE)
