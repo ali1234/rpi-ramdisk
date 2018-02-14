@@ -50,5 +50,5 @@ packages=ncurses-base
 
 # Optional base packages
 packages=systemd udev kmod apt net-tools wpasupplicant crda
-packages=firmware-brcm80211
+packages=firmware-brcm80211 ca-certificates openssl
 
