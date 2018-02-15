@@ -25,6 +25,6 @@ clean:
 	for dir in $(SUBDIRS); do $(MAKE) -C $$dir clean; done
 	rm -rf boot
 
-.PHONY: $(SUBDIRS) clean %.config
+.PHONY: $(SUBDIRS) clean %.config dnsmasq.conf
 
 .NOTPARALLEL:
