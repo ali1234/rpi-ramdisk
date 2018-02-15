@@ -1,4 +1,4 @@
-all: boot.zip
+all: boot.zip dnsmasq.conf
 
 SUBDIRS=kernel firmware packages raspbian
 
@@ -17,6 +17,9 @@ boot.zip: kernel firmware raspbian
 
 %.config: configs/%.config
 	cp configs/$@ .config
+
+dnsmasq.conf: dnsmasq.conf.in
+	sed -e 's|##bootdir##|$(shell readlink -f boot)|' dnsmasq.conf.in > dnsmasq.conf
 
 clean:
 	for dir in $(SUBDIRS); do $(MAKE) -C $$dir clean; done

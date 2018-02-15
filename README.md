@@ -1,10 +1,6 @@
 # RPi Ramdisk
 
-Builds two ramdisk environments for Raspberry Pi.
-
-- **raspbian** is a full featured system based on Raspbian, including `apt`.
-
-- **busybox-klibc** is a minimal tiny environment that is under 1MB.
+Builds a raspbian-based ramdisk environment for Raspberry Pi.
 
 The ramdisks are loaded fully into RAM at boot time, after which the SD card is
 not touched. This means the SD card is extremely unlikely to become corrupted.
@@ -48,7 +44,12 @@ This repository uses git submodules. After cloning the repository run:
 To pull changes from upstream run:
 
     git submodule update --remote
+    git commit ...
 
+You can also update individual repos manually:
+
+    cd <repo> && git fetch && git checkout origin/master && cd ..
+    git commit <repo>
 
 ## Compiling
 
@@ -80,12 +81,8 @@ build process.
 
 ## Booting
 
-The build produces a boot directory for each environment. For example
-`boot-raspbian/`. This directory contains everything needed to boot the
-respective environment on any model of Raspberry Pi.
-
-For each boot directory a boot zip is also created. For example
-`boot-raspbian.zip`. This is just a zipped version of the boot directory.
+The build produces a boot/ directory containing everything needed to boot.
+A boot.zip is also created. This is just a zipped copy of the boot directory.
 
 ### SD Card
 
@@ -105,10 +102,18 @@ boot directory to the mass storage device, plug it in, and turn on.
 
 ### TFTP Boot
 
-Copy `bootcode.bin` to the fat partition on your SD card. Edit `dnsmasq.conf`
-and change the tftpboot path to contain the absolute path to the boot directory
-and then run `sudo dnsmasq -C dnsmasq.conf`. Now put the SD card in the Pi and
-boot. Wired ethernet must be connected.
+Copy `bootcode.bin` to the fat partition on your SD card. Generate a dnsmasq
+configuration with the correct paths:
+
+    make dnsmasq.conf
+
+Now run dnsmasq:
+
+    sudo dnsmasq -C dnsmasq.conf
+
+Now put the SD card in the Pi and boot. Wired ethernet must be connected.
+You can leave dnsmasq running across rebuilds as the boot directory is
+not deleted and recreated.
 
 **Note**: TFTP booting is unreliable due to:
 
@@ -122,9 +127,9 @@ https://github.com/raspberrypi/usbboot
 
 Connect a Pi Zero or similar using a USB cable. Then run:
 
-    sudo rpiboot -d boot-busybox-klibc
+    sudo rpiboot -d boot
 
-**Note**: Raspbian image is too big to boot using this method, see:
+**Note**: Raspbian image may be too big to boot using this method, see:
 
 https://github.com/raspberrypi/usbboot/issues/14
 

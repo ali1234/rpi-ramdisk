@@ -1,2 +1,4 @@
-/boot-*
+/boot.zip
+/boot
 /.config
+/dnsmasq.conf
