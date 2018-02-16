@@ -18,9 +18,10 @@ qt.tar.gz: sysroot.part $(shell for repo in $(REPOS); do echo $$repo.timestamp; 
 	for repo in $(REPOS); do git -C $$repo clean -dfxq; done
 
 	cd qtbase && ./configure -release -opengl es2 -device linux-rasp-pi2-g++ \
-		-qpa eglfs -no-libinput -no-linuxfb -no-xcb -no-kms -no-gbm -no-gtk -no-widgets -no-compile-examples \
+		-qpa eglfs -no-libinput -no-linuxfb -no-xcb -no-kms -no-gbm \
+		-no-gtk -no-widgets -no-compile-examples -no-sql-tds -no-qml-debug \
 		-device-option CROSS_COMPILE=$(TOOLCHAIN) -sysroot $(SYSROOT) \
-		-opensource -confirm-license -make libs \
+		-opensource -confirm-license -make libs -strip -optimize-size \
 		-prefix $(PREFIX) -extprefix $(STAGE)/$(PREFIX) -hostprefix $(HOSTPREFIX) $(REDIRECT)
 
 	$(MAKE) -C qtbase $(REDIRECT)
@@ -35,7 +36,9 @@ qt.tar.gz: sysroot.part $(shell for repo in $(REPOS); do echo $$repo.timestamp; 
 	mkdir -p $(STAGE)/etc/ld.so.conf.d
 	echo $(PREFIX)/lib > $(STAGE)/etc/ld.so.conf.d/opt-qt.conf
 
-	tar -C $(STAGE) --exclude=.$(PREFIX)/doc --exclude=.$(PREFIX)/include -czf qt.tar.gz .
+	tar -C $(STAGE) --exclude=.$(PREFIX)/doc --exclude=.$(PREFIX)/include \
+		--exclude=.$(PREFIX)/lib/cmake --exclude=.$(PREFIX)/lib/pkgconfig \
+		-czf qt.tar.gz .
 
 include ../../include/timestamp.mk
 
