@@ -11,6 +11,9 @@ if [ -f /boot/settings.conf ]; then
   mkdir -p /etc/systemd/system.conf.d/
   cp /boot/settings.conf /etc/systemd/system.conf.d/10-settings.conf
 fi
+if [ -f /boot/wpa_supplicant.conf ]; then
+  cp /boot/wpa_supplicant.conf /etc/wpa_supplicant/
+fi
 umount /boot
 rm /dev/mmcblk0p1
 

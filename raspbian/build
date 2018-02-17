@@ -136,7 +136,7 @@ ExecStart=/sbin/wpa_supplicant -c/etc/wpa_supplicant/wpa_supplicant-%I.conf -Dnl
 Alias=multi-user.target.wants/wpa_supplicant@%i.service
 EOF
 
-#$MYCHROOT $ROOTDIR /bin/systemctl reenable wpa_supplicant@wlan0.service
+$MYCHROOT $ROOTDIR /bin/systemctl reenable wpa_supplicant@wlan0.service
 
 echo "Installing modules..."
 
