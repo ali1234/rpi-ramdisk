@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# load persistent configuration files from SD card before
+# launching systemd.
+
+# the settings will be exposed to all unit files.
+
+mknod /dev/mmcblk0p1 b 179 1
+mount -o ro /dev/mmcblk0p1 /boot
+if [ -f /boot/settings.conf ]; then
+  mkdir -p /etc/systemd/system.conf.d/
+  cp /boot/settings.conf /etc/systemd/system.conf.d/10-settings.conf
+fi
+umount /boot
+rm /dev/mmcblk0p1
+
+exec /sbin/init

@@ -162,7 +162,9 @@ $MYCHROOT $ROOTDIR udevadm hwdb --update --usr
 
 echo "Misc housekeeping..."
 
-ln -sf /sbin/init $ROOTDIR/init
+#ln -sf /sbin/init $ROOTDIR/init
+cp init $ROOTDIR/init
+chmod a+x $ROOTDIR/init
 ln -sf /proc/mounts $ROOTDIR/etc/mtab
 
 echo "Creating minimal device nodes..."
