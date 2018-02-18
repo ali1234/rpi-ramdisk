@@ -20,6 +20,7 @@ sysroot: sysroot.conf ../.config
 	http_proxy=$APT_HTTP_PROXY /usr/sbin/multistrap -d sysroot/ -f sysroot.conf
 	./relativelinks.py sysroot/
 	# work around for libtool badness
+	mkdir -p sysroot/opt
 	cd sysroot/opt && for dir in $(PACKAGES); do ln -s ../../$$dir/root/opt/$$dir $$dir; done
 	touch sysroot
 
