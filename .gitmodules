@@ -81,3 +81,6 @@
 	path = packages/qmlrss/qmlrss
 	url = git://github.com/ali1234/qmlrss
 	ignore = untracked
+[submodule "packages/apds9960d/apds9960d"]
+	path = packages/apds9960d/apds9960d
+	url = https://github.com/ali1234/apds9960d

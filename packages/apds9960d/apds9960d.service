@@ -1,0 +1,9 @@
+[Unit]
+Description=APDS9960 light and gesture sensor daemon.
+
+[Service]
+ExecStart=/opt/apds9960d/bin/apds9960d
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
