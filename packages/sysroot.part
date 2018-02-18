@@ -14,4 +14,4 @@ suite=stretch
 [Foundation]
 source=http://archive.raspberrypi.org/debian
 suite=stretch
-packages=libraspberrypi-dev libraspberrypi0 libraspberrypi-bin
+packages=build-essential
