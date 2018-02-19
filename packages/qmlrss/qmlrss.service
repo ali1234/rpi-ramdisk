@@ -1,7 +1,5 @@
 [Unit]
 Description=QML RSS Reader
-After=network.target
-Wants=network.target
 
 [Service]
 Environment=QT_QPA_EVDEV_KEYBOARD_PARAMETERS=grab=1
