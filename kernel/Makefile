@@ -35,13 +35,22 @@ kernel7: kernel7-boot.tar.gz kernel7-root.tar.gz
 
 include ../include/timestamp.mk
 
-updateconfig:
+oldconfig:
 	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) mrproper
 	cp kernel.config linux/.config
 	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) oldconfig
 	cp linux/.config kernel.config
 	cp kernel7.config linux/.config
 	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) oldconfig
+	cp linux/.config kernel7.config
+
+olddefconfig:
+	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) mrproper
+	cp kernel.config linux/.config
+	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) olddefconfig
+	cp linux/.config kernel.config
+	cp kernel7.config linux/.config
+	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) olddefconfig
 	cp linux/.config kernel7.config
 
 menuconfig:
