@@ -35,6 +35,13 @@ kernel7: kernel7-boot.tar.gz kernel7-root.tar.gz
 
 include ../include/timestamp.mk
 
+defconfig:
+	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) mrproper
+	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) bcmrpi_defconfig
+	cp linux/.config kernel.config
+	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) bcm2709_defconfig
+	cp linux/.config kernel7.config
+
 oldconfig:
 	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) mrproper
 	cp kernel.config linux/.config
