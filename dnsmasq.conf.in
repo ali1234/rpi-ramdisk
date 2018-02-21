@@ -4,5 +4,5 @@ dhcp-range=192.168.0.255,proxy
 log-dhcp
 enable-tftp
 tftp-root=##bootdir##
-pxe-service=0,"Raspberry Pi Boot"
-dhcp-reply-delay=1
+pxe-service=0,"Raspberry Pi Boot  "
+dhcp-reply-delay=2
