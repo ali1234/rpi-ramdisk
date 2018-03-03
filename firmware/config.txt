@@ -14,4 +14,6 @@ dtoverlay=dwc2
 gpu_mem=64
 lcd_rotate=2
 
+start_x=1
+
 initramfs initrd
