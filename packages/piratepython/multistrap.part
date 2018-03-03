@@ -1,5 +1,3 @@
-packages=inotify-tools
-
 # pi gpio libs
 
 packages=pigpio python3-pigpio python3-w3lib python3-serial python3-tweepy python3-spur

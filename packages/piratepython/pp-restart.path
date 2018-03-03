@@ -1,0 +1,5 @@
+[Path]
+PathChanged=/mtp/main.py
+
+[Install]
+WantedBy=multi-user.target

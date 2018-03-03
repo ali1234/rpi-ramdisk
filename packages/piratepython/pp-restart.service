@@ -1,9 +1,9 @@
 [Unit]
-Description=PiratePython Inotify
+Description=PiratePython Restarter
 
 [Service]
-ExecStart=/bin/sh -c "while inotifywait -e modify /mtp/main.py; sleep 2; do echo \"Restarting main.py\"; systemctl restart piratepython; done"
-Restart=on-success
+Type=oneshot
+ExecStart=/bin/systemctl restart piratepython
 
 [Install]
 WantedBy=multi-user.target
