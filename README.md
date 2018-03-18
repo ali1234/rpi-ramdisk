@@ -34,6 +34,24 @@ Qemu >= 2.7 is needed for the getrandom() syscall. It is available in Ubuntu
 
   https://wiki.ubuntu.com/OpenStack/CloudArchive
 
+## Keys
+
+Multistrap/apt needs public keys to verify the repositories. You must import
+the required keys into your local gpg keyring with the following commands:
+
+    gpg --recv-key 9165938D90FDDD2E # raspbian-archive-keyring
+    gpg --recv-key 82B129927FA3303E # raspberrypi-archive-keyring
+
+You should take necessary steps to ensure that you have authentic versions of
+these keys. Once received, rpi-ramdisk will export them as and when required.
+
+On Ubuntu 16.04 you will also need to import these keys into the host apt
+trusted keys with the following commands:
+
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 9165938D90FDDD2E
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E
+
+You may also need to do this on Ubuntu 16.10, 17.04, 17.10.
 
 ## Submodules
 

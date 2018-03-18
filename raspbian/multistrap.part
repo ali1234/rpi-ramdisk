@@ -9,11 +9,6 @@ allowrecommends=false
 # cleans up apt cache inside the image
 cleanup=true
 
-# still needed now that RPi Foundation repo has a keyring as it
-# prevents multistrap from trying to install the keyring package
-# into the host, which does not seem to work properly.
-noauth=true
-
 # extract all downloaded archives
 unpack=true
 
@@ -34,12 +29,10 @@ aptsources=Raspbian Foundation
 
 [Raspbian]
 source=http://mirrordirector.raspbian.org/raspbian
-keyring=raspbian-archive-keyring
 suite=stretch
 
 [Foundation]
 source=http://archive.raspberrypi.org/debian
-keyring=raspberrypi-archive-keyring
 suite=stretch
 
 
@@ -49,6 +42,6 @@ packages=findutils grep gzip init libc-bin login mount sed tar util-linux cpio
 packages=ncurses-base
 
 # Optional base packages
-packages=systemd udev kmod apt net-tools wpasupplicant crda
+packages=systemd udev kmod gpgv apt net-tools wpasupplicant crda
 packages=firmware-brcm80211 ca-certificates openssl
 

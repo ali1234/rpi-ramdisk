@@ -17,6 +17,9 @@ sysroot.conf: sysroot.part $(foreach DIR,$(PACKAGES),$(DIR)/sysroot.part)
 
 sysroot: sysroot.conf ../.config
 	rm -rf --one-file-system sysroot/
+	mkdir -p sysroot/etc/apt/trusted.gpg.d/
+	gpg --export 82B129927FA3303E > sysroot/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg
+	gpg --export 9165938D90FDDD2E > sysroot/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg
 	http_proxy=$APT_HTTP_PROXY /usr/sbin/multistrap -d sysroot/ -f sysroot.conf
 	./relativelinks.py sysroot/
 	# work around for libtool badness
