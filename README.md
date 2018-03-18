@@ -71,7 +71,11 @@ You can also update individual repos manually:
 
 ## Compiling
 
-Running `make` will build everything. Parallel make e.g. `make -j8` is
+Before compiling you need to select which image to build. The available configs
+are in the `configs/` subdirectory. A good one to start with is rssread.config.
+Select it by running `make rssreader.config` in the root of the repository.
+
+Running `make` will now build everything. Parallel make e.g. `make -j8` is
 supported and will greatly decrease the kernel build times.
 
 The submodule build output is redirected to `/dev/null` by default. To show it
