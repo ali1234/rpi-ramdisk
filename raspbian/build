@@ -15,7 +15,7 @@ export QEMU_LD_PREFIX=$(readlink -f $ROOTDIR)
 # If you want to use fakeroot/fakechroot for some reason,
 # you will need to install them in multistrap.conf.
 #MYCHROOT="fakechroot fakeroot chroot"
-MYCHROOT="proot -0 -q qemu-arm-static -w / -r"
+MYCHROOT="proot -0 -q qemu-arm -w / -r"
 
 echo "Running preinst scripts..."
 
