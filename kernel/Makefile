@@ -72,10 +72,6 @@ menuconfig7:
 	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) menuconfig
 	cp linux/.config kernel7.config
 
-updatesubmodules:
-	git submodule update --remote .
-	$(MAKE) updateconfig
-
 clean:
 	git -C linux clean -dfxq
 	rm -rf root/ boot/ kernel-boot.tar.gz kernel-root.tar.gz kernel7-boot.tar.gz kernel7-root.tar.gz *.timestamp
