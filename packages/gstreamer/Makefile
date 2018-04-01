@@ -37,7 +37,7 @@ NODEBUG_OPTS := --enable-gobject-cast-checks=no --enable-glib-asserts=no --disab
 # options common to base/good/bad/ugly
 PLUGIN_OPTS := --enable-orc --disable-x --disable-xvideo --disable-xshm --disable-wayland --disable-fbdev --disable-jack --disable-pulse --disable-cairo --disable-gdk_pixbuf --disable-festival --disable-flite --disable-fluidsynth
 
-# options for dispmanx in bad
+# options for dispmanx in base
 DISPMANX_OPTS := --disable-opengl --enable-gles2 --enable-egl --disable-glx --enable-dispmanx --with-gles2-module-name=/opt/vc/lib/libbrcmGLESv2.so --with-egl-module-name=/opt/vc/lib/libbrcmEGL.so
 
 # options for OMX
@@ -54,31 +54,31 @@ gstreamer.tar.gz: sysroot.part $(shell for repo in $(REPOS); do echo $$repo.time
 
 	rm -rf --one-file-system $(STAGE)
 
-	cd gstreamer && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(REDIRECT)
+	cd gstreamer && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) | tee ../gstreamer.config.log $(REDIRECT)
 	$(MAKE) -C gstreamer $(REDIRECT)
 	$(MAKE) -C gstreamer $(INSTALL_OPTS) install-strip $(REDIRECT)
 
-	cd gst-plugins-base && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(REDIRECT)
+	cd gst-plugins-base && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(DISPMANX_OPTS) | tee ../gst-plugins-base.config.log $(REDIRECT)
 	$(MAKE) -C gst-plugins-base $(REDIRECT)
 	$(MAKE) -C gst-plugins-base $(INSTALL_OPTS) install-strip $(REDIRECT)
 
-	cd gst-plugins-good && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(REDIRECT)
+	cd gst-plugins-good && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) | tee ../gst-plugins-good.config.log $(REDIRECT)
 	$(MAKE) -C gst-plugins-good $(REDIRECT)
 	$(MAKE) -C gst-plugins-good $(INSTALL_OPTS) install-strip $(REDIRECT)
 
-	cd gst-plugins-bad && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(DISPMANX_OPTS) $(REDIRECT)
+	cd gst-plugins-bad && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) | tee ../gst-plugins-bad.config.log $(REDIRECT)
 	$(MAKE) -C gst-plugins-bad $(REDIRECT)
 	$(MAKE) -C gst-plugins-bad $(INSTALL_OPTS) install-strip $(REDIRECT)
 
-	cd gst-plugins-ugly && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(REDIRECT)
+	cd gst-plugins-ugly && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) | tee ../gst-plugins-ugly.config.log $(REDIRECT)
 	$(MAKE) -C gst-plugins-ugly $(REDIRECT)
 	$(MAKE) -C gst-plugins-ugly $(INSTALL_OPTS) install-strip $(REDIRECT)
 
-	cd gst-libav && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(REDIRECT)
-	$(MAKE) -C gst-libav $(REDIRECT)
-	$(MAKE) -C gst-libav $(INSTALL_OPTS) install-strip $(REDIRECT)
+#	cd gst-libav && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) | tee ../gst-libav.config.log $(REDIRECT)
+#	$(MAKE) -C gst-libav $(REDIRECT)
+#	$(MAKE) -C gst-libav $(INSTALL_OPTS) install-strip $(REDIRECT)
 
-	cd gst-omx && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(OMX_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(REDIRECT)
+	cd gst-omx && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(OMX_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) | tee ../gst-omx.config.log $(REDIRECT)
 	$(MAKE) -C gst-omx $(REDIRECT)
 	$(MAKE) -C gst-omx $(INSTALL_OPTS) install-strip $(REDIRECT)
 
