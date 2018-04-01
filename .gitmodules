@@ -29,8 +29,8 @@
 	ignore = untracked
 [submodule "packages/gstreamer/gst-plugins-base"]
 	path = packages/gstreamer/gst-plugins-base
-	url = git://anongit.freedesktop.org/git/gstreamer/gst-plugins-base
-	branch = 1.14
+	url = https://github.com/ali1234/gst-plugins-base
+	branch = vcfix
 	ignore = untracked
 [submodule "packages/gstreamer/gst-plugins-good"]
 	path = packages/gstreamer/gst-plugins-good
