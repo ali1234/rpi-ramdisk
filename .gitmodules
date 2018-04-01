@@ -84,3 +84,9 @@
 [submodule "packages/apds9960d/apds9960d"]
 	path = packages/apds9960d/apds9960d
 	url = https://github.com/ali1234/apds9960d
+[submodule "packages/gstreamer/gst-libav"]
+	path = packages/gstreamer/gst-libav
+	url = git://anongit.freedesktop.org/gstreamer/gst-libav
+[submodule "packages/gstreamer/gst-omx"]
+	path = packages/gstreamer/gst-omx
+	url = git://anongit.freedesktop.org/gstreamer/gst-omx

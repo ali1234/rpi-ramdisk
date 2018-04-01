@@ -3,7 +3,7 @@ include ../workarounds.mk
 
 PREFIX := /opt/gstreamer
 
-REPOS := gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly
+REPOS := gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-omx
 
 ifeq ("$(VERBOSE_GSTREAMER_BUILD)","1")
 REDIRECT :=
@@ -73,6 +73,14 @@ gstreamer.tar.gz: sysroot.part $(shell for repo in $(REPOS); do echo $$repo.time
 	cd gst-plugins-ugly && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(REDIRECT)
 	$(MAKE) -C gst-plugins-ugly $(REDIRECT)
 	$(MAKE) -C gst-plugins-ugly $(INSTALL_OPTS) install-strip $(REDIRECT)
+
+	cd gst-libav && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(REDIRECT)
+	$(MAKE) -C gst-libav $(REDIRECT)
+	$(MAKE) -C gst-libav $(INSTALL_OPTS) install-strip $(REDIRECT)
+
+	cd gst-omx && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(OMX_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) $(REDIRECT)
+	$(MAKE) -C gst-omx $(REDIRECT)
+	$(MAKE) -C gst-omx $(INSTALL_OPTS) install-strip $(REDIRECT)
 
 #	cd opt/ && find -name '*.so' -exec chrpath -d {} \;
 

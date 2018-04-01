@@ -1,4 +1,19 @@
-# dependencies for gstreamer
-packages=libraspberrypi0 liborc-0.4-0 libasound2 libmpg123-0 libvorbisenc2 libflac8 libjpeg62-turbo libxml2 libsoup2.4-1
+## packages for gstreamer
 
+# core dependencies
+packages=liborc-0.4-0 libasound2 libxml2 libsoup2.4-1
+packages=libraspberrypi0
 
+## codec dependencies
+
+# container formats
+packages=libogg0
+# image formats
+packages=libjpeg62-turbo libpng12-0
+# audio formats
+packages=libmpg123-0 libopus0 libvorbisenc2 libflac8 liba52-0.7.4
+# video formats (software decoding)
+packages=libmpeg2-4 libtheora0
+
+# libav
+packages=libavcodec-dev libavfilter-dev libavformat-dev libavutil-dev
