@@ -1,3 +1,4 @@
 /root
 /gstreamer.tar.gz
 /*.timestamp
+/*.config.log
