@@ -66,7 +66,7 @@ gstreamer.tar.gz: sysroot.part $(shell for repo in $(REPOS); do echo $$repo.time
 	$(MAKE) -C gst-plugins-good $(REDIRECT)
 	$(MAKE) -C gst-plugins-good $(INSTALL_OPTS) install-strip $(REDIRECT)
 
-	cd gst-plugins-bad && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) | tee ../gst-plugins-bad.config.log $(REDIRECT)
+	cd gst-plugins-bad && ./autogen.sh $(CROSS_OPTS) $(COMMON_OPTS) $(NODEBUG_OPTS) $(GI_OPTS) $(PLUGIN_OPTS) --disable-gl | tee ../gst-plugins-bad.config.log $(REDIRECT)
 	$(MAKE) -C gst-plugins-bad $(REDIRECT)
 	$(MAKE) -C gst-plugins-bad $(INSTALL_OPTS) install-strip $(REDIRECT)
 
