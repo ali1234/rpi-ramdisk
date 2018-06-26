@@ -23,7 +23,7 @@ export LIBS := -L$(SYSROOT)/opt/vc/lib
 ## Configuration options:
 
 # cross compiler options
-CROSS_OPTS := --host=arm-linux-gnueabihf --build=x86_64-linux-gnu --prefix=$(PREFIX) --with-sysroot=$(SYSROOT)
+CROSS_OPTS := --host=arm-linux-gnueabihf --build=x86_64-linux-gnu --prefix=$(PREFIX) --with-sysroot=$(SYSROOT) --with-libgcrypt-prefix=$(SYSROOT)/usr
 
 # common options for every build
 COMMON_OPTS := --disable-dependency-tracking --disable-maintainer-mode --disable-fatal-warnings --disable-debug --disable-docbook --disable-gtk-doc --disable-gtk-doc-html --disable-gtk-doc-pdf --disable-examples --disable-benchmarks
