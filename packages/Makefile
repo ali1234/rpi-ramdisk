@@ -25,6 +25,13 @@ sysroot: sysroot.conf ../.config
 	# work around for libtool badness
 	mkdir -p sysroot/opt
 	cd sysroot/opt && for dir in $(PACKAGES); do ln -s ../../$$dir/root/opt/$$dir $$dir; done
+	# work around for the following bugs:
+	#  https://github.com/raspberrypi/firmware/issues/1013
+	#  https://bugreports.qt.io/browse/QTBUG-62216
+	#  https://bugreports.qt.io/browse/QTBUG-69176
+	# The workaround is simply to copy manually fixed pkgconfig files
+	# somewhere where the build will find them.
+	cp pkgconfig/* sysroot/usr/lib/pkgconfig/
 	touch sysroot
 
 $(PACKAGES): toolchain sysroot
