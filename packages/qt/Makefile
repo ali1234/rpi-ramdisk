@@ -19,7 +19,7 @@ qt.tar.gz: sysroot.part $(shell for repo in $(REPOS); do echo $$repo.timestamp; 
 
 	cd qtbase && ./configure -release -opengl es2 -device linux-rasp-pi2-g++ \
 		-qpa eglfs -no-libinput -no-linuxfb -no-xcb -no-kms -no-gbm \
-		-no-gtk -no-widgets -no-compile-examples -no-sql-tds -no-qml-debug \
+		-no-gtk -no-widgets -no-compile-examples -no-sql-tds \
 		-device-option CROSS_COMPILE=$(TOOLCHAIN) -sysroot $(SYSROOT) \
 		-opensource -confirm-license -make libs -strip -optimize-size \
 		-prefix $(PREFIX) -extprefix $(STAGE)/$(PREFIX) -hostprefix $(HOSTPREFIX) $(REDIRECT)
