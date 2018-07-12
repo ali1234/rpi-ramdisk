@@ -40,28 +40,10 @@ def relative_links(target, source, env):
             os.symlink(new_target, str(path))
 
 
-multistrap_conf = Value("""
-[General]
-arch=armhf
-aptsources=
-bootstrap=Raspbian Foundation
-omitrequired=true
-addimportant=false
-allowrecommends=false
+# sysroot setup
 
-[Raspbian]
-source=http://mirrordirector.raspbian.org/raspbian
-suite=stretch
-
-[Foundation]
-source=http://archive.raspberrypi.org/debian
-suite=stretch
-packages=build-essential
-
-{:s}
-""".format(' '.join(conf_for_package(p) for p in packages if p['enabled'])))
-
-multistrap_conf_file = env.Textfile('multistrap.conf', multistrap_conf)
+multistrap_conf = Value('{:s}'.format(' '.join(conf_for_package(p) for p in packages if p['enabled'])))
+multistrap_conf_file = env.Substfile('multistrap.conf', ['multistrap.in', multistrap_conf])
 sysroot_dir = Dir('sysroot/')
 
 sysroot = env.Command(sysroot_dir, multistrap_conf_file, [
@@ -71,6 +53,7 @@ sysroot = env.Command(sysroot_dir, multistrap_conf_file, [
     '/usr/sbin/multistrap -d $TARGET -f $SOURCE',
 ])
 env.AddPostAction(sysroot, relative_links)
+
 
 # toolchain setup
 
