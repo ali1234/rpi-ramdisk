@@ -1,48 +1,52 @@
 import pathlib
 import sh
 
-env = Environment(tools=[])
-env.Tool('tar')
 
 def repo_scan(dir):
     p = pathlib.Path(str(dir.abspath))
     yield from (str(p / f) for f in sh.git('-C', str(p), 'ls-files', '-mo', '--exclude-standard').split('\n')[:-1])
     yield sh.git('-C', str(p), 'rev-parse', '--absolute-git-dir').split('\n')[0]+'/logs/HEAD'
 
+
+env = Environment(tools=[])
 env['ENV']['ARCH'] = 'arm'
 env['ENV']['CROSS_COMPILE'] = '../tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-'
 
 
 kbld = Builder(action = [
 
-    'git -C ${REPO.abspath} clean -dfxq',
-    'cp ${SOURCES[0]} ${REPO.abspath}/.config',
-    'make -j8 -C ${REPO.abspath} zImage modules dtbs',
-    'make -j8 -C ${REPO.abspath} INSTALL_MOD_PATH=${TARGETS[0].abspath} modules_install',
-    'mkdir -p ${TARGETS[1]}/overlays/',
-    'cp ${REPO.abspath}/arch/arm/boot/zImage ${TARGETS[1]}/${KERNEL_NAME}.img',
-    'cp ${REPO.abspath}/arch/arm/boot/dts/*.dtb ${TARGETS[1]}',
-    'cp ${REPO.abspath}/arch/arm/boot/dts/overlays/*.dtb* ${TARGETS[1]}/overlays/',
-    'cp ${REPO.abspath}/arch/arm/boot/dts/overlays/README ${TARGETS[1]}/overlays/',
+    'git -C ${REPO} clean -dfxq',
+    'rm -rf --one-file-system ${TEMP_DIR}',
+
+    'cp ${SOURCES[0]} ${REPO}/.config',
+    'make -j8 -C ${REPO} zImage modules dtbs',
+
+    'mkdir -p ${TEMP_DIR}/root ${TEMP_DIR}/boot/overlays',
+    'make -j8 -C ${REPO} INSTALL_MOD_PATH=${TEMP_DIR.abspath}/root modules_install',
+
+    'cp ${REPO}/arch/arm/boot/zImage ${TEMP_DIR}/boot/${KERNEL_NAME}.img',
+    'cp ${REPO}/arch/arm/boot/dts/*.dtb ${TEMP_DIR}/boot/',
+    'cp ${REPO}/arch/arm/boot/dts/overlays/*.dtb* ${TEMP_DIR}/boot/overlays/',
+    'cp ${REPO}/arch/arm/boot/dts/overlays/README ${TEMP_DIR}/boot/overlays/',
+
+    'tar -C ${TEMP_DIR}/root/ -czf ${TARGETS[0]} .',
+    'tar -C ${TEMP_DIR}/boot/ -czf ${TARGETS[1]} .',
+
+    'rm -rf --one-file-system ${TEMP_DIR}',
 
 ])
 env['BUILDERS']['Kernel'] = kbld
-
-"""
-tar -C root/ -czf $*-root.tar.gz .
-tar -C boot/ -czf $*-boot.tar.gz .
-"""
 
 repo = Dir('linux/')
 repo_files = list(repo_scan(repo))
 
 # these should NOT run in parallel
 for kernel in ['kernel', 'kernel7']:
-    root = Dir(kernel + '-root')
-    boot = Dir(kernel + '-boot')
-    config = File(kernel + '.config')
 
-    env.Kernel([root, boot], [config, *repo_files], REPO=repo, KERNEL_NAME=kernel)
-    env.Tar(kernel+'-root', root)
-    env.Tar(kernel+'-boot', boot)
+    root_gz = File(kernel + '-root.tar.gz')
+    boot_gz = File(kernel + '-boot.tar.gz')
+    config = File(kernel + '.config')
+    temp_dir = Dir(kernel + '.tmp/')
+
+    env.Kernel([root_gz, boot_gz], [config, *repo_files], REPO=repo, KERNEL_NAME=kernel, TEMP_DIR=temp_dir)
 
