@@ -1,21 +1,24 @@
 import pathlib
 import sh
 
+env = Environment(tools=[])
+
 def repo_scan(dir):
     p = pathlib.Path(str(dir.abspath))
     yield from (str(p / f) for f in sh.git('-C', str(p), 'ls-files', '-mo', '--exclude-standard').split('\n')[:-1])
     yield sh.git('-C', str(p), 'rev-parse', '--absolute-git-dir').split('\n')[0]+'/logs/HEAD'
 
 repo = Dir('linux/')
-
 repo_files = list(repo_scan(repo))
+env['REPO_PATH'] = repo.abspath
 
 kbld = Builder(action = [
 
-    'git -C ' + str(repo.abspath) + ' clean -dfxq',
-    'cp $SOURCE ' + str(repo.abspath) + '/.config',
+    'git -C $REPO_PATH clean -dfxq',
+    'cp $SOURCE $REPO_PATH/.config',
 
 ])
+env['BUILDERS']['Kernel'] = kbld
 
 """
 rm -rf root/
@@ -32,7 +35,6 @@ tar -C root/ -czf $*-root.tar.gz .
 tar -C boot/ -czf $*-boot.tar.gz .
 """
 
-env = Environment(BUILDERS = {'Kernel': kbld})
 
-#env.Kernel(???, ['kernel.config', *repo_files])
-#env.Kernel(???, ['kernel7.config', *repo_files])
+env.Kernel([Dir('kernel-root/'), Dir('kernel-boot/')], ['kernel.config', *repo_files])
+env.Kernel([Dir('kernel7-root/'), Dir('kernel7-boot/')], ['kernel7.config', *repo_files])
