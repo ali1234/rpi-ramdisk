@@ -1,10 +1,9 @@
 import os
+import posixpath
 import pathlib
 
 env = Environment(tools=[])
 env.Tool('textfile')
-
-
 
 try:
     env['ENV']['http_proxy'] = os.environ['APT_HTTP_PROXY']
@@ -21,7 +20,7 @@ def conf_for_package(p):
     return """
     # packages for {:s}
     packages={:s}
-    """.format('unknown', ' '.join(p['sysroot_debs']))
+    """.format(p['name'], ' '.join(p['sysroot_debs']))
 
 
 def relative_links(target, source, env):
@@ -36,8 +35,9 @@ def relative_links(target, source, env):
             if link_target.startswith(str(root)):
                 continue
             path.unlink()
-            print(path, link_target, '->', path.relative_to(root))
-            os.symlink(str(path.relative_to(root)), str(path))
+            new_target = posixpath.relpath(root / link_target[1:], start=path.parent)
+            print(path, ':', link_target, '->', new_target)
+            os.symlink(new_target, str(path))
 
 
 multistrap_conf = Value("""
