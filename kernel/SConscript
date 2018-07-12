@@ -2,39 +2,47 @@ import pathlib
 import sh
 
 env = Environment(tools=[])
+env.Tool('tar')
 
 def repo_scan(dir):
     p = pathlib.Path(str(dir.abspath))
     yield from (str(p / f) for f in sh.git('-C', str(p), 'ls-files', '-mo', '--exclude-standard').split('\n')[:-1])
     yield sh.git('-C', str(p), 'rev-parse', '--absolute-git-dir').split('\n')[0]+'/logs/HEAD'
 
-repo = Dir('linux/')
-repo_files = list(repo_scan(repo))
-env['REPO_PATH'] = repo.abspath
+env['ENV']['ARCH'] = 'arm'
+env['ENV']['CROSS_COMPILE'] = '../tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-'
+
 
 kbld = Builder(action = [
 
-    'git -C $REPO_PATH clean -dfxq',
-    'cp $SOURCE $REPO_PATH/.config',
+    'git -C ${REPO.abspath} clean -dfxq',
+    'cp ${SOURCES[0]} ${REPO.abspath}/.config',
+    'make -j8 -C ${REPO.abspath} zImage modules dtbs',
+    'make -j8 -C ${REPO.abspath} INSTALL_MOD_PATH=${TARGETS[0].abspath} modules_install',
+    'mkdir -p ${TARGETS[1]}/overlays/',
+    'cp ${REPO.abspath}/arch/arm/boot/zImage ${TARGETS[1]}/${KERNEL_NAME}.img',
+    'cp ${REPO.abspath}/arch/arm/boot/dts/*.dtb ${TARGETS[1]}',
+    'cp ${REPO.abspath}/arch/arm/boot/dts/overlays/*.dtb* ${TARGETS[1]}/overlays/',
+    'cp ${REPO.abspath}/arch/arm/boot/dts/overlays/README ${TARGETS[1]}/overlays/',
 
 ])
 env['BUILDERS']['Kernel'] = kbld
 
 """
-rm -rf root/
-rm -rf boot/
-mkdir -p boot/overlays/
-cp $*.config linux/.config
-$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) zImage modules dtbs $(REDIRECT)
-$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) INSTALL_MOD_PATH=../root modules_install $(REDIRECT)
-cp linux/arch/arm/boot/zImage boot/$*.img
-cp linux/arch/arm/boot/dts/*.dtb boot/
-cp linux/arch/arm/boot/dts/overlays/*.dtb* boot/overlays/
-cp linux/arch/arm/boot/dts/overlays/README boot/overlays/
 tar -C root/ -czf $*-root.tar.gz .
 tar -C boot/ -czf $*-boot.tar.gz .
 """
 
+repo = Dir('linux/')
+repo_files = list(repo_scan(repo))
 
-env.Kernel([Dir('kernel-root/'), Dir('kernel-boot/')], ['kernel.config', *repo_files])
-env.Kernel([Dir('kernel7-root/'), Dir('kernel7-boot/')], ['kernel7.config', *repo_files])
+# these should NOT run in parallel
+for kernel in ['kernel', 'kernel7']:
+    root = Dir(kernel + '-root')
+    boot = Dir(kernel + '-boot')
+    config = File(kernel + '.config')
+
+    env.Kernel([root, boot], [config, *repo_files], REPO=repo, KERNEL_NAME=kernel)
+    env.Tar(kernel+'-root', root)
+    env.Tar(kernel+'-boot', boot)
+
