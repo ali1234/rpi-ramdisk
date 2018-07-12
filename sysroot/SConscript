@@ -1,3 +1,16 @@
+import os
+import pathlib
+
+env = Environment(tools=[])
+env.Tool('textfile')
+
+
+
+try:
+    env['ENV']['http_proxy'] = os.environ['APT_HTTP_PROXY']
+except KeyError:
+    print("Don't forget to set up apt-cacher-ng")
+
 packages = []
 
 for p in Glob('../packages/*/SConscript'):
@@ -11,65 +24,62 @@ def conf_for_package(p):
     """.format('unknown', ' '.join(p['sysroot_debs']))
 
 
-def relative_links(root):
-    root = pathlib.Path(root).resolve()
+def relative_links(target, source, env):
 
-    for path in pathlib.Path(root).rglob('**'):
+    root = pathlib.Path(str(target[0].abspath))
+
+    for path in pathlib.Path(root).rglob('*'):
         if path.is_symlink():
-            target = os.readlink(str(path))
-            if target[0] != '/':
+            link_target = os.readlink(str(path))
+            if link_target[0] != '/':
                 continue
-            if target.startswith(str(root)):
+            if link_target.startswith(str(root)):
                 continue
             path.unlink()
+            print(path, link_target, '->', path.relative_to(root))
             os.symlink(str(path.relative_to(root)), str(path))
 
 
-env = Environment(tools=[])
-env.Tool('textfile')
-
 multistrap_conf = Value("""
-    [General]
-    arch=armhf
-    aptsources=
-    bootstrap=Raspbian Foundation
-    omitrequired=true
-    addimportant=false
-    allowrecommends=false
+[General]
+arch=armhf
+aptsources=
+bootstrap=Raspbian Foundation
+omitrequired=true
+addimportant=false
+allowrecommends=false
 
-    [Raspbian]
-    source=http://mirrordirector.raspbian.org/raspbian
-    suite=stretch
+[Raspbian]
+source=http://mirrordirector.raspbian.org/raspbian
+suite=stretch
 
-    [Foundation]
-    source=http://archive.raspberrypi.org/debian
-    suite=stretch
-    packages=build-essential
+[Foundation]
+source=http://archive.raspberrypi.org/debian
+suite=stretch
+packages=build-essential
 
-    {:s}
-    """.format(' '.join(conf_for_package(p) for p in packages if p['enabled'])))
+{:s}
+""".format(' '.join(conf_for_package(p) for p in packages if p['enabled'])))
 
 multistrap_conf_file = env.Textfile('multistrap.conf', multistrap_conf)
+sysroot_dir = Dir('sysroot/')
 
-toolchain = Dir('toolchain/')
-sysroot = Dir('sysroot/')
-
-Command(sysroot, multistrap_conf_file, [
+sysroot = env.Command(sysroot_dir, multistrap_conf_file, [
     'mkdir -p $TARGET/etc/apt/trusted.gpg.d/',
     'gpg --export 82B129927FA3303E > $TARGET/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
     'gpg --export 9165938D90FDDD2E > $TARGET/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
     '/usr/sbin/multistrap -d $TARGET -f $SOURCE',
-    # TODO: call relative_links on $TARGET
 ])
+env.AddPostAction(sysroot, relative_links)
 
-toolchain = Dir('toolchain/')
+# toolchain setup
+
+toolchain_dir = Dir('toolchain/')
 toolchain_tarball = File('gcc-linaro-6.3.1-2017.05-x86_64_arm-linux-gnueabihf.tar.xz')
+toolchain_url = Value('https://releases.linaro.org/components/toolchain/binaries/6.3-2017.05/arm-linux-gnueabihf/gcc-linaro-6.3.1-2017.05-x86_64_arm-linux-gnueabihf.tar.xz')
 
-Command(toolchain_tarball, None, [
-    'wget -N -O $TARGET https://releases.linaro.org/components/toolchain/binaries/6.3-2017.05/arm-linux-gnueabihf/gcc-linaro-6.3.1-2017.05-x86_64_arm-linux-gnueabihf.tar.xz'
-])
-
-Command(toolchain, toolchain_tarball, [
+env.Command(toolchain_tarball, toolchain_url, 'wget -N -O $TARGET $SOURCE')
+env.Command(toolchain_dir, toolchain_tarball, [
     'mkdir -p $TARGET',
     'tar -C $TARGET --strip-components=1 -xf $SOURCE',
 ])

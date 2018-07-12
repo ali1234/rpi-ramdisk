@@ -15,25 +15,24 @@ kbld = Builder(action = [
     'git -C ' + str(repo.abspath) + ' clean -dfxq',
     'cp $SOURCE ' + str(repo.abspath) + '/.config',
 
-
-    """
-	rm -rf root/
-	rm -rf boot/
-	mkdir -p boot/overlays/
-	cp $*.config linux/.config
-	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) zImage modules dtbs $(REDIRECT)
-	$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) INSTALL_MOD_PATH=../root modules_install $(REDIRECT)
-	cp linux/arch/arm/boot/zImage boot/$*.img
-	cp linux/arch/arm/boot/dts/*.dtb boot/
-	cp linux/arch/arm/boot/dts/overlays/*.dtb* boot/overlays/
-	cp linux/arch/arm/boot/dts/overlays/README boot/overlays/
-	tar -C root/ -czf $*-root.tar.gz .
-	tar -C boot/ -czf $*-boot.tar.gz .
-	"""
-
 ])
+
+"""
+rm -rf root/
+rm -rf boot/
+mkdir -p boot/overlays/
+cp $*.config linux/.config
+$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) zImage modules dtbs $(REDIRECT)
+$(MAKE) -C linux ARCH=arm $(CROSS_OPTS) INSTALL_MOD_PATH=../root modules_install $(REDIRECT)
+cp linux/arch/arm/boot/zImage boot/$*.img
+cp linux/arch/arm/boot/dts/*.dtb boot/
+cp linux/arch/arm/boot/dts/overlays/*.dtb* boot/overlays/
+cp linux/arch/arm/boot/dts/overlays/README boot/overlays/
+tar -C root/ -czf $*-root.tar.gz .
+tar -C boot/ -czf $*-boot.tar.gz .
+"""
 
 env = Environment(BUILDERS = {'Kernel': kbld})
 
-env.Kernel(???, ['kernel.config', *repo_files])
-env.Kernel(???, ['kernel7.config', *repo_files])
+#env.Kernel(???, ['kernel.config', *repo_files])
+#env.Kernel(???, ['kernel7.config', *repo_files])
