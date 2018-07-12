@@ -3,6 +3,7 @@ packages = []
 for p in Glob('../packages/*/SConscript'):
     packages.append(SConscript(p))
 
+
 def conf_for_package(p):
     return """
     # packages for {:s}
@@ -11,7 +12,6 @@ def conf_for_package(p):
 
 
 def relative_links(root):
-
     root = pathlib.Path(root).resolve()
 
     for path in pathlib.Path(root).rglob('**'):
@@ -57,7 +57,7 @@ sysroot = Dir('sysroot/')
 Command(sysroot, multistrap_conf_file, [
     'mkdir -p $TARGET/etc/apt/trusted.gpg.d/',
     'gpg --export 82B129927FA3303E > $TARGET/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
-	'gpg --export 9165938D90FDDD2E > $TARGET/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
+    'gpg --export 9165938D90FDDD2E > $TARGET/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
     '/usr/sbin/multistrap -d $TARGET -f $SOURCE',
     # TODO: call relative_links on $TARGET
 ])
