@@ -1,20 +1,25 @@
+env = Environment(tools=[])
+
 sysroot = Dir('../sysroot/sysroot')
 toolchain = Dir('../sysroot/toolchain')
 
-env = Environment(tools=[])
-env.PrependENVPath('PATH', toolchain.abspath + '/bin')
 env['SYSROOT'] = sysroot
 env['CROSS_COMPILE'] = toolchain.abspath + '/bin/arm-linux-gnueabihf-'
+
+env.PrependENVPath('PATH', toolchain.abspath + '/bin')
 env['ENV']['SYSROOT'] = sysroot.abspath
 
-
 packages = {}
-for p in Glob('*/SConscript'):
-    packages[str(p).split('/')[0]] = SConscript(p, 'env')
+for p in ['qt']:
+    packages[p] = SConscript(p + '/SConscript', 'env')
 
 SConscript('../sysroot/SConscript', 'packages')
 
 Return('packages')
+
+
+
+
 
 ######### leftover stuff from old Makefile #########
 

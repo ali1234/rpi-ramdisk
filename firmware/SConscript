@@ -8,10 +8,11 @@ except KeyError:
     print("Don't forget to set up apt-cacher-ng")
 
 env.Command('firmware.tar.gz', ['multistrap.conf', 'cmdline.txt', 'config.txt'], [
-    'rm -rf --one-file-system ${SYSROOT_DIR}',
-    'mkdir -p ${SYSROOT_DIR}/etc/apt/trusted.gpg.d/',
 
-	'gpg --export 82B129927FA3303E > ${SYSROOT_DIR}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
+    'rm -rf --one-file-system ${SYSROOT_DIR}',
+
+    'mkdir -p ${SYSROOT_DIR}/etc/apt/trusted.gpg.d/',
+    'gpg --export 82B129927FA3303E > ${SYSROOT_DIR}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
     '/usr/sbin/multistrap -d ${SYSROOT_DIR} -f ${SOURCES[0]}',
 
     'cp ${SOURCES[1:]} ${SYSROOT_DIR}/boot/',

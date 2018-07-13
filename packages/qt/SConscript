@@ -1,3 +1,5 @@
+Import('env')
+
 package = {
 
     'sysroot_debs': [
@@ -12,21 +14,20 @@ package = {
         'libfreetype6', 'libssl1.0.2', 'libjpeg62-turbo',
     ],
 
-    'target': File('qt.tar.gz')
-}
+    'target': File('qt.tar.gz'),
 
-Import('env')
+}
 
 qt_host = Dir('qt-host')
 prefix = '/opt/qt'
 stage = Dir('stage/')
 
-repos = [Dir('qtbase/'), Dir('qtxmlpatterns'), Dir('qtdeclarative')]
+repos = [Dir(d) for d in ['qtbase/', 'qtxmlpatterns/', 'qtdeclarative/']]
 
 env['QT_HOST'] = qt_host
 
 # TODO: depend on repo_files
-env.Command([package['target']], [env['SYSROOT']], [
+env.Command([package['target']], ['${SYSROOT}'], [
 
     'rm -rf --one-file-system ${STAGE} ${QT_HOST}',
     'for repo in ${REPOS}; do git -C $$repo clean -dfxq; done',
