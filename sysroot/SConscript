@@ -41,7 +41,7 @@ wrapper = textwrap.TextWrapper(
 all_sysroot_debs = sorted(set.union(*(set(v['sysroot_debs']) for v in packages.values())))
 
 multistrap_conf = Value(wrapper.fill(' '.join(all_sysroot_debs)))
-multistrap_conf_file = env.Substfile('multistrap.conf', ['multistrap.in', multistrap_conf, Value('')])
+multistrap_conf_file = env.Substfile('multistrap.conf', ['multistrap.conf.in', multistrap_conf, Value('')])
 sysroot_dir = Dir('sysroot/')
 sysroot_overlay = Dir('overlay/')
 

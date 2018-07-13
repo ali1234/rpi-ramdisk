@@ -1,0 +1,18 @@
+[General]
+arch=armhf
+aptsources=
+bootstrap=Raspbian Foundation
+omitrequired=true
+addimportant=false
+allowrecommends=false
+
+[Raspbian]
+source=http://mirrordirector.raspbian.org/raspbian
+suite=stretch
+
+[Foundation]
+source=http://archive.raspberrypi.org/debian
+suite=stretch
+packages=build-essential
+
+# Automatic debs for enabled packages follow
