@@ -7,9 +7,7 @@ package = {
     'target': File('qmldemo.tar.gz'),
 }
 
-stage = Dir('stage/')
 
-# TODO: depend on repo_files
 env.Command([package['target']], ['qmldemo.service', 'qmldemo.qml'], [
 
     'rm -rf --one-file-system ${STAGE}',
@@ -21,7 +19,7 @@ env.Command([package['target']], ['qmldemo.service', 'qmldemo.qml'], [
 
     'tar -C ${STAGE} -czf ${TARGETS[0]} .',
 
-], STAGE=stage)
+], STAGE=Dir('stage/'))
 
 Return('package')
 
