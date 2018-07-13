@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 env = Environment(tools=[])
 
 sysroot = Dir('../sysroot/sysroot')
@@ -10,17 +12,19 @@ env.PrependENVPath('PATH', toolchain.abspath + '/bin')
 env['ENV']['SYSROOT'] = sysroot.abspath
 
 
-def package_walk(p, result):
-    if p in result:
+def package_walk(name, result, seen):
+    if name in seen:
         return
-    print(p)
-    result[p] = SConscript(p + '/SConscript', 'env')
-    for r in result[p]['requires']:
-        package_walk(r, result)
+    seen.add(name)
+    p = SConscript(name + '/SConscript', 'env')
+    for r in p['requires']:
+        package_walk(r, result, seen)
+    result[name] = p
 
-packages = {}
+packages = OrderedDict()
 for p in ['qmldemo']:
-    package_walk(p, packages)
+    package_walk(p, packages, set())
+print('Enabled packages:', ', '.join(packages.keys()))
 
 
 SConscript('../sysroot/SConscript', 'packages')
