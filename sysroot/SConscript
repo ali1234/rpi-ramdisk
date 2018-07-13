@@ -1,6 +1,7 @@
 import os
 import posixpath
 import pathlib
+import textwrap
 
 env = Environment(tools=[])
 env.Tool('textfile')
@@ -31,10 +32,16 @@ def relative_links(target, source, env):
 # sysroot setup
 Import('packages')
 
+wrapper = textwrap.TextWrapper(
+    break_long_words=False, break_on_hyphens=False,
+    initial_indent='packages=', subsequent_indent='packages=',
+    width=120,
+)
+
 all_sysroot_debs = sorted(set.union(*(set(v['sysroot_debs']) for v in packages.values())))
 
-multistrap_conf = Value('packages={:s}'.format(' '.join(all_sysroot_debs)))
-multistrap_conf_file = env.Substfile('multistrap.conf', ['multistrap.in', multistrap_conf])
+multistrap_conf = Value(wrapper.fill(' '.join(all_sysroot_debs)))
+multistrap_conf_file = env.Substfile('multistrap.conf', ['multistrap.in', multistrap_conf, Value('')])
 sysroot_dir = Dir('sysroot/')
 sysroot_overlay = Dir('overlay/')
 
