@@ -2,6 +2,8 @@ Import('env')
 
 package = {
 
+    'requires': [],
+
     'sysroot_debs': [
         'libfontconfig1-dev', 'libmtdev-dev', 'libudev-dev', 'libts-dev', 'flex', 'freetds-dev',
         'libasound2-dev', 'libaudio-dev', 'libdbus-1-dev', 'libfreetype6-dev', 'libglib2.0-dev',
@@ -60,3 +62,5 @@ env.Command([package['target']], ['${SYSROOT}'], [
 ], REPOS=repos, PREFIX=prefix, STAGE=stage)
 
 Return('package')
+
+# Note: Install action for this package is just unpack the tarball.

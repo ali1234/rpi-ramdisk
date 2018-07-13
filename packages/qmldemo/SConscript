@@ -1,0 +1,34 @@
+Import('env')
+
+package = {
+    'requires': ['qt'],
+    'sysroot_debs': [],
+    'root_debs': [],
+    'target': File('qmldemo.tar.gz'),
+}
+
+stage = Dir('stage/')
+
+# TODO: depend on repo_files
+env.Command([package['target']], ['qmldemo.service', 'qmldemo.qml'], [
+
+    'rm -rf --one-file-system ${STAGE}',
+
+    'mkdir -p ${STAGE}/etc/systemd/system',
+    'mkdir -p ${STAGE}/opt/qt',
+    'cp ${SOURCES[0]} ${STAGE}/etc/systemd/system/',
+    'cp ${SOURCES[1]} ${STAGE}/opt/qt/',
+
+    'tar -C ${STAGE} -czf ${TARGETS[0]} .',
+
+], STAGE=stage)
+
+Return('package')
+
+
+######
+
+install = """
+	tar -xf qmldemo.tar.gz -C $(DESTDIR)
+	$(MYCHROOT) $(DESTDIR) /bin/systemctl reenable qmldemo.service
+"""

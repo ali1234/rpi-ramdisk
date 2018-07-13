@@ -9,9 +9,19 @@ env['CROSS_COMPILE'] = toolchain.abspath + '/bin/arm-linux-gnueabihf-'
 env.PrependENVPath('PATH', toolchain.abspath + '/bin')
 env['ENV']['SYSROOT'] = sysroot.abspath
 
+
+def package_walk(p, result):
+    if p in result:
+        return
+    print(p)
+    result[p] = SConscript(p + '/SConscript', 'env')
+    for r in result[p]['requires']:
+        package_walk(r, result)
+
 packages = {}
-for p in ['qt']:
-    packages[p] = SConscript(p + '/SConscript', 'env')
+for p in ['qmldemo']:
+    package_walk(p, packages)
+
 
 SConscript('../sysroot/SConscript', 'packages')
 
