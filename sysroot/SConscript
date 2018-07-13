@@ -11,12 +11,6 @@ except KeyError:
     print("Don't forget to set up apt-cacher-ng")
 
 
-def conf_for_package(name, data):
-    return '# packages for {:s}\npackages={:s}\n'.format(
-        name, ' '.join(data['sysroot_debs'])
-    )
-
-
 def relative_links(target, source, env):
 
     root = pathlib.Path(str(target[0].abspath))
@@ -37,7 +31,9 @@ def relative_links(target, source, env):
 # sysroot setup
 Import('packages')
 
-multistrap_conf = Value('\n'.join(conf_for_package(k, v) for k, v in packages.items()))
+all_sysroot_debs = sorted(set.union(*(set(v['sysroot_debs']) for v in packages.values())))
+
+multistrap_conf = Value('packages={:s}'.format(' '.join(all_sysroot_debs)))
 multistrap_conf_file = env.Substfile('multistrap.conf', ['multistrap.in', multistrap_conf])
 sysroot_dir = Dir('sysroot/')
 sysroot_overlay = Dir('overlay/')
