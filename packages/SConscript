@@ -1,3 +1,28 @@
+sysroot = Dir('../sysroot/sysroot')
+toolchain = Dir('../sysroot/toolchain')
+
+env = Environment(tools=[])
+env.PrependENVPath('PATH', toolchain.abspath + '/bin')
+env['SYSROOT'] = sysroot
+env['CROSS_COMPILE'] = toolchain.abspath + '/bin/arm-linux-gnueabihf-'
+env['ENV']['SYSROOT'] = sysroot.abspath
+
+
+packages = {}
+for p in Glob('*/SConscript'):
+    packages[str(p).split('/')[0]] = SConscript(p, 'env')
+
+SConscript('../sysroot/SConscript', 'packages')
+
+Return('packages')
+
+######### leftover stuff from old Makefile #########
+
+toolchain_mk = """
+ARCH_CFLAGS := -pipe -march=armv7-a -marm -mthumb-interwork -mfpu=neon-vfpv4 -mtune=cortex-a7 -mabi=aapcs-linux -mfloat-abi=hard
+"""
+
+workarounds_mk = """
 # Workarounds for libtool and gobject badness.
 
 # pkg-config cannot handle sysroots properly, so we need to use a
@@ -18,3 +43,4 @@ export LD_LIBRARY_PATH := $(SYSROOT)/opt/vc/lib
 export CFLAGS := --sysroot=$(SYSROOT) $(ARCH_CFLAGS)
 export CPPFLAGS := --sysroot=$(SYSROOT)
 export LDFLAGS := --sysroot=$(SYSROOT) -Wl,--unresolved-symbols=ignore-in-shared-libs
+"""

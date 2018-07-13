@@ -1,5 +1,0 @@
-# packages for Qt
-packages=libfontconfig1-dev libmtdev-dev libudev-dev libts-dev flex freetds-dev libasound2-dev libaudio-dev
-packages=libdbus-1-dev libfreetype6-dev libglib2.0-dev libjpeg-dev libmng-dev libpam0g-dev libpng-dev
-packages=libreadline-dev libssl1.0-dev libtiff-dev zlib1g-dev libjpeg-dev
-packages=libraspberrypi-dev
