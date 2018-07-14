@@ -1,0 +1,46 @@
+Import('env')
+
+package = {
+    'requires': ['qt'],
+    'sysroot_debs': [],
+    'root_debs': [],
+    'target': File('qmlrss.tar.gz'),
+}
+
+prefix = '/opt/qt'
+stage = Dir('stage/')
+
+# TODO: depends on qt-host
+env.Command('qmlrss/qmlrss', ['qmlrss/main.cpp'], [
+
+    'cd ${REPO} && ${QT_HOST.abspath}/bin/qmake',
+    'make -j8 -C ${REPO}',
+
+], REPO=Dir('qmlrss'))
+
+
+# TODO: depends on repo files
+env.Command([package['target']], ['qmlrss.service', 'qmlrss/qmlrss'], [
+
+    'rm -rf --one-file-system ${STAGE}',
+
+    'mkdir -p ${STAGE}/etc/systemd/system',
+    'mkdir -p ${STAGE}/${PREFIX}/bin',
+
+    'cp ${SOURCES[0]} ${STAGE}/etc/systemd/system/',
+    'cp ${SOURCES[1]} ${STAGE}/${PREFIX}/bin/',
+
+    'tar -C ${STAGE} -czf ${TARGETS[0]} .',
+
+], PREFIX=prefix, STAGE=stage)
+
+Return('package')
+
+
+######
+
+install = """
+install: qmlrss.tar.gz
+	tar -xf qmlrss.tar.gz -C $(DESTDIR)
+	$(MYCHROOT) $(DESTDIR) /bin/systemctl reenable qmlrss.service
+"""

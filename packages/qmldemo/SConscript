@@ -7,19 +7,21 @@ package = {
     'target': File('qmldemo.tar.gz'),
 }
 
+prefix = '/opt/qt'
+stage = Dir('stage/')
 
 env.Command([package['target']], ['qmldemo.service', 'qmldemo.qml'], [
 
     'rm -rf --one-file-system ${STAGE}',
 
     'mkdir -p ${STAGE}/etc/systemd/system',
-    'mkdir -p ${STAGE}/opt/qt',
+    'mkdir -p ${STAGE}/${PREFIX}/bin/',
     'cp ${SOURCES[0]} ${STAGE}/etc/systemd/system/',
-    'cp ${SOURCES[1]} ${STAGE}/opt/qt/bin/',
+    'cp ${SOURCES[1]} ${STAGE}/${PREFIX}/bin/',
 
     'tar -C ${STAGE} -czf ${TARGETS[0]} .',
 
-], STAGE=Dir('stage/'))
+], PREFIX=prefix, STAGE=stage)
 
 Return('package')
 

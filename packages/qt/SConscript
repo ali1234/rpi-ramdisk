@@ -20,13 +20,13 @@ package = {
 
 }
 
-qt_host = Dir('qt-host')
+repos = [Dir(d) for d in ['qtbase/', 'qtxmlpatterns/', 'qtdeclarative/']]
+
 prefix = '/opt/qt'
 stage = Dir('stage/')
 
-repos = [Dir(d) for d in ['qtbase/', 'qtxmlpatterns/', 'qtdeclarative/']]
+env['QT_HOST'] = Dir('qt-host')
 
-env['QT_HOST'] = qt_host
 
 # TODO: depend on repo_files
 env.Command([package['target']], ['${SYSROOT}'], [
