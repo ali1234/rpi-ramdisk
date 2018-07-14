@@ -15,7 +15,7 @@ env.Command([package['target']], ['qmldemo.service', 'qmldemo.qml'], [
     'mkdir -p ${STAGE}/etc/systemd/system',
     'mkdir -p ${STAGE}/opt/qt',
     'cp ${SOURCES[0]} ${STAGE}/etc/systemd/system/',
-    'cp ${SOURCES[1]} ${STAGE}/opt/qt/',
+    'cp ${SOURCES[1]} ${STAGE}/opt/qt/bin/',
 
     'tar -C ${STAGE} -czf ${TARGETS[0]} .',
 
