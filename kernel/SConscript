@@ -1,16 +1,9 @@
-import pathlib
-import sh
+Import('env')
 
+kenv = env.Clone()
 
-def repo_scan(dir):
-    p = pathlib.Path(str(dir.abspath))
-    yield from (str(p / f) for f in sh.git('-C', str(p), 'ls-files', '-mo', '--exclude-standard').split('\n')[:-1])
-    yield sh.git('-C', str(p), 'rev-parse', '--absolute-git-dir').split('\n')[0]+'/logs/HEAD'
-
-
-env = Environment(tools=[])
-env['ENV']['ARCH'] = 'arm'
-env['ENV']['CROSS_COMPILE'] = '../tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-'
+kenv['ENV']['ARCH'] = 'arm'
+kenv['ENV']['CROSS_COMPILE'] = '../tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-'
 
 
 kbld = Builder(action = [
@@ -35,10 +28,10 @@ kbld = Builder(action = [
     'rm -rf --one-file-system ${TEMP_DIR}',
 
 ])
-env['BUILDERS']['Kernel'] = kbld
+kenv['BUILDERS']['Kernel'] = kbld
 
 repo = Dir('linux/')
-repo_files = list(repo_scan(repo))
+repo_files = list(kenv['FUNCTIONS'].repo_scan(repo))
 
 # these should NOT run in parallel
 for kernel in ['kernel', 'kernel7']:
@@ -48,5 +41,5 @@ for kernel in ['kernel', 'kernel7']:
     config = File(kernel + '.config')
     temp_dir = Dir(kernel + '.tmp/')
 
-    env.Kernel([root_gz, boot_gz], [config, *repo_files], REPO=repo, KERNEL_NAME=kernel, TEMP_DIR=temp_dir)
+    kenv.Kernel([root_gz, boot_gz], [config, *repo_files], REPO=repo, KERNEL_NAME=kernel, TEMP_DIR=temp_dir)
 
