@@ -30,7 +30,7 @@ env['FUNCTIONS'] = Functions()
 SConscript([
     'kernel/SConscript',
     'firmware/SConscript',
-    'packages/SConscript',
+    'raspbian/SConscript',
 ], 'env')
 
 boot_dir = Dir('boot/')

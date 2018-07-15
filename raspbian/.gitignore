@@ -1,4 +1,3 @@
-/boot/
-/root/
+/stage/
 /initrd
 /multistrap.conf

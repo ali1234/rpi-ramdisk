@@ -1,0 +1,35 @@
+import os
+import posixpath
+import pathlib
+import textwrap
+
+Import('env')
+renv = env.Clone()
+
+try:
+    renv['ENV']['http_proxy'] = os.environ['APT_HTTP_PROXY']
+except KeyError:
+    print("Don't forget to set up apt-cacher-ng")
+
+packages = SConscript('../packages/SConscript', 'env')
+
+all_root_debs = sorted(set.union(*(set(v['root_debs']) for v in packages.values())))
+
+multistrap_conf = Value(renv['FUNCTIONS'].multistrap_packages(' '.join(all_root_debs)))
+multistrap_conf_file = renv.Substfile('multistrap.conf', ['multistrap.conf.in', multistrap_conf, Value('')])
+
+overlay = Dir('overlay/')
+stage = Dir('stage/')
+
+sysroot = renv.Command(stage, [multistrap_conf_file, overlay], [
+    'mkdir -p ${STAGE}/etc/apt/trusted.gpg.d/',
+    'gpg --export 82B129927FA3303E > ${TARGET}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
+    'gpg --export 9165938D90FDDD2E > ${TARGET}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
+    '/usr/sbin/multistrap -d ${TARGET} -f ${SOURCES[0]}',
+
+    # overlay
+    'cp -r ${SOURCES[1]}/* ${TARGET}',
+
+], STAGE=stage, PACKAGES=packages)
+
+
