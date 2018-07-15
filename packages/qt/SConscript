@@ -1,4 +1,6 @@
-Import('env')
+import itertools
+
+Import('penv')
 
 package = {
 
@@ -25,11 +27,12 @@ repos = [Dir(d) for d in ['qtbase/', 'qtxmlpatterns/', 'qtdeclarative/']]
 prefix = '/opt/qt'
 stage = Dir('stage/')
 
-env['QT_HOST'] = Dir('qt-host')
+penv['QT_HOST'] = Dir('qt-host')
 
+repo_files = list(itertools.chain(list(penv['FUNCTIONS'].repo_scan(r)) for r in repos))
 
 # TODO: depend on repo_files
-env.Command([package['target']], ['${SYSROOT}'], [
+penv.Command([package['target']], ['${SYSROOT}', repo_files], [
 
     'rm -rf --one-file-system ${STAGE} ${QT_HOST}',
     'for repo in ${REPOS}; do git -C $$repo clean -dfxq; done',

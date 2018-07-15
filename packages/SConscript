@@ -1,22 +1,24 @@
 from collections import OrderedDict
 
-env = Environment(tools=[])
+Import('env')
+
+penv = env.Clone()
 
 sysroot = Dir('../sysroot/sysroot')
 toolchain = Dir('../sysroot/toolchain')
 
-env['SYSROOT'] = sysroot
-env['CROSS_COMPILE'] = toolchain.abspath + '/bin/arm-linux-gnueabihf-'
+penv['SYSROOT'] = sysroot
+penv['CROSS_COMPILE'] = toolchain.abspath + '/bin/arm-linux-gnueabihf-'
 
-env.PrependENVPath('PATH', toolchain.abspath + '/bin')
-env['ENV']['SYSROOT'] = sysroot.abspath
+penv.PrependENVPath('PATH', toolchain.abspath + '/bin')
+penv['ENV']['SYSROOT'] = sysroot.abspath
 
 
 def package_walk(name, result, seen):
     if name in seen:
         return
     seen.add(name)
-    p = SConscript(name + '/SConscript', 'env')
+    p = SConscript(name + '/SConscript', 'penv')
     for r in p['requires']:
         package_walk(r, result, seen)
     result[name] = p

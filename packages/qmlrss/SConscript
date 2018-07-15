@@ -1,4 +1,4 @@
-Import('env')
+Import('penv')
 
 package = {
     'requires': ['qt'],
@@ -10,17 +10,18 @@ package = {
 prefix = '/opt/qt'
 stage = Dir('stage/')
 
+repo = Dir('qmlrss')
+
 # TODO: depends on qt-host
-env.Command('qmlrss/qmlrss', ['qmlrss/main.cpp'], [
+penv.Command('qmlrss/qmlrss', list(penv['FUNCTIONS'].repo_scan(repo)), [
 
     'cd ${REPO} && ${QT_HOST.abspath}/bin/qmake',
     'make -j8 -C ${REPO}',
 
-], REPO=Dir('qmlrss'))
+], REPO=repo)
 
 
-# TODO: depends on repo files
-env.Command([package['target']], ['qmlrss.service', 'qmlrss/qmlrss'], [
+penv.Command([package['target']], ['qmlrss.service', 'qmlrss/qmlrss'], [
 
     'rm -rf --one-file-system ${STAGE}',
 
