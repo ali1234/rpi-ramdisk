@@ -34,7 +34,13 @@ SConscript([
 ], 'env')
 
 boot_dir = Dir('boot/')
-tftp_root = Value('tftp-root={:s}'.format(boot_dir.abspath))
 
+env.Command(boot_dir, ['firmware/firmware.tar.gz', 'kernel/kernel-boot.tar.gz', 'kernel/kernel7-boot.tar.gz'], [
+    'rm -rf --one-file-system ${TARGET}',
+    'mkdir ${TARGET}',
+    'for tb in ${SOURCES}; do tar -xf $$tb -C ${TARGET}; done',
+])
+
+tftp_root = Value('tftp-root={:s}'.format(boot_dir.abspath))
 env.Substfile('dnsmasq.conf', ['dnsmasq.conf.in', tftp_root, Value('')])
 
