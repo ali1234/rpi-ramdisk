@@ -29,7 +29,7 @@ for p in ['qmlrss']:
 print('Enabled packages:', ', '.join(packages.keys()))
 
 
-SConscript('../sysroot/SConscript', 'packages')
+SConscript('../sysroot/SConscript', 'env packages')
 
 Return('packages')
 

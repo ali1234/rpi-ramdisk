@@ -1,13 +1,12 @@
 import os
 import posixpath
 import pathlib
-import textwrap
 
-env = Environment(tools=[])
-env.Tool('textfile')
+Import('env packages')
+senv = env.Clone()
 
 try:
-    env['ENV']['http_proxy'] = os.environ['APT_HTTP_PROXY']
+    senv['ENV']['http_proxy'] = os.environ['APT_HTTP_PROXY']
 except KeyError:
     print("Don't forget to set up apt-cacher-ng")
 
@@ -30,22 +29,15 @@ def relative_links(target, source, env):
 
 
 # sysroot setup
-Import('packages')
-
-wrapper = textwrap.TextWrapper(
-    break_long_words=False, break_on_hyphens=False,
-    initial_indent='packages=', subsequent_indent='packages=',
-    width=120,
-)
 
 all_sysroot_debs = sorted(set.union(*(set(v['sysroot_debs']) for v in packages.values())))
 
-multistrap_conf = Value(wrapper.fill(' '.join(all_sysroot_debs)))
-multistrap_conf_file = env.Substfile('multistrap.conf', ['multistrap.conf.in', multistrap_conf, Value('')])
+multistrap_conf = Value(senv['FUNCTIONS'].multistrap_packages(' '.join(all_sysroot_debs)))
+multistrap_conf_file = senv.Substfile('multistrap.conf', ['multistrap.conf.in', multistrap_conf, Value('')])
 sysroot_dir = Dir('sysroot/')
 sysroot_overlay = Dir('overlay/')
 
-sysroot = env.Command(sysroot_dir, [multistrap_conf_file, sysroot_overlay], [
+sysroot = senv.Command(sysroot_dir, [multistrap_conf_file, sysroot_overlay], [
     'mkdir -p ${TARGET}/etc/apt/trusted.gpg.d/',
     'gpg --export 82B129927FA3303E > ${TARGET}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
     'gpg --export 9165938D90FDDD2E > ${TARGET}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
@@ -64,7 +56,7 @@ sysroot = env.Command(sysroot_dir, [multistrap_conf_file, sysroot_overlay], [
     # cd sysroot/opt && for dir in $(PACKAGES); do ln -s ../../$$dir/root/opt/$$dir $$dir; done
 
 ])
-env.AddPostAction(sysroot, relative_links)
+senv.AddPostAction(sysroot, relative_links)
 
 
 # toolchain setup
@@ -73,8 +65,8 @@ toolchain_dir = Dir('toolchain/')
 toolchain_tarball = File('gcc-linaro-6.3.1-2017.05-x86_64_arm-linux-gnueabihf.tar.xz')
 toolchain_url = Value('https://releases.linaro.org/components/toolchain/binaries/6.3-2017.05/arm-linux-gnueabihf/gcc-linaro-6.3.1-2017.05-x86_64_arm-linux-gnueabihf.tar.xz')
 
-env.Command(toolchain_tarball, toolchain_url, 'wget -N -O ${TARGET} ${SOURCE}')
-env.Command(toolchain_dir, toolchain_tarball, [
+senv.Command(toolchain_tarball, toolchain_url, 'wget -N -O ${TARGET} ${SOURCE}')
+senv.Command(toolchain_dir, toolchain_tarball, [
     'mkdir -p ${TARGET}',
     'tar -C ${TARGET} --strip-components=1 -xf ${SOURCE}',
 ])

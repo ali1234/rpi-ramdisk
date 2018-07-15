@@ -29,7 +29,7 @@ stage = Dir('stage/')
 
 penv['QT_HOST'] = Dir('qt-host')
 
-repo_files = list(itertools.chain(list(penv['FUNCTIONS'].repo_scan(r)) for r in repos))
+repo_files = list(penv['FUNCTIONS'].repo_scan(*repos))
 
 # TODO: depend on repo_files
 penv.Command([package['target']], ['${SYSROOT}', repo_files], [
