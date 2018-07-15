@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys, fnmatch, os
 
@@ -28,12 +28,12 @@ for dirname, subdirs, files in os.walk(sys.argv[1], topdown=False):
         fname = os.path.join(dirname, fname)
         if test_excludes(fname, excludes):
             os.remove(fname)
-            print fname
+            print(fname)
     for fname in subdirs:
         fname = os.path.join(dirname, fname)
         if test_excludes(fname, excludes):
             try:
                 os.rmdir(fname)
-                print fname
+                print(fname)
             except OSError:
-                print fname, 'not empty, not removed.'
+                print(fname, 'not empty, not removed.')
