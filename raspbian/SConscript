@@ -1,7 +1,4 @@
 import os
-import posixpath
-import pathlib
-import textwrap
 
 Import('env')
 renv = env.Clone()
@@ -21,14 +18,30 @@ multistrap_conf_file = renv.Substfile('multistrap.conf', ['multistrap.conf.in', 
 overlay = Dir('overlay/')
 stage = Dir('stage/')
 
-sysroot = renv.Command(stage, [multistrap_conf_file, overlay], [
+renv['ENV']['QEMU_LD_PREFIX'] = stage.abspath
+renv['CHROOT'] = 'proot -0 -q qemu-arm -w / -r'
+
+sysroot = renv.Command('initrd', [multistrap_conf_file, overlay], [
+
+    'rm -rf --one-file-system ${STAGE}',
+
+    # run multistrap
     'mkdir -p ${STAGE}/etc/apt/trusted.gpg.d/',
-    'gpg --export 82B129927FA3303E > ${TARGET}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
-    'gpg --export 9165938D90FDDD2E > ${TARGET}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
-    '/usr/sbin/multistrap -d ${TARGET} -f ${SOURCES[0]}',
+    'gpg --export 82B129927FA3303E > ${STAGE}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
+    'gpg --export 9165938D90FDDD2E > ${STAGE}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
+    '/usr/sbin/multistrap -d ${STAGE} -f ${SOURCES[0]}',
 
     # overlay
-    'cp -r ${SOURCES[1]}/* ${TARGET}',
+    'cp -r ${SOURCES[1]}/* ${STAGE}',
+
+    # pack rootfs into initrd
+    '${CHROOT} ${STAGE} sh -c "cd / && find * -xdev -not \( \
+              -path host-rootfs -prune \
+              -path run -prune \
+              -path proc -prune \
+              -path sys -prune \
+              -path boot -prune \
+           \) | cpio --create -H newc" | xz -C crc32 -9 > ${TARGET}'
 
 ], STAGE=stage, PACKAGES=packages)
 

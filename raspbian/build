@@ -1,22 +1,5 @@
 #!/bin/bash -e
 
-ROOTDIR=`readlink -f root`
-
-rm -rf --one-file-system $ROOTDIR
-
-mkdir -p $ROOTDIR/etc/apt/trusted.gpg.d/
-gpg --export 82B129927FA3303E > root/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg
-gpg --export 9165938D90FDDD2E > root/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg
-
-http_proxy=$APT_HTTP_PROXY /usr/sbin/multistrap -d $ROOTDIR -f multistrap.conf
-
-export QEMU_LD_PREFIX=$(readlink -f $ROOTDIR)
-
-# If you want to use fakeroot/fakechroot for some reason,
-# you will need to install them in multistrap.conf.
-#MYCHROOT="fakechroot fakeroot chroot"
-MYCHROOT="proot -0 -q qemu-arm -w / -r"
-
 echo "Running preinst scripts..."
 
 for script in $ROOTDIR/var/lib/dpkg/info/*.preinst; do
@@ -158,12 +141,6 @@ cd $ROOTDIR/dev
 fakeroot /sbin/MAKEDEV std
 cd ../..
 
-echo "Packing rootfs..."
 
-$MYCHROOT $ROOTDIR sh -c "cd / && find * -xdev -not \( \
-              -path host-rootfs -prune \
-              -path run -prune \
-              -path proc -prune \
-              -path sys -prune \
-              -path boot -prune \
-           \) | cpio --create -H newc" | xz -C crc32 -9 > initrd
+
+

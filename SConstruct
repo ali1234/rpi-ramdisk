@@ -35,10 +35,11 @@ SConscript([
 
 boot_dir = Dir('boot/')
 
-env.Command(boot_dir, ['firmware/firmware.tar.gz', 'kernel/kernel-boot.tar.gz', 'kernel/kernel7-boot.tar.gz'], [
+env.Command(boot_dir, ['raspbian/initrd', 'firmware/firmware.tar.gz', 'kernel/kernel-boot.tar.gz', 'kernel/kernel7-boot.tar.gz'], [
     'rm -rf --one-file-system ${TARGET}',
     'mkdir ${TARGET}',
-    'for tb in ${SOURCES}; do tar -xf $$tb -C ${TARGET}; done',
+    'cp ${SOURCES[0]} ${TARGET}',
+    'for tb in ${SOURCES[1:]}; do tar -xf $$tb -C ${TARGET}; done',
 ])
 
 tftp_root = Value('tftp-root={:s}'.format(boot_dir.abspath))
