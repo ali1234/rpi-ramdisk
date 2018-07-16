@@ -21,7 +21,7 @@ This dependency list may be incomplete. If so, please report a bug on github.
                      bison flex libglib2.0-dev gobject-introspection \
                      multistrap fakeroot fakechroot proot cpio \
                      qemu-user binfmt-support makedev \
-                     gtk-doc-tools valac
+                     gtk-doc-tools valac scons
 
 Some build dependencies need to be fairly new:
 
@@ -72,34 +72,7 @@ You can also update individual repos manually:
 
 ## Compiling
 
-Before compiling you need to select which image to build. The available configs
-are in the `configs/` subdirectory. A good one to start with is rssread.config.
-Select it by running `make rssreader.config` in the root of the repository.
-
-Running `make` will now build everything. Parallel make e.g. `make -j8` is
-supported and will greatly decrease the kernel build times.
-
-The submodule build output is redirected to `/dev/null` by default. To show it
-for the kernel:
-
-    make VERBOSE_KERNEL_BUILD=1
-
-You can also substitute "KERNEL" with "QT", "GSTREAMER", "RYGEL" etc for those
-packages.
-
-For faster kernel builds, ccache can be used. Install it first, then:
-
-    make USE_CCACHE=1
-
-To speed up initrd building, you can use apt-cacher-ng. Install it, and then:
-
-    export APT_HTTP_PROXY=http://localhost:3142
-    make
-
-### Docker
-
-Check the `Dockerfile` and `build-docker` scripts which automate the entire
-build process.
+TODO: This section needs to be rewritten for scons.
 
 
 ## Booting
