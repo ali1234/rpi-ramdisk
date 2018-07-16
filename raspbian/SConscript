@@ -15,7 +15,6 @@ all_root_debs = sorted(set.union(*(set(v['root_debs']) for v in packages.values(
 multistrap_conf = Value(renv['FUNCTIONS'].multistrap_packages(' '.join(all_root_debs)))
 multistrap_conf_file = renv.Substfile('multistrap.conf', ['multistrap.conf.in', multistrap_conf, Value('')])
 
-print(packages)
 
 def package_actions():
     for k, v in packages.items():
