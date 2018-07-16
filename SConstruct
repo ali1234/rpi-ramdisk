@@ -35,12 +35,13 @@ SConscript([
 
 boot_dir = Dir('boot/')
 
-env.Command(boot_dir, ['raspbian/initrd', 'firmware/firmware.tar.gz', 'kernel/kernel-boot.tar.gz', 'kernel/kernel7-boot.tar.gz'], [
-    'rm -rf --one-file-system ${TARGET}',
-    'mkdir ${TARGET}',
-    'cp ${SOURCES[0]} ${TARGET}',
-    'for tb in ${SOURCES[1:]}; do tar -xf $$tb -C ${TARGET}; done',
-])
+env.Command('boot.zip', ['raspbian/initrd', 'firmware/firmware.tar.gz', 'kernel/kernel-boot.tar.gz', 'kernel/kernel7-boot.tar.gz'], [
+    'rm -rf --one-file-system ${TARGET} ${STAGE}',
+    'mkdir ${STAGE}',
+    'cp ${SOURCES[0]} ${STAGE}',
+    'for tb in ${SOURCES[1:]}; do tar -xf $$tb -C ${STAGE}; done',
+    'cd ${STAGE} && zip -qr ${TARGET.abspath} *',
+], STAGE=boot_dir)
 
 tftp_root = Value('tftp-root={:s}'.format(boot_dir.abspath))
 env.Substfile('dnsmasq.conf', ['dnsmasq.conf.in', tftp_root, Value('')])
