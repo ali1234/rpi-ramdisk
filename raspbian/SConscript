@@ -15,11 +15,12 @@ all_root_debs = sorted(set.union(*(set(v['root_debs']) for v in packages.values(
 multistrap_conf = Value(renv['FUNCTIONS'].multistrap_packages(' '.join(all_root_debs)))
 multistrap_conf_file = renv.Substfile('multistrap.conf', ['multistrap.conf.in', multistrap_conf, Value('')])
 
+print(packages)
 
 def package_actions():
-    for n, p in enumerate(packages):
-        yield 'tar -xf ${PACKAGES[' + str(n) + '] -C ${STAGE}'
-        yield from p.install
+    for k, v in packages.items():
+        yield 'tar -xf ${PACKAGES["' + str(k) + '"]["target"]} -C ${STAGE}'
+        yield from v['install']
 
 
 overlay = Dir('overlay/')
@@ -28,7 +29,7 @@ stage = Dir('stage/')
 renv['ENV']['QEMU_LD_PREFIX'] = stage.abspath
 renv['CHROOT'] = 'proot -0 -q qemu-arm -w / -r'
 
-sysroot = renv.Command('initrd', [multistrap_conf_file, '../kernel/kernel-root.tar.gz', '../kernel/kernel7-root.tar.gz', overlay, 'cleanup', 'excludes.conf', *[p['target'] for p in packages]], [
+sysroot = renv.Command('initrd', [multistrap_conf_file, '../kernel/kernel-root.tar.gz', '../kernel/kernel7-root.tar.gz', overlay, 'cleanup', 'excludes.conf', *[p['target'] for p in packages.values()]], [
 
     'rm -rf --one-file-system ${STAGE}',
 
@@ -38,13 +39,18 @@ sysroot = renv.Command('initrd', [multistrap_conf_file, '../kernel/kernel-root.t
     'gpg --export 9165938D90FDDD2E > ${STAGE}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
     '/usr/sbin/multistrap -d ${STAGE} -f ${SOURCES[0]}',
 
+    'for script in ${STAGE}/var/lib/dpkg/info/*.preinst; do \
+        echo $${script##${STAGE}}; \
+        done',
+
     # run preinst scripts
-    'for script in $ROOTDIR/var/lib/dpkg/info/*.preinst; do \
-        [ "$script" = "$ROOTDIR/var/lib/dpkg/info/vpnc.preinst" ] && continue \
-        echo "I: run preinst script ${script##$ROOTDIR}" \
+    'for script in ${STAGE}/var/lib/dpkg/info/*.preinst; do \
+        [ "$$script" = "${STAGE}/var/lib/dpkg/info/vpnc.preinst" ] && continue; \
+        [ "$$script" = "${STAGE}/var/lib/dpkg/info/wpasupplicant.preinst" ] && continue; \
+        echo "I: run preinst script $${script##${STAGE}}"; \
         DPKG_MAINTSCRIPT_NAME=preinst \
-        DPKG_MAINTSCRIPT_PACKAGE="`basename $script .preinst`" \
-        $MYCHROOT $ROOTDIR ${script##$ROOTDIR} install \
+        DPKG_MAINTSCRIPT_PACKAGE="`basename $$script .preinst`" \
+        ${CHROOT} ${STAGE} $${script##${STAGE}} install; \
         done',
 
     # don't run makedev
