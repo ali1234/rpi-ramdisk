@@ -5,6 +5,7 @@ package = {
     'sysroot_debs': [],
     'root_debs': [],
     'target': File('qmlrss.tar.gz'),
+    'install': ['${CHROOT} ${STAGE} /bin/systemctl reenable qmlrss.service'],
 }
 
 prefix = '/opt/qt'
@@ -36,12 +37,3 @@ penv.Command([package['target']], ['qmlrss.service', 'qmlrss/qmlrss'], [
 ], PREFIX=prefix, STAGE=stage)
 
 Return('package')
-
-
-######
-
-install = """
-install: qmlrss.tar.gz
-	tar -xf qmlrss.tar.gz -C $(DESTDIR)
-	$(MYCHROOT) $(DESTDIR) /bin/systemctl reenable qmlrss.service
-"""

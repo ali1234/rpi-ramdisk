@@ -5,6 +5,7 @@ package = {
     'sysroot_debs': [],
     'root_debs': [],
     'target': File('qmldemo.tar.gz'),
+    'install': ['${CHROOT} ${STAGE} /bin/systemctl reenable qmldemo.service'],
 }
 
 prefix = '/opt/qt'
@@ -24,11 +25,3 @@ env.Command([package['target']], ['qmldemo.service', 'qmldemo.qml'], [
 ], PREFIX=prefix, STAGE=stage)
 
 Return('package')
-
-
-######
-
-install = """
-	tar -xf qmldemo.tar.gz -C $(DESTDIR)
-	$(MYCHROOT) $(DESTDIR) /bin/systemctl reenable qmldemo.service
-"""
