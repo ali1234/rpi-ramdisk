@@ -66,5 +66,3 @@ penv.Command([package['target']], ['${SYSROOT}', repo_files], [
 ], REPOS=repos, PREFIX=prefix, STAGE=stage)
 
 Return('package')
-
-# Note: Install action for this package is just unpack the tarball.
