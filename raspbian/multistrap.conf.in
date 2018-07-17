@@ -36,12 +36,14 @@ source=http://archive.raspberrypi.org/debian
 suite=stretch
 
 
-# Required packages
+# Required debs
 packages=base-files base-passwd bash coreutils dash debianutils diffutils dpkg
 packages=findutils grep gzip init libc-bin login mount sed tar util-linux cpio
 packages=ncurses-base
 
-# Optional base packages
+# Optional base debs
 packages=systemd udev kmod gpgv apt net-tools wpasupplicant crda
 packages=firmware-brcm80211 ca-certificates openssl
 
+# Debs required by /opt packages
+@PACKAGES@

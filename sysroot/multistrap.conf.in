@@ -15,4 +15,5 @@ source=http://archive.raspberrypi.org/debian
 suite=stretch
 packages=build-essential
 
-# Automatic debs for enabled packages follow
+# Debs required to build /opt packages
+@PACKAGES@
