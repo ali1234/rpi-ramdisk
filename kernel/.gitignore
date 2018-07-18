@@ -5,3 +5,4 @@
 /kernel7-boot.tar.gz
 /kernel7-root.tar.gz
 /*.timestamp
+/*.tmp
