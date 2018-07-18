@@ -25,7 +25,7 @@ kbld = Builder(action = [
     'tar -C ${TEMP_DIR}/root/ -czf ${TARGETS[0]} .',
     'tar -C ${TEMP_DIR}/boot/ -czf ${TARGETS[1]} .',
 
-    'rm -rf --one-file-system ${TEMP_DIR}',
+    #'rm -rf --one-file-system ${TEMP_DIR}',
 
 ])
 kenv['BUILDERS']['Kernel'] = kbld
