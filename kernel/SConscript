@@ -6,40 +6,38 @@ kenv['ENV']['ARCH'] = 'arm'
 kenv['ENV']['CROSS_COMPILE'] = '../tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-'
 
 
-kbld = Builder(action = [
+kenv['BUILDERS']['Kernel'] = Builder(action = [
 
     'git -C ${REPO} clean -dfxq',
-    'rm -rf --one-file-system ${TEMP_DIR}',
+    'rm -rf --one-file-system ${STAGE}',
 
     'cp ${SOURCES[0]} ${REPO}/.config',
     'make -j8 -C ${REPO} zImage modules dtbs',
 
-    'mkdir -p ${TEMP_DIR}/root ${TEMP_DIR}/boot/overlays',
-    'make -j8 -C ${REPO} INSTALL_MOD_PATH=${TEMP_DIR.abspath}/root modules_install',
+    'mkdir -p ${STAGE}/root ${STAGE}/boot/overlays',
+    'make -j8 -C ${REPO} INSTALL_MOD_PATH=${STAGE.abspath}/root modules_install',
 
-    'cp ${REPO}/arch/arm/boot/zImage ${TEMP_DIR}/boot/${KERNEL_NAME}.img',
-    'cp ${REPO}/arch/arm/boot/dts/*.dtb ${TEMP_DIR}/boot/',
-    'cp ${REPO}/arch/arm/boot/dts/overlays/*.dtb* ${TEMP_DIR}/boot/overlays/',
-    'cp ${REPO}/arch/arm/boot/dts/overlays/README ${TEMP_DIR}/boot/overlays/',
+    'cp ${REPO}/arch/arm/boot/zImage ${STAGE}/boot/${KERNEL_NAME}.img',
+    'cp ${REPO}/arch/arm/boot/dts/*.dtb ${STAGE}/boot/',
+    'cp ${REPO}/arch/arm/boot/dts/overlays/*.dtb* ${STAGE}/boot/overlays/',
+    'cp ${REPO}/arch/arm/boot/dts/overlays/README ${STAGE}/boot/overlays/',
 
-    'tar -C ${TEMP_DIR}/root/ -czf ${TARGETS[0]} .',
-    'tar -C ${TEMP_DIR}/boot/ -czf ${TARGETS[1]} .',
-
-    #'rm -rf --one-file-system ${TEMP_DIR}',
+    'tar -C ${STAGE}/root/ -czf ${TARGETS[0]} .',
+    'tar -C ${STAGE}/boot/ -czf ${TARGETS[1]} .',
 
 ])
-kenv['BUILDERS']['Kernel'] = kbld
 
 repo = Dir('linux/')
 repo_files = list(kenv['FUNCTIONS'].repo_scan(repo))
 
-# these should NOT run in parallel
+stage = Dir('stage/')
+
 for kernel in ['kernel', 'kernel7']:
 
     root_gz = File(kernel + '-root.tar.gz')
     boot_gz = File(kernel + '-boot.tar.gz')
     config = File(kernel + '.config')
-    temp_dir = Dir(kernel + '.tmp/')
 
-    kenv.Kernel([root_gz, boot_gz], [config, *repo_files], REPO=repo, KERNEL_NAME=kernel, TEMP_DIR=temp_dir)
-
+    k = kenv.Kernel([root_gz, boot_gz], [config, *repo_files], REPO=repo, KERNEL_NAME=kernel, STAGE=stage)
+    kenv.SideEffect(stage, k) # this prevents parallel execution
+    kenv.Clean(k, stage)
