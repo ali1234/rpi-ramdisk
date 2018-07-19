@@ -34,6 +34,8 @@ multistrap_conf_file = senv.Substfile('multistrap.conf', 'multistrap.conf.in', S
 
 sysroot_build = senv.Command('sysroot/', [multistrap_conf_file, 'overlay/'], [
 
+    'rm -rf --one-file-system ${TARGET}',
+
     'mkdir -p ${TARGET}/etc/apt/trusted.gpg.d/',
     'gpg --export 82B129927FA3303E > ${TARGET}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
     'gpg --export 9165938D90FDDD2E > ${TARGET}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
