@@ -11,7 +11,7 @@ kenv['BUILDERS']['Kernel'] = Builder(action = [
     'git -C ${REPO} clean -dfxq',
     'rm -rf --one-file-system ${STAGE}',
 
-    'cp ${SOURCES[0]} ${REPO}/.config',
+    'cp ${CONFIG} ${REPO}/.config',
     'make -j8 -C ${REPO} zImage modules dtbs',
 
     'mkdir -p ${STAGE}/root ${STAGE}/boot/overlays',
@@ -38,6 +38,6 @@ for kernel in ['kernel', 'kernel7']:
     boot_gz = File(kernel + '-boot.tar.gz')
     config = File(kernel + '.config')
 
-    k = kenv.Kernel([root_gz, boot_gz], [config, *repo_files], REPO=repo, KERNEL_NAME=kernel, STAGE=stage)
+    k = kenv.Kernel([root_gz, boot_gz], [config, *repo_files], REPO=repo, CONFIG=config, KERNEL_NAME=kernel, STAGE=stage)
     kenv.SideEffect(stage, k) # this prevents parallel execution
     kenv.Clean(k, stage)
