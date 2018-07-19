@@ -1,31 +1,37 @@
 import pathlib
-import textwrap
+from textwrap import TextWrapper
 
 import sh
 
 env = Environment(tools=[])
 env.Tool('textfile')
 
+
 class Functions(object):
 
-    def __init__(self):
-        self._wrapper = textwrap.TextWrapper(
-            break_long_words=False, break_on_hyphens=False,
-            initial_indent='packages=', subsequent_indent='packages=',
-            width=120,
-        )
-
-    def multistrap_packages(self, *args, **kwargs):
-        return self._wrapper.fill(*args, **kwargs)
-
-    def repo_scan(self, *args):
+    @staticmethod
+    def repo_scan(*args):
         for dir in args:
             p = pathlib.Path(str(dir.abspath))
             yield from (str(p / f) for f in sh.git('-C', str(p), 'ls-files', '-mo', '--exclude-standard').split('\n')[:-1])
             yield sh.git('-C', str(p), 'rev-parse', '--absolute-git-dir').split('\n')[0] + '/logs/HEAD'
 
+    @staticmethod
+    def textwrap(string_or_list, prefix='', join=' ', width=120):
+        """Generates wordwrapped lines for config files."""
+        wrapper = TextWrapper(
+            break_long_words=False, break_on_hyphens=False,
+            initial_indent=prefix, subsequent_indent=prefix,
+            width=width,
+        )
 
-env['FUNCTIONS'] = Functions()
+        if isinstance(string_or_list, str):
+            return wrapper.fill(string_or_list)
+        else:
+            return wrapper.fill(join.join(string_or_list))
+
+
+env['FUNCTIONS'] = Functions
 
 SConscript([
     'kernel/SConscript',

@@ -12,7 +12,7 @@ packages = SConscript('../packages/SConscript', 'env')
 
 all_root_debs = sorted(set.union(*(set(v['root_debs']) for v in packages.values())))
 
-multistrap_packages = renv['FUNCTIONS'].multistrap_packages(' '.join(all_root_debs))
+multistrap_packages = renv['FUNCTIONS'].textwrap(all_root_debs, prefix='packages=')
 multistrap_conf_file = renv.Substfile('multistrap.conf', 'multistrap.conf.in', SUBST_DICT={'@PACKAGES@': multistrap_packages})
 
 def package_actions():
@@ -36,10 +36,6 @@ root_build = renv.Command('initrd', [multistrap_conf_file, '../kernel/kernel-roo
     'gpg --export 82B129927FA3303E > ${STAGE}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
     'gpg --export 9165938D90FDDD2E > ${STAGE}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
     '/usr/sbin/multistrap -d ${STAGE} -f ${SOURCES[0]}',
-
-    'for script in ${STAGE}/var/lib/dpkg/info/*.preinst; do \
-        echo $${script##${STAGE}}; \
-        done',
 
     # run preinst scripts
     'for script in ${STAGE}/var/lib/dpkg/info/*.preinst; do \
