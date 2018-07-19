@@ -27,7 +27,7 @@ stage = Dir('stage/')
 renv['ENV']['QEMU_LD_PREFIX'] = stage.abspath
 renv['CHROOT'] = 'proot -0 -q qemu-arm -w / -r'
 
-sysroot = renv.Command('initrd', [multistrap_conf_file, '../kernel/kernel-root.tar.gz', '../kernel/kernel7-root.tar.gz', overlay, 'cleanup', 'excludes.conf', *[p['target'] for p in packages.values()]], [
+root_build = renv.Command('initrd', [multistrap_conf_file, '../kernel/kernel-root.tar.gz', '../kernel/kernel7-root.tar.gz', overlay, 'cleanup', 'excludes.conf', *[p['target'] for p in packages.values()]], [
 
     'rm -rf --one-file-system ${STAGE}',
 
@@ -132,4 +132,4 @@ sysroot = renv.Command('initrd', [multistrap_conf_file, '../kernel/kernel-root.t
 
 ], STAGE=stage, PACKAGES=packages)
 
-
+renv.Clean(root_build, stage)
