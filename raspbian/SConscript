@@ -2,6 +2,10 @@ import os
 
 Import('env')
 renv = env.Clone()
+renv.AppendENVPath('PATH', '/usr/local/sbin')
+renv.AppendENVPath('PATH', '/opt/sbin')
+renv.AppendENVPath('PATH', '/sbin')
+renv.AppendENVPath('PATH', '/usr/sbin')
 
 try:
     renv['ENV']['http_proxy'] = os.environ['APT_HTTP_PROXY']
@@ -40,7 +44,6 @@ root_build = renv.Command('initrd', [multistrap_conf_file, '../kernel/kernel-roo
     # run preinst scripts
     'for script in ${STAGE}/var/lib/dpkg/info/*.preinst; do \
         [ "$$script" = "${STAGE}/var/lib/dpkg/info/vpnc.preinst" ] && continue; \
-        [ "$$script" = "${STAGE}/var/lib/dpkg/info/wpasupplicant.preinst" ] && continue; \
         echo "I: run preinst script $${script##${STAGE}}"; \
         DPKG_MAINTSCRIPT_NAME=preinst \
         DPKG_MAINTSCRIPT_PACKAGE="`basename $$script .preinst`" \
