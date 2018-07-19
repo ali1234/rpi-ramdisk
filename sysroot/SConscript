@@ -28,7 +28,7 @@ def relative_links(target, source, env):
             os.symlink(new_target, str(path))
 
 
-all_sysroot_debs = sorted(set.union(*(set(v['sysroot_debs']) for v in packages.values())))
+all_sysroot_debs = sorted(set.union(*(set(v['sysroot_debs']) for v in packages.values()), set()))
 multistrap_packages = senv['FUNCTIONS'].textwrap(all_sysroot_debs, prefix='packages=')
 multistrap_conf_file = senv.Substfile('multistrap.conf', 'multistrap.conf.in', SUBST_DICT={'@PACKAGES@': multistrap_packages})
 

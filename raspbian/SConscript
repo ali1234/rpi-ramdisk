@@ -10,7 +10,7 @@ except KeyError:
 
 packages = SConscript('../packages/SConscript', 'env')
 
-all_root_debs = sorted(set.union(*(set(v['root_debs']) for v in packages.values())))
+all_root_debs = sorted(set.union(*(set(v['root_debs']) for v in packages.values()), set()))
 
 multistrap_packages = renv['FUNCTIONS'].textwrap(all_root_debs, prefix='packages=')
 multistrap_conf_file = renv.Substfile('multistrap.conf', 'multistrap.conf.in', SUBST_DICT={'@PACKAGES@': multistrap_packages})

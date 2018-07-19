@@ -24,7 +24,7 @@ def package_walk(name, result, seen):
     result[name] = p
 
 packages = OrderedDict()
-for p in ['qmlrss']:
+for p in []:
     package_walk(p, packages, set())
 print('Enabled packages:', ', '.join(packages.keys()))
 
