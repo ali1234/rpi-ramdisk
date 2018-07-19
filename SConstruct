@@ -44,6 +44,7 @@ boot = Dir('boot/')
 boot_build = env.Command('boot.zip', ['raspbian/initrd', 'firmware/firmware.tar.gz', 'kernel/kernel-boot.tar.gz', 'kernel/kernel7-boot.tar.gz'], [
 
     'mkdir -p ${STAGE}',
+    'rm -rf --one-file-system ${STAGE}/*',
     'cp ${SOURCES[0]} ${STAGE}',
     'for tb in ${SOURCES[1:]}; do tar -xf $$tb -C ${STAGE}; done',
     'cd ${STAGE} && zip -qr ${TARGET.abspath} *',
