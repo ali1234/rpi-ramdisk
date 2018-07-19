@@ -98,12 +98,8 @@ boot directory to the mass storage device, plug it in, and turn on.
 
 ### TFTP Boot
 
-Copy `bootcode.bin` to the fat partition on your SD card. Generate a dnsmasq
-configuration with the correct paths:
-
-    make dnsmasq.conf
-
-Now run dnsmasq:
+Copy `bootcode.bin` to the fat partition on your SD card. Scons generates a
+`dnsmasq.conf` with the correct paths, so now just run dnsmasq:
 
     sudo dnsmasq -C dnsmasq.conf
 

@@ -36,11 +36,12 @@ SConscript([
 boot = Dir('boot/')
 
 boot_build = env.Command('boot.zip', ['raspbian/initrd', 'firmware/firmware.tar.gz', 'kernel/kernel-boot.tar.gz', 'kernel/kernel7-boot.tar.gz'], [
-    'rm -rf --one-file-system ${TARGET} ${STAGE}',
-    'mkdir ${STAGE}',
+
+    'mkdir -p ${STAGE}',
     'cp ${SOURCES[0]} ${STAGE}',
     'for tb in ${SOURCES[1:]}; do tar -xf $$tb -C ${STAGE}; done',
     'cd ${STAGE} && zip -qr ${TARGET.abspath} *',
+
 ], STAGE=boot)
 env.Clean(boot_build, boot)
 
