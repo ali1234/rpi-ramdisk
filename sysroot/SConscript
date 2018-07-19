@@ -28,16 +28,12 @@ def relative_links(target, source, env):
             os.symlink(new_target, str(path))
 
 
-# sysroot setup
-
 all_sysroot_debs = sorted(set.union(*(set(v['sysroot_debs']) for v in packages.values())))
-
 multistrap_packages = senv['FUNCTIONS'].multistrap_packages(' '.join(all_sysroot_debs))
 multistrap_conf_file = senv.Substfile('multistrap.conf', 'multistrap.conf.in', SUBST_DICT={'@PACKAGES@': multistrap_packages})
-sysroot_dir = Dir('sysroot/')
-sysroot_overlay = Dir('overlay/')
 
-sysroot = senv.Command(sysroot_dir, [multistrap_conf_file, sysroot_overlay], [
+sysroot_build = senv.Command('sysroot/', [multistrap_conf_file, 'overlay/'], [
+
     'mkdir -p ${TARGET}/etc/apt/trusted.gpg.d/',
     'gpg --export 82B129927FA3303E > ${TARGET}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
     'gpg --export 9165938D90FDDD2E > ${TARGET}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
@@ -56,17 +52,14 @@ sysroot = senv.Command(sysroot_dir, [multistrap_conf_file, sysroot_overlay], [
     # cd sysroot/opt && for dir in $(PACKAGES); do ln -s ../../$$dir/root/opt/$$dir $$dir; done
 
 ])
-senv.AddPostAction(sysroot, relative_links)
+senv.AddPostAction(sysroot_build, relative_links)
 
 
-# toolchain setup
+toolchain_tarball = 'gcc-linaro-6.3.1-2017.05-x86_64_arm-linux-gnueabihf.tar.xz'
+toolchain_url = Value('https://releases.linaro.org/components/toolchain/binaries/6.3-2017.05/arm-linux-gnueabihf/' + toolchain_tarball)
 
-toolchain_dir = Dir('toolchain/')
-toolchain_tarball = File('gcc-linaro-6.3.1-2017.05-x86_64_arm-linux-gnueabihf.tar.xz')
-toolchain_url = Value('https://releases.linaro.org/components/toolchain/binaries/6.3-2017.05/arm-linux-gnueabihf/gcc-linaro-6.3.1-2017.05-x86_64_arm-linux-gnueabihf.tar.xz')
-
-senv.Command(toolchain_tarball, toolchain_url, 'wget -N -O ${TARGET} ${SOURCE}')
-senv.Command(toolchain_dir, toolchain_tarball, [
+senv.NoClean(senv.Command(toolchain_tarball, toolchain_url, 'cd ${TARGET.Dir(".")} && wget -N ${SOURCE}'))
+senv.NoClean(senv.Command('toolchain/', toolchain_tarball, [
     'mkdir -p ${TARGET}',
     'tar -C ${TARGET} --strip-components=1 -xf ${SOURCE}',
-])
+]))
