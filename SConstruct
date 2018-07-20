@@ -52,6 +52,5 @@ boot_build = env.Command('boot.zip', ['raspbian/initrd', 'firmware/firmware.tar.
 ], STAGE=boot)
 env.Clean(boot_build, boot)
 
-tftp_root = Value('tftp-root={:s}'.format(boot.abspath))
-env.Substfile('dnsmasq.conf', ['dnsmasq.conf.in', tftp_root, Value('')])
+env.Substfile('dnsmasq.conf', 'dnsmasq.conf.in', SUBST_DICT={'@TFTP_ROOT@': boot.abspath})
 
