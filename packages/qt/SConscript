@@ -32,7 +32,6 @@ penv['QT_HOST'] = Dir('qt-host')
 
 repo_files = list(penv['FUNCTIONS'].repo_scan(*repos))
 
-# TODO: depend on repo_files
 penv.Command([package['target']], ['${SYSROOT}', repo_files], [
 
     'rm -rf --one-file-system ${STAGE} ${QT_HOST}',
