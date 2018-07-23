@@ -10,21 +10,22 @@ toolchain = Dir('../sysroot/toolchain')
 penv['SYSROOT'] = sysroot
 penv['CROSS_COMPILE'] = toolchain.abspath + '/bin/arm-linux-gnueabihf-'
 
-penv.PrependENVPath('PATH', toolchain.abspath + '/bin')
+penv.PrependENVPath('PATH', toolchain.abspath + '/bin:')
 penv['ENV']['SYSROOT'] = sysroot.abspath
 
+penv_gst = penv.Clone()
 
 def package_walk(name, result, seen):
     if name in seen:
         return
     seen.add(name)
-    p = SConscript(name + '/SConscript', 'penv')
+    p = SConscript(name + '/SConscript', 'sysroot penv penv_gst')
     for r in p['requires']:
         package_walk(r, result, seen)
     result[name] = p
 
 packages = OrderedDict()
-for p in []:
+for p in ['qmlrss', 'gstreamer']:
     package_walk(p, packages, set())
 print('Enabled packages:', ', '.join(packages.keys()))
 
@@ -32,36 +33,3 @@ print('Enabled packages:', ', '.join(packages.keys()))
 SConscript('../sysroot/SConscript', 'env packages')
 
 Return('packages')
-
-
-
-
-
-######### leftover stuff from old Makefile #########
-
-toolchain_mk = """
-ARCH_CFLAGS := -pipe -march=armv7-a -marm -mthumb-interwork -mfpu=neon-vfpv4 -mtune=cortex-a7 -mabi=aapcs-linux -mfloat-abi=hard
-"""
-
-workarounds_mk = """
-# Workarounds for libtool and gobject badness.
-
-# pkg-config cannot handle sysroots properly, so we need to use a
-# wrapper to adjust any paths it outputs.
-# Also need to export PKG_CONFIG_LIBDIR in each package Makefile.
-export PKG_CONFIG := $(BASEDIR)/../pkg-config
-export PKG_CONFIG_DIR :=
-export PKG_CONFIG_SYSROOT_DIR := $(SYSROOT)
-
-# Set up Qemu for gobject introspection
-# G-I binding generation is done by building a native executable and
-# then running it to see what it exports. We need Qemu for this.
-# Also need to export XDG_DATA_DIRS in each package Makefile.
-export QEMU_LD_PREFIX := $(SYSROOT)
-export LD_LIBRARY_PATH := $(SYSROOT)/opt/vc/lib
-
-# tell g-ir-scanner about the sysroot.
-export CFLAGS := --sysroot=$(SYSROOT) $(ARCH_CFLAGS)
-export CPPFLAGS := --sysroot=$(SYSROOT)
-export LDFLAGS := --sysroot=$(SYSROOT) -Wl,--unresolved-symbols=ignore-in-shared-libs
-"""
