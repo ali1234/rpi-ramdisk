@@ -6,7 +6,12 @@ import sh
 env = Environment(tools=[])
 env.Tool('textfile')
 
-env['REDIRECT'] = ' > /dev/null'
+
+AddOption('--verbose', dest='verbose', action='store_true',  help='Output verbose build logs.')
+
+
+env['REDIRECT'] = '' if GetOption('verbose') else ' > /dev/null'
+
 env['MAKE'] = 'make -j8'
 
 class Functions(object):
@@ -34,6 +39,12 @@ class Functions(object):
 
 
 env['FUNCTIONS'] = Functions
+
+
+def print_cmd_line(message, targets, sources, env):
+    print('\033[33m\033[1m', targets[0], ': \033[39m', message, '\033[0m', sep='')
+
+env['PRINT_CMD_LINE_FUNC'] = print_cmd_line
 
 SConscript([
     'kernel/SConscript',
