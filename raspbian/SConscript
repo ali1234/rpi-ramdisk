@@ -75,7 +75,7 @@ root_build = renv.Command('initrd', [multistrap_conf_file, '../kernel/kernel-roo
     '${CHROOT} ${STAGE} passwd -d root',
 
     # remove excluded files that multistrap missed
-    '${SOURCES[4]} ${STAGE} ${SOURCES[5]}',
+    '${SOURCES[4]} ${STAGE} ${SOURCES[5]} ${REDIRECT}',
     'mkdir -p ${STAGE}/etc/dpkg/dpkg.conf.d/',
     'cp ${SOURCES[5]} ${STAGE}/etc/dpkg/dpkg.conf.d/',
 
