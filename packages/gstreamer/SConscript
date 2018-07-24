@@ -1,0 +1,182 @@
+import itertools
+
+Import('sysroot penv_gst')
+
+
+package = {
+
+    'requires': [],
+
+    'sysroot_debs': [
+        # core dependencies
+        'libglib2.0-dev', 'libreadline-dev', 'libssl1.0-dev', 'zlib1g-dev', 'libasound2-dev',
+        'libgirepository1.0-dev', 'uuid-dev', 'libsoup2.4-dev',
+        'libxml2-dev', 'libgee-0.8-dev', 'libsqlite3-dev', 'valac', 'liborc-0.4-dev', 'liborc-0.4-dev-bin',
+        'libraspberrypi-dev',
+        # container formats
+        'libogg-dev',
+        # image formats
+        'libpng-dev', 'libjpeg-dev',
+        # audio formats
+        'libflac-dev', 'libvorbis-dev', 'libopus-dev', 'libmpg123-dev', 'liba52-0.7.4-dev',
+        # video formats (software decoding)
+        'libmpeg2-4-dev', 'libtheora-dev',
+        # libav
+        'libavcodec57', 'libavfilter6', 'libavformat57', 'libavutil55', 'libavdevice57',
+    ],
+
+    'root_debs': [
+        # core dependencies
+        'liborc-0.4-0', 'libasound2', 'libxml2', 'libsoup2.4-1', 'libraspberrypi0',
+        # container formats
+        'libogg0',
+        # image formats
+        'libjpeg62-turbo', 'libpng12-0',
+        # audio formats
+        'libmpg123-0', 'libopus0', 'libvorbisenc2', 'libflac8', 'liba52-0.7.4',
+        # video formats (software decoding)
+        'libmpeg2-4', 'libtheora0',
+        # libav
+        'libavcodec-dev', 'libavfilter-dev', 'libavformat-dev', 'libavutil-dev',
+    ],
+
+    'target': File('gstreamer.tar.gz'),
+    'install': [],
+
+}
+
+
+prefix = '/opt/gstreamer'
+stage = Dir('stage/')
+
+arch_cflags = ' '.join([
+    '-pipe',
+    '-march=armv7-a',
+    '-marm',
+    '-mthumb-interwork',
+    '-mfpu=neon-vfpv4',
+    '-mtune=cortex-a7',
+    '-mabi=aapcs-linux',
+    '-mfloat-abi=hard',
+])
+
+
+
+
+# tell g-ir-scanner about the sysroot.
+penv_gst['ENV']['CFLAGS'] = '--sysroot={sysroot} {cflags}'.format(sysroot=sysroot.abspath, cflags=arch_cflags)
+
+penv_gst['ENV']['LDFLAGS'] = ' '.join([
+    '--sysroot={sysroot}',
+    '-L{sysroot}/opt/vc/lib',
+    '-L{stage}/opt/gstreamer/lib',
+    '-Wl,--unresolved-symbols=ignore-in-shared-libs',
+]).format(sysroot=sysroot.abspath, stage=stage.abspath)
+
+penv_gst['ENV']['CPPFLAGS'] = ' '.join([
+    '--sysroot={sysroot}',
+    # put dispmanx/EGL flags into the global state. https://bugzilla.gnome.org/show_bug.cgi?id=770987
+    '-I{sysroot}/opt/vc/include',
+    '-I{sysroot}/opt/vc/include/interface/vcos/pthreads',
+    '-I{sysroot}/opt/vc/include/interface/vmcs_host/linux',
+    '-I{stage}/opt/gstreamer/include/gstreamer-1.0',
+]).format(sysroot=sysroot.abspath, stage=stage.abspath)
+
+
+# add stage to the paths. every package which uses this env should do this (ie rygel).
+penv_gst.AppendENVPath('PKG_CONFIG_LIBDIR', stage.abspath + prefix + '/lib/pkgconfig')
+penv_gst.AppendENVPath('XDG_DATA_DIRS', stage.abspath + prefix + '/share')
+
+repos = [Dir(d) for d in [
+    'gstreamer/', 'gst-plugins-base/', 'gst-plugins-good/', 'gst-plugins-bad/', 'gst-plugins-ugly/',
+    'gst-libav/', 'gst-omx/',
+]]
+
+repo_files = list(penv_gst['FUNCTIONS'].repo_scan(*repos))
+
+penv_gst.Command([package['target']], ['${SYSROOT}', repo_files],
+    [
+
+        'rm -rf --one-file-system ${STAGE}',
+        'for repo in ${REPOS}; do git -C $$repo clean -dfxq; done',
+
+        #'/bin/sh',
+        'mkdir -p ${STAGE}${PREFIX}/lib',
+        'mkdir -p ${STAGE}${PREFIX}/include/gstreamer-1.0',
+
+        'cd ${REPOS[0]} && ./autogen.sh ${CROSS_OPTS} ${COMMON_OPTS} ${NODEBUG_OPTS}',
+        'make -j8 -C ${REPOS[0]}',
+        'make -j8 -C ${REPOS[0]} DESTDIR=${STAGE.abspath} install-strip',
+
+        # libtool sucks donkey balls
+        'mkdir -p ${SYSROOT}/opt',
+        'ln -sf ${STAGE.abspath}${PREFIX} ${SYSROOT}${PREFIX}',
+
+        # base
+        'cd ${REPOS[1]} && ./autogen.sh ${CROSS_OPTS} ${COMMON_OPTS} ${NODEBUG_OPTS} ${PLUGIN_OPTS} ${DISPMANX_OPTS}',
+        'make -j8 -C ${REPOS[1]}',
+        'make -j8 -C ${REPOS[1]} DESTDIR=${STAGE.abspath} install-strip',
+        # good
+        'cd ${REPOS[2]} && ./autogen.sh ${CROSS_OPTS} ${COMMON_OPTS} ${NODEBUG_OPTS} ${PLUGIN_OPTS}',
+        'make -j8 -C ${REPOS[2]}',
+        'make -j8 -C ${REPOS[2]} DESTDIR=${STAGE.abspath} install-strip',
+        # bad
+        'cd ${REPOS[3]} && ./autogen.sh ${CROSS_OPTS} ${COMMON_OPTS} ${NODEBUG_OPTS} ${PLUGIN_OPTS} --disable-gl',
+        'make -j8 -C ${REPOS[3]}',
+        'make -j8 -C ${REPOS[3]} DESTDIR=${STAGE.abspath} install-strip',
+        # ugly
+        'cd ${REPOS[4]} && ./autogen.sh ${CROSS_OPTS} ${COMMON_OPTS} ${NODEBUG_OPTS} ${PLUGIN_OPTS}',
+        'make -j8 -C ${REPOS[4]}',
+        'make -j8 -C ${REPOS[4]} DESTDIR=${STAGE.abspath} install-strip',
+
+#        'cd ${REPOS[5]} && ./autogen.sh ${CROSS_OPTS} ${COMMON_OPTS} ${NODEBUG_OPTS} ${PLUGIN_OPTS}',
+#        'make -C ${REPOS[5]}',
+#        'make -C ${REPOS[5]} DESTDIR=${STAGE} install-strip',
+
+        'cd ${REPOS[6]} && ./autogen.sh ${CROSS_OPTS} ${COMMON_OPTS} ${NODEBUG_OPTS} ${PLUGIN_OPTS} ${OMX_OPTS}',
+        'make -j8 -C ${REPOS[6]}',
+        'make -j8 -C ${REPOS[6]} DESTDIR=${STAGE.abspath} install-strip',
+
+        'mkdir -p ${STAGE}/etc/ld.so.conf.d',
+        'echo ${PREFIX}/lib > ${STAGE}/etc/ld.so.conf.d/opt-gstreamer.conf',
+
+        'tar -C ${STAGE} --exclude=.${PREFIX}/doc --exclude=.${PREFIX}/include \
+            --exclude=*.la --exclude=.${PREFIX}/share/locale --exclude=.${PREFIX}/share/aclocal \
+            --exclude=.${PREFIX}/share/bash-completion \
+            -czf ${TARGETS[0]} .'
+
+    ],
+    REPOS=repos, PREFIX=prefix, STAGE=stage,
+    CROSS_OPTS = ' '.join([
+        '--host=arm-linux-gnueabihf',
+        '--build=x86_64-linux-gnu',
+        '--prefix={:s}'.format(prefix),
+        '--with-sysroot={:s}'.format(sysroot.abspath),
+        '--with-libgcrypt-prefix={:s}/usr'.format(sysroot.abspath),
+    ]),
+    COMMON_OPTS = ' '.join([
+        '--disable-dependency-tracking', '--disable-maintainer-mode', '--disable-fatal-warnings',
+        '--disable-debug', '--disable-docbook', '--disable-gtk-doc', '--disable-gtk-doc-html',
+        '--disable-gtk-doc-pdf', '--disable-examples', '--disable-benchmarks',
+        '--enable-introspection=yes',
+    ]),
+    NODEBUG_OPTS = ' '.join([
+        '--enable-gobject-cast-checks=no', '--enable-glib-asserts=no', '--disable-gst-debug',
+        '--disable-gst-tracer-hooks', '--disable-trace', '--disable-alloc-trace', '--disable-valgrind',
+    ]),
+    PLUGIN_OPTS = ' '.join([
+        '--enable-orc', '--disable-x', '--disable-xvideo', '--disable-xshm', '--disable-wayland',
+        '--disable-fbdev', '--disable-jack', '--disable-pulse', '--disable-cairo',
+        '--disable-gdk_pixbuf', '--disable-festival', '--disable-flite', '--disable-fluidsynth',
+    ]),
+    DISPMANX_OPTS = ' '.join([
+        '--disable-opengl', '--enable-gles2', '--enable-egl', '--disable-glx', '--enable-dispmanx',
+        '--with-gles2-module-name=/opt/vc/lib/libbrcmGLESv2.so', '--with-egl-module-name=/opt/vc/lib/libbrcmEGL.so',
+    ]),
+    OMX_OPTS = ' '.join([
+        '--with-omx-target=rpi',
+        '--with-omx-header-path={:s}/opt/vc/include/IL'.format(sysroot.abspath),
+    ]),
+)
+
+Return('package')

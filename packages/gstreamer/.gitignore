@@ -1,4 +1,3 @@
-/root
+/stage
 /gstreamer.tar.gz
-/*.timestamp
 /*.config.log

@@ -1,5 +1,5 @@
 #!/bin/bash
 
-pkg-config "$@" | sed -e "s|$SYSROOT$BASEDIR|$BASEDIR|g"
+pkg-config "$@" | sed -e "s|$SYSROOT$PACKAGES|$PACKAGES|g"
 
 exit ${PIPESTATUS[0]}
