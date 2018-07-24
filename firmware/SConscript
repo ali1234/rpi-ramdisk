@@ -1,6 +1,6 @@
 import os
 
-env = Environment(tools=[])
+Import('env')
 
 try:
     env['ENV']['http_proxy'] = os.environ['APT_HTTP_PROXY']
