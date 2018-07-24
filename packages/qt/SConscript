@@ -42,18 +42,18 @@ penv.Command([package['target']], ['${SYSROOT}', repo_files], [
 		-no-gtk -no-widgets -no-compile-examples -no-sql-tds \
 		-device-option CROSS_COMPILE=${CROSS_COMPILE} -sysroot ${SYSROOT.abspath} \
 		-opensource -confirm-license -make libs -strip -optimize-size \
-		-prefix ${PREFIX} -extprefix ${STAGE.abspath}/${PREFIX} -hostprefix ${QT_HOST.abspath}',
+		-prefix ${PREFIX} -extprefix ${STAGE.abspath}/${PREFIX} -hostprefix ${QT_HOST.abspath} 2>&1 ${REDIRECT}',
 
-    'make -j8 -C ${REPOS[0]}',
-	'make -j8 -C ${REPOS[0]} install',
+    '${MAKE} -C ${REPOS[0]} ${REDIRECT}',
+	'${MAKE} -C ${REPOS[0]} install ${REDIRECT}',
 
-	'cd ${REPOS[1]} && ${QT_HOST.abspath}/bin/qmake',
-	'make -j8 -C ${REPOS[1]}',
-	'make -j8 -C ${REPOS[1]} install',
+	'cd ${REPOS[1]} && ${QT_HOST.abspath}/bin/qmake ${REDIRECT}',
+	'${MAKE} -C ${REPOS[1]} ${REDIRECT}',
+	'${MAKE} -C ${REPOS[1]} install ${REDIRECT}',
 
-	'cd ${REPOS[2]} && ${QT_HOST.abspath}/bin/qmake',
-	'make -j8 -C ${REPOS[2]}',
-	'make -j8 -C ${REPOS[2]} install',
+	'cd ${REPOS[2]} && ${QT_HOST.abspath}/bin/qmake ${REDIRECT}',
+	'${MAKE} -C ${REPOS[2]} ${REDIRECT}',
+	'${MAKE} -C ${REPOS[2]} install ${REDIRECT}',
 
     'mkdir -p ${STAGE}/etc/ld.so.conf.d',
     'echo ${PREFIX}/lib > ${STAGE}/etc/ld.so.conf.d/opt-qt.conf',

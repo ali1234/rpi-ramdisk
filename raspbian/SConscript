@@ -39,12 +39,12 @@ root_build = renv.Command('initrd', [multistrap_conf_file, '../kernel/kernel-roo
     'mkdir -p ${STAGE}/etc/apt/trusted.gpg.d/',
     'gpg --export 82B129927FA3303E > ${STAGE}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
     'gpg --export 9165938D90FDDD2E > ${STAGE}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
-    '/usr/sbin/multistrap -d ${STAGE} -f ${SOURCES[0]}',
+    '/usr/sbin/multistrap -d ${STAGE} -f ${SOURCES[0]} ${REDIRECT}',
 
     # run preinst scripts
     'for script in ${STAGE}/var/lib/dpkg/info/*.preinst; do \
         [ "$$script" = "${STAGE}/var/lib/dpkg/info/vpnc.preinst" ] && continue; \
-        echo "I: run preinst script $${script##${STAGE}}"; \
+        echo "I: run preinst script $${script##${STAGE}}" ${REDIRECT}; \
         DPKG_MAINTSCRIPT_NAME=preinst \
         DPKG_MAINTSCRIPT_PACKAGE="`basename $$script .preinst`" \
         ${CHROOT} ${STAGE} $${script##${STAGE}} install; \
@@ -63,7 +63,7 @@ root_build = renv.Command('initrd', [multistrap_conf_file, '../kernel/kernel-roo
 
     # configure packages
     'DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
-        LC_ALL=C LANGUAGE=C LANG=C ${CHROOT} ${STAGE} /usr/bin/dpkg --configure -a || true',
+        LC_ALL=C LANGUAGE=C LANG=C ${CHROOT} ${STAGE} /usr/bin/dpkg --configure -a ${REDIRECT} || true',
 
     # initialize /etc/fstab
     'echo proc /proc proc defaults 0 0 > ${STAGE}/etc/fstab',

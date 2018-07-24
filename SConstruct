@@ -6,6 +6,8 @@ import sh
 env = Environment(tools=[])
 env.Tool('textfile')
 
+env['REDIRECT'] = ' > /dev/null'
+env['MAKE'] = 'make -j8'
 
 class Functions(object):
 

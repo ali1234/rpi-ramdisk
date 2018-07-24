@@ -24,7 +24,7 @@ def relative_links(target, source, env):
                 continue
             path.unlink()
             new_target = posixpath.relpath(root / link_target[1:], start=path.parent)
-            print(path, ':', link_target, '->', new_target)
+            #print(path, ':', link_target, '->', new_target)
             os.symlink(new_target, str(path))
 
 
@@ -39,7 +39,7 @@ sysroot_build = senv.Command('sysroot/', [multistrap_conf_file, 'overlay/'], [
     'mkdir -p ${TARGET}/etc/apt/trusted.gpg.d/',
     'gpg --export 82B129927FA3303E > ${TARGET}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
     'gpg --export 9165938D90FDDD2E > ${TARGET}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
-    '/usr/sbin/multistrap -d ${TARGET} -f ${SOURCES[0]}',
+    '/usr/sbin/multistrap -d ${TARGET} -f ${SOURCES[0]} ${REDIRECT}',
 
     # work around for the following bugs:
     #  https://github.com/raspberrypi/firmware/issues/1013

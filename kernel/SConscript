@@ -12,7 +12,7 @@ kenv['BUILDERS']['Kernel'] = Builder(action = [
     'rm -rf --one-file-system ${STAGE}',
 
     'cp ${CONFIG} ${REPO}/.config',
-    'make -j8 -C ${REPO} zImage modules dtbs',
+    'make -j8 -C ${REPO} zImage modules dtbs ${REDIRECT}',
 
     'mkdir -p ${STAGE}/root ${STAGE}/boot/overlays',
     'make -j8 -C ${REPO} INSTALL_MOD_PATH=${STAGE.abspath}/root modules_install',

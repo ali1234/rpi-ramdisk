@@ -15,7 +15,7 @@ firmware = env.Command('firmware.tar.gz', ['multistrap.conf', 'cmdline.txt', 'co
 
     'mkdir -p ${STAGE}/etc/apt/trusted.gpg.d/',
     'gpg --export 82B129927FA3303E > ${STAGE}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
-    '/usr/sbin/multistrap -d ${STAGE} -f ${SOURCES[0]}',
+    '/usr/sbin/multistrap -d ${STAGE} -f ${SOURCES[0]} ${REDIRECT}',
 
     'cp ${SOURCES[1:]} ${STAGE}/boot/',
 
