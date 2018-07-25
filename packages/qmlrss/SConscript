@@ -11,29 +11,23 @@ package = {
 prefix = '/opt/qt'
 stage = Dir('stage/')
 
-repo = Dir('qmlrss')
+repo = Dir('qmlrss/')
 
-# TODO: depends on qt-host
-penv.Command('qmlrss/qmlrss', list(penv['FUNCTIONS'].repo_scan(repo)), [
+penv.Command([package['target']], ['qmlrss.service', *list(penv['FUNCTIONS'].repo_scan(repo))], [
+
+    'rm -rf --one-file-system ${STAGE}',
 
     'cd ${REPO} && ${QT_HOST.abspath}/bin/qmake',
     'make -j8 -C ${REPO}',
-
-], REPO=repo)
-
-
-penv.Command([package['target']], ['qmlrss.service', 'qmlrss/qmlrss'], [
-
-    'rm -rf --one-file-system ${STAGE}',
 
     'mkdir -p ${STAGE}/etc/systemd/system',
     'mkdir -p ${STAGE}/${PREFIX}/bin',
 
     'cp ${SOURCES[0]} ${STAGE}/etc/systemd/system/',
-    'cp ${SOURCES[1]} ${STAGE}/${PREFIX}/bin/',
+    'cp ${REPO}/qmlrss ${STAGE}/${PREFIX}/bin/',
 
     'tar -C ${STAGE} -czf ${TARGETS[0]} .',
 
-], PREFIX=prefix, STAGE=stage)
+], PREFIX=prefix, STAGE=stage, REPO=repo)
 
 Return('package')
