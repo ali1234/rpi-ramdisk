@@ -17,7 +17,7 @@ penv.Command([package['target']], ['qmlrss.service', *list(penv['FUNCTIONS'].rep
 
     'rm -rf --one-file-system ${STAGE}',
 
-    'cd ${REPO} && ${QMAKE}',
+    'cd ${REPO} && ${QMAKE.abspath}',
     'make -j8 -C ${REPO}',
 
     'mkdir -p ${STAGE}/etc/systemd/system',

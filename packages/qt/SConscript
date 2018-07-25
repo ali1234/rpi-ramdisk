@@ -31,7 +31,7 @@ stage = Dir('stage/')
 penv['QT_HOST'] = Dir('qt-host')
 penv['QMAKE'] = penv['QT_HOST'].File('bin/qmake')
 
-penv.Command([package['target']], ['${SYSROOT}', *list(penv['FUNCTIONS'].repo_scan(*repos))], [
+penv.Command([package['target'], '${QMAKE}'], ['${SYSROOT}', *list(penv['FUNCTIONS'].repo_scan(*repos))], [
 
     'rm -rf --one-file-system ${STAGE} ${QT_HOST}',
     'for repo in ${REPOS}; do git -C $$repo clean -dfxq; done',
