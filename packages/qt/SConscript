@@ -29,7 +29,7 @@ prefix = '/opt/qt'
 stage = Dir('stage/')
 
 penv['QT_HOST'] = Dir('qt-host')
-
+penv['QMAKE'] = penv['QT_HOST'].File('bin/qmake')
 
 penv.Command([package['target']], ['${SYSROOT}', *list(penv['FUNCTIONS'].repo_scan(*repos))], [
 
@@ -46,11 +46,11 @@ penv.Command([package['target']], ['${SYSROOT}', *list(penv['FUNCTIONS'].repo_sc
     '${MAKE} -C ${REPOS[0]} ${REDIRECT}',
 	'${MAKE} -C ${REPOS[0]} install ${REDIRECT}',
 
-	'cd ${REPOS[1]} && ${QT_HOST.abspath}/bin/qmake ${REDIRECT}',
+	'cd ${REPOS[1]} && ${QMAKE.abspath} ${REDIRECT}',
 	'${MAKE} -C ${REPOS[1]} ${REDIRECT}',
 	'${MAKE} -C ${REPOS[1]} install ${REDIRECT}',
 
-	'cd ${REPOS[2]} && ${QT_HOST.abspath}/bin/qmake ${REDIRECT}',
+	'cd ${REPOS[2]} && ${QMAKE.abspath} ${REDIRECT}',
 	'${MAKE} -C ${REPOS[2]} ${REDIRECT}',
 	'${MAKE} -C ${REPOS[2]} install ${REDIRECT}',
 
