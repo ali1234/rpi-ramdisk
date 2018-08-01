@@ -13,21 +13,33 @@ stage = Dir('stage/')
 
 repo = Dir('qmlrss/')
 
-penv.Command([package['target']], ['qmlrss.service', *list(penv['FUNCTIONS'].repo_scan(repo))], [
+penv.Command(
 
-    'rm -rf --one-file-system ${STAGE}',
+    [
+        package['target'],
+    ],
 
-    'cd ${REPO} && ${QMAKE.abspath}',
-    'make -j8 -C ${REPO}',
+    [
+        'qmlrss.service',
+        *list(penv['FUNCTIONS'].repo_scan(repo)),
+    ],
 
-    'mkdir -p ${STAGE}/etc/systemd/system',
-    'mkdir -p ${STAGE}/${PREFIX}/bin',
+    [
+        'rm -rf --one-file-system ${STAGE}',
 
-    'cp ${SOURCES[0]} ${STAGE}/etc/systemd/system/',
-    'cp ${REPO}/qmlrss ${STAGE}/${PREFIX}/bin/',
+        'cd ${REPO} && ${QMAKE.abspath}',
+        'make -j8 -C ${REPO}',
 
-    'tar -C ${STAGE} -czf ${TARGETS[0]} .',
+        'mkdir -p ${STAGE}/etc/systemd/system',
+        'mkdir -p ${STAGE}/${PREFIX}/bin',
 
-], PREFIX=prefix, STAGE=stage, REPO=repo)
+        'cp ${SOURCES[0]} ${STAGE}/etc/systemd/system/',
+        'cp ${REPO}/qmlrss ${STAGE}/${PREFIX}/bin/',
+
+        'tar -C ${STAGE} -czf ${TARGETS[0]} .',
+    ],
+
+    PREFIX=prefix, STAGE=stage, REPO=repo
+)
 
 Return('package')

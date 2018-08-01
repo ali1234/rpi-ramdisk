@@ -1,4 +1,5 @@
 import pathlib
+import subprocess
 from textwrap import TextWrapper
 
 import sh
@@ -22,6 +23,14 @@ class Functions(object):
             p = pathlib.Path(str(dir.abspath))
             yield from (str(p / f) for f in sh.git('-C', str(p), 'ls-files', '-mo', '--exclude-standard').split('\n')[:-1])
             yield sh.git('-C', str(p), 'rev-parse', '--absolute-git-dir').split('\n')[0] + '/logs/HEAD'
+
+    @staticmethod
+    def dir_scan(dir):
+        # stable recursive checksum of directory
+        return subprocess.check_output([
+            'sh', '-c',
+            f'cd {dir.abspath} && find -type f -exec sha256sum {{}} \; | sort | sha256sum'
+        ])
 
     @staticmethod
     def textwrap(string_or_list, prefix='', join=' ', width=120):

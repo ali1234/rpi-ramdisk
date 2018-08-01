@@ -31,104 +31,124 @@ stage = Dir('stage/')
 renv['ENV']['QEMU_LD_PREFIX'] = stage.abspath
 renv['CHROOT'] = 'proot -0 -q qemu-arm -w / -r'
 
-root_build = renv.Command('initrd', [multistrap_conf_file, '../kernel/kernel-root.tar.gz', '../kernel/kernel7-root.tar.gz', overlay, 'cleanup', 'excludes.conf', *[p['target'] for p in packages.values()]], [
+root_build = renv.Command(
 
-    'rm -rf --one-file-system ${STAGE}',
+    [
+        'initrd',
+    ],
 
-    # run multistrap
-    'mkdir -p ${STAGE}/etc/apt/trusted.gpg.d/',
-    'gpg --export 82B129927FA3303E > ${STAGE}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
-    'gpg --export 9165938D90FDDD2E > ${STAGE}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
-    '/usr/sbin/multistrap -d ${STAGE} -f ${SOURCES[0]} ${REDIRECT}',
+    [
+        multistrap_conf_file,
+        '../kernel/kernel-root.tar.gz',
+        '../kernel/kernel7-root.tar.gz',
+        overlay,
+        'cleanup',
+        'excludes.conf',
+        *[p['target'] for p in packages.values()],
+        Value(renv['FUNCTIONS'].dir_scan(overlay)),
+    ],
 
-    # run preinst scripts
-    'for script in ${STAGE}/var/lib/dpkg/info/*.preinst; do \
-        [ "$$script" = "${STAGE}/var/lib/dpkg/info/vpnc.preinst" ] && continue; \
-        echo "I: run preinst script $${script##${STAGE}}" ${REDIRECT}; \
-        DPKG_MAINTSCRIPT_NAME=preinst \
-        DPKG_MAINTSCRIPT_PACKAGE="`basename $$script .preinst`" \
-        ${CHROOT} ${STAGE} $${script##${STAGE}} install; \
-        done',
+    [
 
-    # don't run makedev
-    # we will create device nodes later, after we are done with the system dev
-    'rm -f ${STAGE}/var/lib/dpkg/info/makedev.postinst',
+        'rm -rf --one-file-system ${STAGE}',
 
-    # work around https://pad.lv/1727874
-    'rm -f ${STAGE}/var/lib/dpkg/info/raspbian-archive-keyring.postinst',
-    'ln -sf /usr/share/keyrings/raspbian-archive-keyring.gpg ${STAGE}/etc/apt/trusted.gpg.d/',
+        # run multistrap
+        'mkdir -p ${STAGE}/etc/apt/trusted.gpg.d/',
+        'gpg --export 82B129927FA3303E > ${STAGE}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
+        'gpg --export 9165938D90FDDD2E > ${STAGE}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
+        '/usr/sbin/multistrap -d ${STAGE} -f ${SOURCES[0]} ${REDIRECT}',
 
-    # work around PAM error
-    'ln -s -f /bin/true ${STAGE}/usr/bin/chfn',
+        # run preinst scripts
+        'for script in ${STAGE}/var/lib/dpkg/info/*.preinst; do \
+            [ "$$script" = "${STAGE}/var/lib/dpkg/info/vpnc.preinst" ] && continue; \
+            echo "I: run preinst script $${script##${STAGE}}" ${REDIRECT}; \
+            DPKG_MAINTSCRIPT_NAME=preinst \
+            DPKG_MAINTSCRIPT_PACKAGE="`basename $$script .preinst`" \
+            ${CHROOT} ${STAGE} $${script##${STAGE}} install; \
+            done',
 
-    # configure packages
-    'DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
-        LC_ALL=C LANGUAGE=C LANG=C ${CHROOT} ${STAGE} /usr/bin/dpkg --configure -a ${REDIRECT} || true',
+        # don't run makedev
+        # we will create device nodes later, after we are done with the system dev
+        'rm -f ${STAGE}/var/lib/dpkg/info/makedev.postinst',
 
-    # initialize /etc/fstab
-    'echo proc /proc proc defaults 0 0 > ${STAGE}/etc/fstab',
+        # work around https://pad.lv/1727874
+        'rm -f ${STAGE}/var/lib/dpkg/info/raspbian-archive-keyring.postinst',
+        'ln -sf /usr/share/keyrings/raspbian-archive-keyring.gpg ${STAGE}/etc/apt/trusted.gpg.d/',
 
-    # hostname
-    'echo rpi-ramdisk > ${STAGE}/etc/hostname',
+        # work around PAM error
+        'ln -s -f /bin/true ${STAGE}/usr/bin/chfn',
 
-    # delete root password
-    '${CHROOT} ${STAGE} passwd -d root',
+        # configure packages
+        'DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
+            LC_ALL=C LANGUAGE=C LANG=C ${CHROOT} ${STAGE} /usr/bin/dpkg --configure -a ${REDIRECT} || true',
 
-    # remove excluded files that multistrap missed
-    '${SOURCES[4]} ${STAGE} ${SOURCES[5]} ${REDIRECT}',
-    'mkdir -p ${STAGE}/etc/dpkg/dpkg.conf.d/',
-    'cp ${SOURCES[5]} ${STAGE}/etc/dpkg/dpkg.conf.d/',
+        # initialize /etc/fstab
+        'echo proc /proc proc defaults 0 0 > ${STAGE}/etc/fstab',
 
-    # update hwdb after cleaning
-    '${CHROOT} ${STAGE} udevadm hwdb --update --usr',
+        # hostname
+        'echo rpi-ramdisk > ${STAGE}/etc/hostname',
 
-    # modules
-    'tar -xf ${SOURCES[1]} -C ${STAGE}',
-    'tar -xf ${SOURCES[2]} -C ${STAGE}',
+        # delete root password
+        '${CHROOT} ${STAGE} passwd -d root',
 
-    # packages
-    *list(package_actions()),
+        # remove excluded files that multistrap missed
+        '${SOURCES[4]} ${STAGE} ${SOURCES[5]} ${REDIRECT}',
+        'mkdir -p ${STAGE}/etc/dpkg/dpkg.conf.d/',
+        'cp ${SOURCES[5]} ${STAGE}/etc/dpkg/dpkg.conf.d/',
 
-    # overlay
-    'cp -r ${SOURCES[3]}/* ${STAGE}',
+        # update hwdb after cleaning
+        '${CHROOT} ${STAGE} udevadm hwdb --update --usr',
 
-    # ldconfig
-    '${STAGE}/sbin/ldconfig -r ${STAGE}',
+        # modules
+        'tar -xf ${SOURCES[1]} -C ${STAGE}',
+        'tar -xf ${SOURCES[2]} -C ${STAGE}',
 
-    # network setup
+        # packages
+        *list(package_actions()),
 
-    # reset default udev persistent-net rule
-    'rm -f ${STAGE}/etc/udev/rules.d/*_persistent-net.rules',
+        # overlay
+        'cp -r ${SOURCES[3]}/* ${STAGE}',
 
-    # /etc/resolv.conf symlink
-    'ln -sf /run/systemd/resolve/resolv.conf ${STAGE}/etc/resolv.conf',
+        # ldconfig
+        '${STAGE}/sbin/ldconfig -r ${STAGE}',
 
-    # enable network services
-    '${CHROOT} ${STAGE} /bin/systemctl reenable systemd-networkd',
-    '${CHROOT} ${STAGE} /bin/systemctl reenable systemd-resolved',
-    '${CHROOT} ${STAGE} /bin/systemctl reenable systemd-timesyncd',
-    '${CHROOT} ${STAGE} /bin/systemctl reenable systemd-networkd-wait-online.service',
-    '${CHROOT} ${STAGE} /bin/systemctl reenable wpa_supplicant@wlan0.service',
+        # network setup
 
-    # time used by timesyncd if no other is available
-    'touch ${STAGE}/var/lib/systemd/clock',
+        # reset default udev persistent-net rule
+        'rm -f ${STAGE}/etc/udev/rules.d/*_persistent-net.rules',
 
-    # mtab
-    'ln -sf /proc/mounts ${STAGE}/etc/mtab',
+        # /etc/resolv.conf symlink
+        'ln -sf /run/systemd/resolve/resolv.conf ${STAGE}/etc/resolv.conf',
 
-    # this must be done last. if the fakeroot devices exist on the system,
-    # chroot wont be able to read from them, which breaks systemd setup.
-    'cd ${STAGE}/dev && fakeroot /sbin/MAKEDEV std',
+        # enable network services
+        '${CHROOT} ${STAGE} /bin/systemctl reenable systemd-networkd',
+        '${CHROOT} ${STAGE} /bin/systemctl reenable systemd-resolved',
+        '${CHROOT} ${STAGE} /bin/systemctl reenable systemd-timesyncd',
+        '${CHROOT} ${STAGE} /bin/systemctl reenable systemd-networkd-wait-online.service',
+        '${CHROOT} ${STAGE} /bin/systemctl reenable wpa_supplicant@wlan0.service',
 
-    # pack rootfs into initrd
-    '${CHROOT} ${STAGE} sh -c "cd / && find * -xdev -not \( \
-              -path host-rootfs -prune \
-              -path run -prune \
-              -path proc -prune \
-              -path sys -prune \
-              -path boot -prune \
-           \) | cpio --create -H newc" | xz -C crc32 -9 > ${TARGET}'
+        # time used by timesyncd if no other is available
+        'touch ${STAGE}/var/lib/systemd/clock',
 
-], STAGE=stage, PACKAGES=packages)
+        # mtab
+        'ln -sf /proc/mounts ${STAGE}/etc/mtab',
+
+        # this must be done last. if the fakeroot devices exist on the system,
+        # chroot wont be able to read from them, which breaks systemd setup.
+        'cd ${STAGE}/dev && fakeroot /sbin/MAKEDEV std',
+
+        # pack rootfs into initrd
+        '${CHROOT} ${STAGE} sh -c "cd / && find * -xdev -not \( \
+                  -path host-rootfs -prune \
+                  -path run -prune \
+                  -path proc -prune \
+                  -path sys -prune \
+                  -path boot -prune \
+               \) | cpio --create -H newc" | xz -C crc32 -9 > ${TARGET}'
+
+    ],
+
+    STAGE=stage, PACKAGES=packages
+)
 
 renv.Clean(root_build, stage)

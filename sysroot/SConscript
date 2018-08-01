@@ -32,28 +32,44 @@ all_sysroot_debs = sorted(set.union(*(set(v['sysroot_debs']) for v in packages.v
 multistrap_packages = senv['FUNCTIONS'].textwrap(all_sysroot_debs, prefix='packages=')
 multistrap_conf_file = senv.Substfile('multistrap.conf', 'multistrap.conf.in', SUBST_DICT={'@PACKAGES@': multistrap_packages})
 
-sysroot_build = senv.Command('sysroot/', [multistrap_conf_file, 'overlay/'], [
+overlay = Dir('overlay/')
 
-    'rm -rf --one-file-system ${TARGET}',
+sysroot_build = senv.Command(
 
-    'mkdir -p ${TARGET}/etc/apt/trusted.gpg.d/',
-    'gpg --export 82B129927FA3303E > ${TARGET}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
-    'gpg --export 9165938D90FDDD2E > ${TARGET}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
-    '/usr/sbin/multistrap -d ${TARGET} -f ${SOURCES[0]} ${REDIRECT}',
+    [
+        'sysroot/',
+    ],
 
-    # work around for the following bugs:
-    #  https://github.com/raspberrypi/firmware/issues/1013
-    #  https://bugreports.qt.io/browse/QTBUG-62216
-    #  https://bugreports.qt.io/browse/QTBUG-69176
-    # The workaround is simply to copy manually fixed pkgconfig files
-    # somewhere where the build will find them.
-    'cp -r ${SOURCES[1]}/* ${TARGET}',
+    [
+        multistrap_conf_file,
+        overlay,
+        Value(senv['FUNCTIONS'].dir_scan(overlay)),
+    ],
 
-    # work around for libtool badness. is this still needed?
-    # mkdir -p sysroot/opt
-    # cd sysroot/opt && for dir in $(PACKAGES); do ln -s ../../$$dir/root/opt/$$dir $$dir; done
+    [
 
-])
+        'rm -rf --one-file-system ${TARGET}',
+
+        'mkdir -p ${TARGET}/etc/apt/trusted.gpg.d/',
+        'gpg --export 82B129927FA3303E > ${TARGET}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
+        'gpg --export 9165938D90FDDD2E > ${TARGET}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
+        '/usr/sbin/multistrap -d ${TARGET} -f ${SOURCES[0]} ${REDIRECT}',
+
+        # work around for the following bugs:
+        #  https://github.com/raspberrypi/firmware/issues/1013
+        #  https://bugreports.qt.io/browse/QTBUG-62216
+        #  https://bugreports.qt.io/browse/QTBUG-69176
+        # The workaround is simply to copy manually fixed pkgconfig files
+        # somewhere where the build will find them.
+        'cp -r ${SOURCES[1]}/* ${TARGET}',
+
+        # work around for libtool badness. is this still needed?
+        # mkdir -p sysroot/opt
+        # cd sysroot/opt && for dir in $(PACKAGES); do ln -s ../../$$dir/root/opt/$$dir $$dir; done
+
+    ],
+
+)
 senv.AddPostAction(sysroot_build, relative_links)
 senv.Clean(sysroot_build, 'sysroot/')
 
