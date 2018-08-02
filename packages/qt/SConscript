@@ -44,15 +44,15 @@ penv.Command([package['target'], '${QMAKE}'], ['${SYSROOT}', *list(penv['FUNCTIO
 		-prefix ${PREFIX} -extprefix ${STAGE.abspath}/${PREFIX} -hostprefix ${QT_HOST.abspath} 2>&1 ${REDIRECT}',
 
     '${MAKE} -C ${REPOS[0]} ${REDIRECT}',
-	'${MAKE} -C ${REPOS[0]} install ${REDIRECT}',
+    '${MAKE} -C ${REPOS[0]} install ${REDIRECT}',
 
-	'cd ${REPOS[1]} && ${QMAKE.abspath} ${REDIRECT}',
-	'${MAKE} -C ${REPOS[1]} ${REDIRECT}',
-	'${MAKE} -C ${REPOS[1]} install ${REDIRECT}',
+    'cd ${REPOS[1]} && ${QMAKE.abspath} ${REDIRECT}',
+    '${MAKE} -C ${REPOS[1]} ${REDIRECT}',
+    '${MAKE} -C ${REPOS[1]} install ${REDIRECT}',
 
-	'cd ${REPOS[2]} && ${QMAKE.abspath} ${REDIRECT}',
-	'${MAKE} -C ${REPOS[2]} ${REDIRECT}',
-	'${MAKE} -C ${REPOS[2]} install ${REDIRECT}',
+    'cd ${REPOS[2]} && ${QMAKE.abspath} ${REDIRECT}',
+    '${MAKE} -C ${REPOS[2]} ${REDIRECT}',
+    '${MAKE} -C ${REPOS[2]} install ${REDIRECT}',
 
     'mkdir -p ${STAGE}/etc/ld.so.conf.d',
     'echo ${PREFIX}/lib > ${STAGE}/etc/ld.so.conf.d/opt-qt.conf',
