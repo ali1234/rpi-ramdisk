@@ -38,7 +38,7 @@ stage = this_dir / 'stage'
 repos = [this_dir / r for r in ['qtbase', 'qtxmlpatterns', 'qtdeclarative']]
 
 
-@command(produces=[package['target'], qmake], consumes=[])
+@command(produces=[package['target'], qmake], consumes=[git_repo_scan(*repos)])
 def build():
     for repo in repos:
         call([f'git -C {repo} clean -dfxq'])

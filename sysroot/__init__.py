@@ -37,6 +37,35 @@ cross_compile = toolchain / 'bin/arm-linux-gnueabihf-'
 env['PATH'] += ':' + str(toolchain / 'bin')
 env['SYSROOT'] = str(sysroot)
 
+#### pkg-config workarounds ####
+
+# pkg-config cannot handle sysroots properly, so we need to use a
+# wrapper to adjust any paths it outputs.
+env['PKG_CONFIG'] = str(this_dir / 'pkg-config')
+env['PKG_CONFIG_DIR'] = ''
+env['PKG_CONFIG_SYSROOT_DIR'] = str(sysroot)
+env['PKG_CONFIG_LIBDIR'] = ':'.join(str(sysroot / p) for p in [
+    'usr/lib/pkgconfig',
+    'usr/lib/arm-linux-gnueabihf/pkgconfig',
+    'usr/share/pkgconfig',
+])
+
+# inform pkg-config wrapper the location of the packages basedir
+env['PACKAGES'] = str(this_dir.parent / 'packages')
+
+
+#### gobject-introspection workarounds ####
+
+# G-I binding generation is done by building a native executable and
+# then running it to see what it exports. We need Qemu for this.
+env['QEMU_LD_PREFIX'] = str(sysroot)
+env['LD_LIBRARY_PATH'] = str(sysroot / 'opt/vc/lib')
+
+# search dirs for G-I
+env['XDG_DATA_DIRS'] = ':'.join(str(sysroot / p) for p in [
+    'usr/share',
+])
+
 
 @command(produces=[toolchain_tarball])
 def download_toolchain():
