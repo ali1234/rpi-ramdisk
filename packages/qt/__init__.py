@@ -38,31 +38,31 @@ stage = this_dir / 'stage'
 repos = [this_dir / r for r in ['qtbase', 'qtxmlpatterns', 'qtdeclarative']]
 
 
-@command(produces=[package['target'], qmake], consumes=[git_repo_scan(*repos)])
+@command(produces=[package['target'], qmake], consumes=[sysroot.sysroot, sysroot.toolchain])
 def build():
     for repo in repos:
         call([f'git -C {repo} clean -dfxq'])
     
     call([
         f'rm -rf --one-file-system {stage} {qt_host}',
-    
+
         f'cd {repos[0]} && ./configure -release -opengl es2 -device linux-rasp-pi2-g++ \
             -qpa eglfs -no-libinput -no-linuxfb -no-xcb -no-kms -no-gbm \
             -no-gtk -no-widgets -no-compile-examples -no-sql-tds \
-            -device-option CROSS_COMPILE=${sysroot.cross_compile} -sysroot {sysroot.sysroot} \
+            -device-option CROSS_COMPILE={sysroot.cross_compile} -sysroot {sysroot.sysroot} \
             -opensource -confirm-license -make libs -strip -optimize-size \
             -prefix {prefix} -extprefix {stage}/{prefix} -hostprefix {qt_host}',
     
         f'make -j8 -C {repos[0]}',
         f'make -j8 -C {repos[0]} install',
-    ], env=env)
+    ], env=env, shell=True)
 
     for repo in repos[1:]:
         call([
             f'cd {repo} && {qmake}',
             f'make -j8 -C {repo}',
             f'make -j8 -C {repo} install',
-        ], env=env)
+        ], env=env, shell=True)
 
     call([
         f'mkdir -p {stage}/etc/ld.so.conf.d',

@@ -65,9 +65,9 @@ env['CROSS_COMPILE'] = '../tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-rasp
 this_dir = pathlib.Path(__file__).parent
 
 
-kernels = {k: Kernel(k, this_dir, env) for k in ['kernel', 'kernel7']}
+kernels = [Kernel(k, this_dir, env) for k in ['kernel', 'kernel7']]
 
 @command()
 def build():
-    for k in kernels.values():
+    for k in kernels:
         k.build()

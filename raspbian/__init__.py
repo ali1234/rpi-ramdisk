@@ -24,11 +24,11 @@ excludes = this_dir / 'excludes.conf'
 cleanup = this_dir / 'cleanup'
 chroot = 'proot -0 -q qemu-arm -w / -r'
 kernel_root_tarballs = [k.root for k in kernel.kernels]
-
+package_tarballs = [p.package['target'] for p in packages.packages.values()]
 
 def package_install_actions():
-    for p in packages.packages:
-        for a in p['install']:
+    for p in packages.packages.values():
+        for a in p.package['install']:
             yield a.format(**locals(), **globals())
 
 
@@ -45,6 +45,7 @@ def build_multistrap_conf():
         multistrap_conf,
         *dir_scan(overlay),
         *kernel_root_tarballs,
+        *package_tarballs,
         excludes,
     ])
 def build():
@@ -59,10 +60,10 @@ def build():
         # run preinst scripts
         f'for script in {stage}/var/lib/dpkg/info/*.preinst; do \
             [ "$script" = "{stage}/var/lib/dpkg/info/vpnc.preinst" ] && continue; \
-            echo "I: run preinst script ${{script##{{stage}}}}"; \
+            echo "I: run preinst script ${{script##{stage}}}"; \
             DPKG_MAINTSCRIPT_NAME=preinst \
             DPKG_MAINTSCRIPT_PACKAGE="`basename $script .preinst`" \
-            {chroot} {stage} ${{script##{{stage}}}} install; \
+            {chroot} {stage} ${{script##{stage}}} install; \
             done',
 
         # don't run makedev
@@ -101,6 +102,7 @@ def build():
         *list(f'tar -xf {kr} -C {stage}' for kr in kernel_root_tarballs),
 
         # packages
+        *list(f'tar -xf {pkg} -C {stage}' for pkg in package_tarballs),
         *list(package_install_actions()),
 
         # overlay

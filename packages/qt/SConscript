@@ -36,6 +36,8 @@ penv.Command([package['target'], '${QMAKE}'], ['${SYSROOT}', *list(penv['FUNCTIO
     'rm -rf --one-file-system ${STAGE} ${QT_HOST}',
     'for repo in ${REPOS}; do git -C $$repo clean -dfxq; done',
 
+    '/bin/sh',
+
     'cd ${REPOS[0]} && ./configure -release -opengl es2 -device linux-rasp-pi2-g++ \
 		-qpa eglfs -no-libinput -no-linuxfb -no-xcb -no-kms -no-gbm \
 		-no-gtk -no-widgets -no-compile-examples -no-sql-tds \

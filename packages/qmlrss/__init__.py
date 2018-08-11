@@ -19,7 +19,7 @@ repo = this_dir / 'qmlrss'
 
 service = this_dir / 'qmlrss.service'
 
-@command(produces=[package['target']], consumes=[service, qt.qmake, git_repo_scan(repo)])
+@command(produces=[package['target']], consumes=[service, qt.qmake])
 def build():
     call([
         f'rm -rf --one-file-system {stage}',
@@ -34,4 +34,4 @@ def build():
         f'cp {repo}/qmlrss {stage}/{qt.prefix}/bin/',
 
         f'tar -C {stage} -czf {package["target"]} .',
-    ], env=qt.env)
+    ], env=qt.env, shell=True)

@@ -116,4 +116,8 @@ def build():
         # work around for libtool badness. is this still needed?
         # mkdir -p sysroot/opt
         # cd sysroot/opt && for dir in $(PACKAGES); do ln -s ../../$$dir/root/opt/$$dir $$dir; done
+
+        # touch dir so we don't rebuild
+        f'touch {sysroot}',
     ], shell=True)
+    relative_links(sysroot)
