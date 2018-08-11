@@ -1,6 +1,6 @@
 from pydo import *
 
-from . import firmware
+from . import kernel, firmware, sysroot, packages
 
 @command(consumes=[firmware.target])
 def all():

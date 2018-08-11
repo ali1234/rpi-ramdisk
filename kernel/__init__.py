@@ -10,7 +10,10 @@ class Kernel(object):
         self.name = name
         self.dir = dir
         self.env = env
-        self.build = command(produces=[self.boot, self.root], consumes=[self.config])(self._build)
+        self.build = command(
+            produces=[self.boot, self.root],
+            consumes=[self.config, *git_repo_scan(self.repo, self.dir / 'tools')]
+        )(self._build)
 
     @property
     def repo(self):
