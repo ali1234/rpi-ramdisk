@@ -24,4 +24,5 @@ def build():
         f'tar -xf {firmware.target} -C {boot}',
         *list(f'tar -xf {kb} -C {boot}' for kb in kernel_boot_tarballs),
         #f'cd {boot} && zip -qr {boot} *',
+        f'touch {boot}',
     ], shell=True)
