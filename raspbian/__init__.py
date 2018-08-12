@@ -1,3 +1,4 @@
+import fnmatch
 import os
 import pathlib
 
@@ -13,6 +14,45 @@ try:
     env['http_proxy'] = os.environ['APT_HTTP_PROXY']
 except KeyError:
     print("Don't forget to set up apt-cacher-ng")
+
+
+def read_excludes(excludefile):
+    exclude_data = []
+    with excludefile.open() as e:
+        for line in e:
+            line = line.strip()
+            if line.startswith('#'):
+                continue
+            x = line.split('=')
+            if len(x) == 2:
+                if x[0] == 'path-exclude':
+                    exclude_data.append((x[1][1:], True))
+                elif x[0] == 'path-include':
+                    exclude_data.append((x[1][1:], False))
+    return exclude_data
+
+
+def test_excludes(path, exclude_data):
+    delete = False
+    for e in exclude_data:
+        if fnmatch.fnmatchcase(str(path), e[0]):
+            delete = e[1]
+    return delete
+
+
+def apply_excludes(root, exclude_data):
+    for path in root.rglob('*'):
+        rpath = path.relative_to(root)
+        if test_excludes(rpath, exclude_data):
+            try:
+                if path.is_dir():
+                    os.rmdir(path)
+                    print('delete file', path)
+                else:
+                    os.remove(path)
+                    print('delete dir', path)
+            except OSError:
+                print('delete failed', path)
 
 
 multistrap_conf = this_dir / 'multistrap.conf'
@@ -89,9 +129,13 @@ def build():
 
         # delete root password
         f'{chroot} {stage} passwd -d root',
+    ], shell=True)
 
-        # remove excluded files that multistrap missed
-        f'{cleanup} {stage} {excludes}',
+    # remove excluded files that multistrap missed
+    apply_excludes(stage, read_excludes(excludes))
+
+    call([
+        # install the excludes to the image so they they are applied if user installs something at run time
         f'mkdir -p {stage}/etc/dpkg/dpkg.conf.d/',
         f'cp {excludes} {stage}/etc/dpkg/dpkg.conf.d/',
 
