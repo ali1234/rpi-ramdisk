@@ -33,6 +33,16 @@ toolchain_url = 'https://releases.linaro.org/components/toolchain/binaries/6.3-2
 toolchain = this_dir / 'toolchain'
 sysroot = this_dir / 'sysroot'
 cross_compile = toolchain / 'bin/arm-linux-gnueabihf-'
+arch_cflags = ' '.join([
+    '-pipe',
+    '-march=armv7-a',
+    '-marm',
+    '-mthumb-interwork',
+    '-mfpu=neon-vfpv4',
+    '-mtune=cortex-a7',
+    '-mabi=aapcs-linux',
+    '-mfloat-abi=hard',
+])
 
 env['PATH'] += ':' + str(toolchain / 'bin')
 env['SYSROOT'] = str(sysroot)
