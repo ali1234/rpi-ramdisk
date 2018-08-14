@@ -2,6 +2,8 @@ import pathlib
 
 from pydo import *
 
+this_dir = pathlib.Path(__file__).parent
+
 package = {
 
     'requires': [],
@@ -48,8 +50,6 @@ from ... import sysroot
 
 env = sysroot.env.copy()
 
-this_dir = pathlib.Path(__file__).parent
-
 
 prefix = '/opt/gstreamer'
 stage = this_dir / 'stage'
@@ -76,8 +76,8 @@ env['CPPFLAGS'] = ' '.join([
 
 
 # add stage to the paths. every package which uses this env should do this (ie rygel).
-env['PKG_CONFIG_LIBDIR'] += ':' + str(stage.abspath / prefix[1:] / 'lib/pkgconfig')
-env['XDG_DATA_DIRS'] += ':' + str(stage.abspath / prefix[1:] / 'share')
+env['PKG_CONFIG_LIBDIR'] += ':' + str(stage / prefix[1:] / 'lib/pkgconfig')
+env['XDG_DATA_DIRS'] += ':' + str(stage / prefix[1:] / 'share')
 
 repos = [this_dir / d for d in [
     'gstreamer', 'gst-plugins-base', 'gst-plugins-good', 'gst-plugins-bad', 'gst-plugins-ugly',
@@ -117,7 +117,7 @@ DISPMANX_OPTS = ' '.join([
 
 OMX_OPTS = ' '.join([
     '--with-omx-target=rpi',
-    '--with-omx-header-path={sysroot.sysroot}/opt/vc/include/IL',
+    f'--with-omx-header-path={sysroot.sysroot}/opt/vc/include/IL',
 ])
 
 
@@ -126,7 +126,7 @@ def build_repo(repo, extra_opts):
         f'cd {repo} && ./autogen.sh {CROSS_OPTS} {COMMON_OPTS} {NODEBUG_OPTS} {extra_opts}',
         f'make -j8 -C {repo}',
         f'make -j8 -C {repo} DESTDIR={stage} install-strip',
-    ], env=env)
+    ], env=env, shell=True)
 
 
 @command(produces=[package['target']], consumes=[sysroot.sysroot])
@@ -156,16 +156,16 @@ def build():
     build_repo(repos[2], f'{PLUGIN_OPTS}') # good
     build_repo(repos[3], f'{PLUGIN_OPTS} --disable-gl') # bad
     build_repo(repos[4], f'{PLUGIN_OPTS}') # ugly
-    build_repo(repos[5], f'{PLUGIN_OPTS}') # libav
+    #build_repo(repos[5], f'{PLUGIN_OPTS}') # libav
     build_repo(repos[6], f'{PLUGIN_OPTS} {OMX_OPTS}') # omx
 
     call([
-        'mkdir -p {stage}/etc/ld.so.conf.d',
-        'echo {prefix}/lib > {stage}/etc/ld.so.conf.d/opt-gstreamer.conf',
+        f'mkdir -p {stage}/etc/ld.so.conf.d',
+        f'echo {prefix}/lib > {stage}/etc/ld.so.conf.d/opt-gstreamer.conf',
 
-        'tar -C {stage} --exclude=.{prefix}/doc --exclude=.{prefix}/include \
+        f'tar -C {stage} --exclude=.{prefix}/doc --exclude=.{prefix}/include \
             --exclude=*.la --exclude=.{prefix}/share/locale --exclude=.{prefix}/share/aclocal \
             --exclude=.{prefix}/share/bash-completion \
-            -czf ${TARGETS[0]} .'
+            -czf {package["target"]} .'
 
-    ])
+    ], shell=True)
