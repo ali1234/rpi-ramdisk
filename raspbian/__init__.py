@@ -47,12 +47,13 @@ def apply_excludes(root, exclude_data):
             try:
                 if path.is_dir():
                     os.rmdir(path)
-                    print('delete file', path)
+                    #print('delete file', path)
                 else:
                     os.remove(path)
-                    print('delete dir', path)
+                    #print('delete dir', path)
             except OSError:
-                print('delete failed', path)
+                #print('delete failed', path)
+                pass
 
 
 multistrap_conf = this_dir / 'multistrap.conf'
