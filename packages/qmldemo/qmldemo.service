@@ -5,7 +5,7 @@ Wants=network.target
 
 [Service]
 Environment=QT_QPA_EVDEV_KEYBOARD_PARAMETERS=grab=1
-ExecStart=/opt/qt/bin/qmlscene /opt/qt/qmldemo.qml
+ExecStart=/opt/qt/bin/qmlscene /opt/qt/bin/qmldemo.qml
 Restart=on-failure
 
 [Install]
