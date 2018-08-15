@@ -16,7 +16,7 @@ def package_walk(name, result, seen):
 
 
 packages = OrderedDict()
-for p in ['qmldemo', 'gstreamer']:
+for p in ['qmlrss', 'rygel']:
     package_walk(p, packages, set())
 
 @command()
