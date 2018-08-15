@@ -57,7 +57,9 @@ RYGEL_OPTS = ' '.join([
 def build_repo(repo, extra_opts):
     call([
         f'cd {repo} && ./autogen.sh {CROSS_OPTS} {gstreamer.COMMON_OPTS} {gstreamer.NODEBUG_OPTS} {extra_opts}',
-        f'make -C {repo}',
+        f'make -j8 -C {repo}',
+        # gupnp-dlna parallel install fails
+        # see https://bugzilla.gnome.org/show_bug.cgi?id=720053
         f'make -C {repo} DESTDIR={stage} install-strip',
     ], env=env, shell=True)
 
