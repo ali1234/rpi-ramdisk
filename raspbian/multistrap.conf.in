@@ -43,7 +43,7 @@ packages=ncurses-base
 
 # Optional base debs
 packages=systemd udev kmod gpgv apt net-tools wpasupplicant crda
-packages=firmware-brcm80211 ca-certificates openssl
+packages=firmware-brcm80211 ca-certificates openssl tzdata
 
 # Debs required by /opt packages
 @PACKAGES@
