@@ -5,6 +5,8 @@
 
 # the settings will be exposed to all unit files.
 
+sleep 0.5 # wait for sd card to be detected
+
 mknod /dev/mmcblk0p1 b 179 1
 mount -o ro /dev/mmcblk0p1 /boot
 if [ -f /boot/settings.conf ]; then
