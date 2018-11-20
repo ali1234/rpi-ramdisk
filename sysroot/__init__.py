@@ -79,7 +79,7 @@ env['XDG_DATA_DIRS'] = ':'.join(str(sysroot / p) for p in [
 
 @command(produces=[toolchain_tarball])
 def download_toolchain():
-    call([f'cd {toolchain_tarball.parent} && wget -N {toolchain_url}'])
+    call([f'cd {toolchain_tarball.parent} && wget -N {toolchain_url}'], shell=True)
 
 
 @command(produces=[toolchain], consumes=[toolchain_tarball])
