@@ -129,7 +129,7 @@ def build_repo(repo, extra_opts):
     ], env=env, shell=True)
 
 
-@command(produces=[package['target']], consumes=[sysroot.sysroot])
+@command(produces=[package['target']], consumes=[sysroot.sysroot, sysroot.toolchain])
 def build():
 
     for repo in repos:
