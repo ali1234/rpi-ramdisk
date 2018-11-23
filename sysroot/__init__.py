@@ -129,7 +129,7 @@ def build():
 
         # touch dir so we don't rebuild
         f'touch {sysroot}',
-    ], shell=True)
+    ], shell=True, env=env)
     relative_links(sysroot)
 
 

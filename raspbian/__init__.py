@@ -130,7 +130,7 @@ def build():
 
         # delete root password
         f'{chroot} {stage} passwd -d root',
-    ], shell=True)
+    ], shell=True, env=env)
 
     # remove excluded files that multistrap missed
     apply_excludes(stage, read_excludes(excludes))
