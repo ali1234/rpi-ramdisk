@@ -23,7 +23,7 @@ package = {
         # video formats (software decoding)
         'libmpeg2-4-dev', 'libtheora-dev',
         # libav
-        'libavcodec57', 'libavfilter6', 'libavformat57', 'libavutil55', 'libavdevice57',
+        #'libavcodec57', 'libavfilter6', 'libavformat57', 'libavutil55', 'libavdevice57',
     ],
 
     'root_debs': [
@@ -38,7 +38,7 @@ package = {
         # video formats (software decoding)
         'libmpeg2-4', 'libtheora0',
         # libav
-        'libavcodec-dev', 'libavfilter-dev', 'libavformat-dev', 'libavutil-dev',
+        #'libavcodec-dev', 'libavfilter-dev', 'libavformat-dev', 'libavutil-dev',
     ],
 
     'target': this_dir / 'gstreamer.tar.gz',
@@ -169,3 +169,9 @@ def build():
             -czf {package["target"]} .'
 
     ], shell=True)
+
+
+@command()
+def clean():
+    call([f'git -C {repo} clean -dfxq' for repo in repos])
+    call([f'rm -rf --one-file-system {stage} {package["target"]}'])

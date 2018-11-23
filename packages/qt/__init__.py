@@ -40,8 +40,8 @@ repos = [this_dir / r for r in ['qtbase', 'qtxmlpatterns', 'qtdeclarative']]
 
 @command(produces=[package['target'], qmake], consumes=[sysroot.sysroot, sysroot.toolchain])
 def build():
-    for repo in repos:
-        call([f'git -C {repo} clean -dfxq'])
+
+    call([f'git -C {repo} clean -dfxq' for repo in repos])
     
     call([
         f'rm -rf --one-file-system {stage} {qt_host}',
@@ -73,3 +73,9 @@ def build():
             -czf {package["target"]} .'
     
     ], env=env)
+
+
+@command()
+def clean():
+    call([f'git -C {repo} clean -dfxq' for repo in repos])
+    call([f'rm -rf --one-file-system {stage} {package["target"]}'])

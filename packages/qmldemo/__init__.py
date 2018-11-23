@@ -30,3 +30,10 @@ def build():
 
         f'tar -C {stage} -czf {package["target"]} .',
     ])
+
+
+@command()
+def clean():
+    call([
+        f'rm -rf --one-file-system {stage} {package["target"]}',
+    ])

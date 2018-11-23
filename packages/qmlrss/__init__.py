@@ -35,3 +35,11 @@ def build():
 
         f'tar -C {stage} -czf {package["target"]} .',
     ], env=qt.env, shell=True)
+
+
+@command()
+def clean():
+    call([
+        f'git -C {repo} clean -dfxq',
+        f'rm -rf --one-file-system {stage} {package["target"]}',
+    ])

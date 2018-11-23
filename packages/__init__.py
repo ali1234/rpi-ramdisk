@@ -19,7 +19,13 @@ packages = OrderedDict()
 for p in ['qmlrss', 'rygel']:
     package_walk(p, packages, set())
 
+
 @command()
 def list():
     print('Enabled packages:', ', '.join(packages.keys()))
 
+
+@command()
+def clean():
+    for m in packages.values():
+        m.clean()

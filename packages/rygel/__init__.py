@@ -67,10 +67,7 @@ def build_repo(repo, extra_opts):
 @command(produces=[package['target']], consumes=[gstreamer.package['target']])
 def build():
 
-    for repo in repos:
-        call([
-            f'git -C {repo} clean -dfxq',
-        ])
+    call([f'git -C {repo} clean -dfxq' for repo in repos])
 
     call([
         f'rm -rf --one-file-system {stage}',
@@ -102,3 +99,9 @@ def build():
             -czf {package["target"]} .'
 
     ], shell=True)
+
+
+@command()
+def clean():
+    call([f'git -C {repo} clean -dfxq' for repo in repos])
+    call([f'rm -rf --one-file-system {stage} {package["target"]}'])
