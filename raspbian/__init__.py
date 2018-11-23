@@ -191,3 +191,10 @@ def build():
                \) | cpio --create -H newc" | xz -C crc32 -9 > {initrd}'
 
     ], shell=True)
+
+
+@command()
+def clean():
+    call([
+        f'rm -rf --one-file-system {stage} {initrd} {multistrap_conf}'
+    ])

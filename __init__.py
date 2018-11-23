@@ -2,7 +2,7 @@ import pathlib
 
 from pydo import *
 
-from . import kernel, firmware, raspbian
+from . import kernel, firmware, raspbian, sysroot, packages
 
 this_dir = pathlib.Path(__file__).parent
 
@@ -11,9 +11,11 @@ boot = this_dir / 'boot'
 dnsmasq_conf_in = this_dir / 'dnsmasq.conf.in'
 dnsmasq_conf = this_dir / 'dnsmasq.conf'
 
+
 @command(produces=[dnsmasq_conf], consumes=[dnsmasq_conf_in])
 def build_dnsmasq_conf():
     subst(dnsmasq_conf_in, dnsmasq_conf, {'@TFTP_ROOT@': str(boot)})
+
 
 @command(produces=[boot], consumes=[firmware.target, raspbian.initrd, *kernel_boot_tarballs, dnsmasq_conf])
 def build():
@@ -26,3 +28,10 @@ def build():
         #f'cd {boot} && zip -qr {boot} *',
         f'touch {boot}',
     ], shell=True)
+
+
+@command()
+def clean():
+    sysroot.clean()
+    raspbian.clean()
+    packages.clean()

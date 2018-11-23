@@ -131,3 +131,10 @@ def build():
         f'touch {sysroot}',
     ], shell=True)
     relative_links(sysroot)
+
+
+@command()
+def clean():
+    call([
+        f'rm -rf --one-file-system {sysroot} {toolchain} {multistrap_conf}'
+    ])
