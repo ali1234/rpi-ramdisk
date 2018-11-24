@@ -3,7 +3,7 @@ Description=QML RSS Reader
 
 [Service]
 Environment=QT_QPA_EVDEV_KEYBOARD_PARAMETERS=grab=1
-ExecStart=/opt/qt/bin/qmlrss https://feeds.bbci.co.uk/news/technology/rss.xml
+ExecStart=/opt/qt/bin/qmlrss
 Restart=on-failure
 
 [Install]
