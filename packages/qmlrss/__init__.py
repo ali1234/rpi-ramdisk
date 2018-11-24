@@ -14,6 +14,7 @@ package = {
 
 from .. import qt
 
+builddir = this_dir / 'build'
 stage = this_dir / 'stage'
 repo = this_dir / 'qmlrss'
 
@@ -22,16 +23,18 @@ service = this_dir / 'qmlrss.service'
 @command(produces=[package['target']], consumes=[service, qt.qmake])
 def build():
     call([
-        f'rm -rf --one-file-system {stage}',
+        f'rm -rf --one-file-system {stage} {builddir}',
 
-        f'cd {repo} && {qt.qmake}',
-        f'make -j8 -C {repo}',
+        f'mkdir -p {builddir}',
+
+        f'cd {builddir} && {qt.qmake} {repo}',
+        f'make -j8 -C {builddir}',
 
         f'mkdir -p {stage}/etc/systemd/system',
         f'mkdir -p {stage}/{qt.prefix}/bin',
 
         f'cp {service} {stage}/etc/systemd/system/',
-        f'cp {repo}/qmlrss {stage}/{qt.prefix}/bin/',
+        f'cp {builddir}/qmlrss {stage}/{qt.prefix}/bin/',
 
         f'tar -C {stage} -czf {package["target"]} .',
     ], env=qt.env, shell=True)
@@ -40,6 +43,5 @@ def build():
 @command()
 def clean():
     call([
-        f'git -C {repo} clean -dfxq',
-        f'rm -rf --one-file-system {stage} {package["target"]}',
+        f'rm -rf --one-file-system {stage} {builddir} {package["target"]}',
     ])
