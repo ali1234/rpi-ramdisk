@@ -35,7 +35,7 @@ qt_host = this_dir / 'qt-host'
 qmake = qt_host / 'bin' / 'qmake'
 stage = this_dir / 'stage'
 
-repos = [this_dir / r for r in ['qtbase', 'qtxmlpatterns', 'qtdeclarative']]
+repos = [this_dir / r for r in ['qtbase', 'qtdeclarative', 'qtxmlpatterns']]
 
 
 @command(produces=[package['target'], qmake], consumes=[sysroot.sysroot, sysroot.toolchain])
