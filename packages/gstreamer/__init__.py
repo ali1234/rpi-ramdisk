@@ -81,7 +81,7 @@ env['XDG_DATA_DIRS'] += ':' + str(stage / prefix[1:] / 'share')
 
 repos = [this_dir / d for d in [
     'gstreamer', 'gst-plugins-base', 'gst-plugins-good', 'gst-plugins-bad', 'gst-plugins-ugly',
-    'gst-libav', 'gst-omx',
+    'gst-libav', 'gst-omx', 'gst-rtsp-server', 'gst-rpicamsrc',
 ]]
 
 CROSS_OPTS = ' '.join([
@@ -120,8 +120,11 @@ OMX_OPTS = ' '.join([
     f'--with-omx-header-path={sysroot.sysroot}/opt/vc/include/IL',
 ])
 
+RPICAMSRC_OPTS = ' '.join([
+    f'--with-rpi-header-dir={sysroot.sysroot}/opt/vc/include',
+])
 
-def build_repo(repo, extra_opts):
+def build_repo(repo, extra_opts=''):
     call([
         f'cd {repo} && ./autogen.sh {CROSS_OPTS} {COMMON_OPTS} {NODEBUG_OPTS} {extra_opts}',
         f'make -j8 -C {repo}',
@@ -158,6 +161,14 @@ def build():
     build_repo(repos[4], f'{PLUGIN_OPTS}') # ugly
     #build_repo(repos[5], f'{PLUGIN_OPTS}') # libav
     build_repo(repos[6], f'{PLUGIN_OPTS} {OMX_OPTS}') # omx
+    build_repo(repos[7]) # rtsp
+
+    # rpicamsrc
+    call([
+        f'cd {repos[8]} && autoreconf --verbose --force --install && ./configure {CROSS_OPTS} {RPICAMSRC_OPTS} {COMMON_OPTS} {NODEBUG_OPTS}',
+        f'make -j8 -C {repos[8]}',
+        f'make -j8 -C {repos[8]} DESTDIR={stage} install-strip',
+    ], env=env, shell=True)
 
     call([
         f'mkdir -p {stage}/etc/ld.so.conf.d',

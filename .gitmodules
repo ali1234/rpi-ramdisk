@@ -94,3 +94,9 @@
 	url = git://anongit.freedesktop.org/gstreamer/gst-omx
 	branch = 1.14
 	ignore = untracked
+[submodule "packages/gstreamer/gst-rpicamsrc"]
+	path = packages/gstreamer/gst-rpicamsrc
+	url = git://github.com/thaytan/gst-rpicamsrc
+[submodule "packages/gstreamer/gst-rtsp-server"]
+	path = packages/gstreamer/gst-rtsp-server
+	url = git://anongit.freedesktop.org/gstreamer/gst-rtsp-server
