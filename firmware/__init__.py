@@ -15,7 +15,7 @@ this_dir = pathlib.Path(__file__).parent
 stage = this_dir / 'stage'
 target = this_dir / 'firmware.tar.gz'
 
-sources = [this_dir / file for file in ['multistrap.conf', 'cmdline.txt', 'config.txt']]
+sources = [this_dir / file for file in ['multistrap.conf', 'cmdline.txt', 'config.txt', 'recovr.txt']]
 copy = ' '.join(str(s) for s in sources)
 
 
@@ -26,7 +26,10 @@ def build():
 
         f'mkdir -p {stage}/etc/apt/trusted.gpg.d/',
         f'gpg --export 82B129927FA3303E > {stage}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
+        f'gpg --export 9165938D90FDDD2E > {stage}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
         f'/usr/sbin/multistrap -d {stage} -f {sources[0]}',
+
+        f'cp {stage}/usr/share/rpiboot/msd/start.elf {stage}/boot/msd.elf',
 
         f'cp {copy} {stage}/boot/',
 
