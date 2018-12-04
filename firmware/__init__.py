@@ -18,6 +18,7 @@ target = this_dir / 'firmware.tar.gz'
 sources = [this_dir / file for file in ['multistrap.conf', 'cmdline.txt', 'config.txt']]
 copy = ' '.join(str(s) for s in sources)
 
+
 @command(produces = [target], consumes = sources)
 def build():
     call([
@@ -31,3 +32,10 @@ def build():
 
         f'tar -C {stage}/boot/ -czvf {target} .',
     ], env=env, shell=True)
+
+
+@command()
+def clean():
+    call([
+        f'rm -rf --one-file-system {stage} {target}'
+    ])

@@ -67,7 +67,16 @@ this_dir = pathlib.Path(__file__).parent
 
 kernels = [Kernel(k, this_dir, env) for k in ['kernel', 'kernel7']]
 
+
 @command()
 def build():
     for k in kernels:
         k.build()
+
+
+@command()
+def clean():
+    for k in kernels:
+        call([
+            f'rm -rf --one-file-system {k.stage} {k.root} {k.boot}'
+        ])

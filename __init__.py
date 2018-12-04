@@ -33,5 +33,7 @@ def build():
 @command()
 def clean():
     sysroot.clean()
+    firmware.clean()
+    kernel.clean()
     raspbian.clean()
     packages.clean()
