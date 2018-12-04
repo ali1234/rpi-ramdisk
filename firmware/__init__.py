@@ -30,6 +30,7 @@ def build():
         f'/usr/sbin/multistrap -d {stage} -f {sources[0]}',
 
         f'cp {stage}/usr/share/rpiboot/msd/start.elf {stage}/boot/msd.elf',
+        f'touch {stage}/boot/UART',
 
         f'cp {copy} {stage}/boot/',
 
