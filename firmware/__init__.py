@@ -15,11 +15,11 @@ this_dir = pathlib.Path(__file__).parent
 stage = this_dir / 'stage'
 target = this_dir / 'firmware.tar.gz'
 
-sources = [this_dir / file for file in ['multistrap.conf', 'cmdline.txt', 'config.txt', 'recovr.txt']]
+sources = [this_dir / file for file in ['cmdline.txt', 'config.txt', 'recovr.txt']]
 copy = ' '.join(str(s) for s in sources)
 
 
-@command(produces = [target], consumes = sources)
+@command(produces = [target], consumes = sources + ['multistrap.conf'])
 def build():
     call([
         f'rm -rf --one-file-system {stage}',
