@@ -57,6 +57,15 @@ class Kernel(object):
 
         ], env=self.env, shell=True)
 
+    def update_config(self):
+        call([
+            f'make -C {self.repo} mrproper',
+            f'cp {self.config} {self.repo}/.config',
+            f'make -C {self.repo} oldconfig',
+            f'cp {self.repo}/.config {self.config}',
+        ], env=self.env)
+
+
 
 env = os.environ.copy()
 env['ARCH'] = 'arm'
@@ -72,6 +81,12 @@ kernels = [Kernel(k, this_dir, env) for k in ['kernel', 'kernel7']]
 def build():
     for k in kernels:
         k.build()
+
+
+@command()
+def update_configs():
+    for k in kernels:
+        k.update_config()
 
 
 @command()
