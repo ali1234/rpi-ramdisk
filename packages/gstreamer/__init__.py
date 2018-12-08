@@ -14,29 +14,12 @@ package = {
         'libgirepository1.0-dev', 'uuid-dev', 'libsoup2.4-dev',
         'libxml2-dev', 'libgee-0.8-dev', 'libsqlite3-dev', 'valac', 'liborc-0.4-dev', 'liborc-0.4-dev-bin',
         'libraspberrypi-dev',
-        # container formats
-        'libogg-dev',
-        # image formats
-        'libpng-dev', 'libjpeg-dev',
-        # audio formats
-        'libflac-dev', 'libvorbis-dev', 'libopus-dev', 'libmpg123-dev', 'liba52-0.7.4-dev',
-        # video formats (software decoding)
-        'libmpeg2-4-dev', 'libtheora-dev',
         # libav
         #'libavcodec57', 'libavfilter6', 'libavformat57', 'libavutil55', 'libavdevice57',
     ],
 
     'root_debs': [
-        # core dependencies
         'liborc-0.4-0', 'libasound2', 'libxml2', 'libsoup2.4-1', 'libraspberrypi0',
-        # container formats
-        'libogg0',
-        # image formats
-        'libjpeg62-turbo', 'libpng12-0',
-        # audio formats
-        'libmpg123-0', 'libopus0', 'libvorbisenc2', 'libflac8', 'liba52-0.7.4',
-        # video formats (software decoding)
-        'libmpeg2-4', 'libtheora0',
         # libav
         #'libavcodec-dev', 'libavfilter-dev', 'libavformat-dev', 'libavutil-dev',
     ],

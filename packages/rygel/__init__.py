@@ -8,10 +8,37 @@ package = {
 
     'requires': ['gstreamer'],
 
-    'sysroot_debs': ['libmediaart-2.0-dev'],
+    'sysroot_debs': [
+        'libmediaart-2.0-dev',
+
+        ## libs for gstreamer codec support
+        ## these are actually used by the gstreamer build, but since the whole sysroot
+        ## is built in one go, they can be put in this build so that gstreamer can be
+        ## built without them
+
+        # container formats
+        'libogg-dev',
+        # image formats
+        'libpng-dev', 'libjpeg-dev',
+        # audio formats
+        'libflac-dev', 'libvorbis-dev', 'libopus-dev', 'libmpg123-dev', 'liba52-0.7.4-dev',
+        # video formats (software decoding)
+        'libmpeg2-4-dev', 'libtheora-dev',
+    ],
 
     'root_debs': [
         'libgee-0.8-2', 'libtiff5', 'libgdk-pixbuf2.0-0', 'libmediaart-2.0-0',
+
+        ## libs for gstreamer codec support
+
+        # container formats
+        'libogg0',
+        # image formats
+        'libjpeg62-turbo', 'libpng12-0',
+        # audio formats
+        'libmpg123-0', 'libopus0', 'libvorbisenc2', 'libflac8', 'liba52-0.7.4',
+        # video formats (software decoding)
+        'libmpeg2-4', 'libtheora0',
     ],
 
     'target': this_dir / 'rygel.tar.gz',
