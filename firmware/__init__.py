@@ -16,7 +16,7 @@ stage = this_dir / 'stage'
 target = this_dir / 'firmware.tar.gz'
 
 multistrap_conf = this_dir / 'multistrap.conf'
-sources = [this_dir / file for file in ['cmdline.txt', 'config.txt', 'recovr.txt']]
+sources = [this_dir / file for file in ['cmdline.txt', 'config.txt']]
 copy = ' '.join(str(s) for s in sources)
 
 
