@@ -16,7 +16,7 @@ def package_walk(name, result, seen):
 
 
 packages = OrderedDict()
-for p in ['qmlrss', 'rygel']:
+for p in ['qmlrss', 'rygel', 'apds9960d']:
     package_walk(p, packages, set())
 
 
