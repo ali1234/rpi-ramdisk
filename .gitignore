@@ -1,7 +1,7 @@
-/.sconsign.dblite
 /boot.zip
 /boot
-/.config
+/.pydo
+/config.py
 /dnsmasq.conf
 /.idea
 /.virtualenv
