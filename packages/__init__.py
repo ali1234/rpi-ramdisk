@@ -4,6 +4,8 @@ from collections import OrderedDict
 
 from pydo import *
 
+from .. import config
+
 
 def package_walk(name, result, seen):
     if name in seen:
@@ -16,7 +18,7 @@ def package_walk(name, result, seen):
 
 
 packages = OrderedDict()
-for p in ['qmlrss', 'rygel', 'apds9960d']:
+for p in config.packages:
     package_walk(p, packages, set())
 
 

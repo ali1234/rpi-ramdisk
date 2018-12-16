@@ -1,0 +1,2 @@
+hostname = 'testcard'
+packages = ['gstreamer']

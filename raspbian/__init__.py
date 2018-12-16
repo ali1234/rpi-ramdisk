@@ -4,7 +4,7 @@ import pathlib
 
 from pydo import *
 
-from .. import packages, kernel
+from .. import config, packages, kernel
 
 env = os.environ.copy()
 
@@ -126,7 +126,7 @@ def build():
         f'echo proc /proc proc defaults 0 0 > {stage}/etc/fstab',
 
         # hostname
-        f'echo rpi-ramdisk > {stage}/etc/hostname',
+        f'echo {config.hostname} > {stage}/etc/hostname',
 
         # delete root password
         f'{chroot} {stage} passwd -d root',

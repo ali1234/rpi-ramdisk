@@ -1,0 +1,3 @@
+hostname = 'piratepython'
+packages = ['piratepython']
+

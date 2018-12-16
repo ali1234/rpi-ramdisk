@@ -2,9 +2,16 @@ import pathlib
 
 from pydo import *
 
+this_dir = pathlib.Path(__file__).parent
+
+try:
+    from . import config
+except ImportError:
+    print('Error: Project is not configured.')
+    exit(-1)
+
 from . import kernel, firmware, raspbian, sysroot, packages
 
-this_dir = pathlib.Path(__file__).parent
 
 kernel_boot_tarballs = [k.boot for k in kernel.kernels]
 boot = this_dir / 'boot'
