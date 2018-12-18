@@ -3,103 +3,136 @@
 	url = git://github.com/raspberrypi/linux.git
 	branch = rpi-4.9.y
 	ignore = untracked
+	shallow = true
 [submodule "kernel/tools"]
 	path = kernel/tools
 	url = git://github.com/raspberrypi/tools.git
 	ignore = untracked
+	shallow = true
 [submodule "packages/qt/qtbase"]
 	path = packages/qt/qtbase
 	url = git://code.qt.io/qt/qtbase.git
 	branch = 5.11.1
 	ignore = untracked
+	shallow = true
 [submodule "packages/qt/qtxmlpatterns"]
 	path = packages/qt/qtxmlpatterns
 	url = git://code.qt.io/qt/qtxmlpatterns.git
 	branch = 5.11.1
 	ignore = untracked
+	shallow = true
 [submodule "packages/qt/qtdeclarative"]
 	path = packages/qt/qtdeclarative
 	url = git://code.qt.io/qt/qtdeclarative.git
 	branch = 5.11.1
 	ignore = untracked
+	shallow = true
 [submodule "packages/gstreamer/gstreamer"]
 	path = packages/gstreamer/gstreamer
 	url = git://anongit.freedesktop.org/git/gstreamer/gstreamer
 	branch = 1.14
 	ignore = untracked
+	shallow = true
 [submodule "packages/gstreamer/gst-plugins-base"]
 	path = packages/gstreamer/gst-plugins-base
-	url = https://github.com/ali1234/gst-plugins-base
+	url = git://github.com/ali1234/gst-plugins-base
 	branch = vcfix
 	ignore = untracked
+	shallow = true
 [submodule "packages/gstreamer/gst-plugins-good"]
 	path = packages/gstreamer/gst-plugins-good
 	url = git://anongit.freedesktop.org/git/gstreamer/gst-plugins-good
 	branch = 1.14
 	ignore = untracked
+	shallow = true
 [submodule "packages/gstreamer/gst-plugins-bad"]
 	path = packages/gstreamer/gst-plugins-bad
 	url = git://anongit.freedesktop.org/git/gstreamer/gst-plugins-bad
 	branch = 1.14
 	ignore = untracked
+	shallow = true
 [submodule "packages/gstreamer/gst-plugins-ugly"]
 	path = packages/gstreamer/gst-plugins-ugly
 	url = git://anongit.freedesktop.org/git/gstreamer/gst-plugins-ugly
 	branch = 1.14
 	ignore = untracked
+	shallow = true
 [submodule "packages/rygel/gssdp"]
 	path = packages/rygel/gssdp
 	url = git://git.gnome.org/gssdp
 	branch = gssdp_1.0
 	ignore = untracked
+	shallow = true
 [submodule "packages/rygel/gupnp"]
 	path = packages/rygel/gupnp
 	url = git://git.gnome.org/gupnp
 	branch = gupnp-1.0
 	ignore = untracked
+	shallow = true
 [submodule "packages/rygel/gupnp-av"]
 	path = packages/rygel/gupnp-av
 	url = git://git.gnome.org/gupnp-av
 	ignore = untracked
+	shallow = true
 [submodule "packages/rygel/gupnp-dlna"]
 	path = packages/rygel/gupnp-dlna
 	url = git://git.gnome.org/gupnp-dlna
 	ignore = untracked
+	shallow = true
 [submodule "packages/rygel/gupnp-tools"]
 	path = packages/rygel/gupnp-tools
 	url = git://git.gnome.org/gupnp-tools
 	ignore = untracked
+	shallow = true
 [submodule "packages/rygel/rygel"]
 	path = packages/rygel/rygel
 	url = git://git.gnome.org/rygel
 	ignore = untracked
+	shallow = true
 [submodule "packages/pymtpd/pymtpd"]
 	path = packages/pymtpd/pymtpd
 	url = git://github.com/ali1234/pymtpd
 	ignore = untracked
+	shallow = true
 [submodule "packages/qmlrss/qmlrss"]
 	path = packages/qmlrss/qmlrss
 	url = git://github.com/ali1234/qmlrss
 	ignore = untracked
+	shallow = true
 [submodule "packages/apds9960d/apds9960d"]
 	path = packages/apds9960d/apds9960d
-	url = https://github.com/ali1234/apds9960d
+	url = git://github.com/ali1234/apds9960d
+	shallow = true
 [submodule "packages/gstreamer/gst-libav"]
 	path = packages/gstreamer/gst-libav
 	url = git://anongit.freedesktop.org/gstreamer/gst-libav
 	branch = 1.14
 	ignore = untracked
+	shallow = true
 [submodule "packages/gstreamer/gst-omx"]
 	path = packages/gstreamer/gst-omx
 	url = git://anongit.freedesktop.org/gstreamer/gst-omx
 	branch = 1.14
 	ignore = untracked
+	shallow = true
 [submodule "packages/gstreamer/gst-rpicamsrc"]
 	path = packages/gstreamer/gst-rpicamsrc
 	url = git://github.com/thaytan/gst-rpicamsrc
+	shallow = true
 [submodule "packages/gstreamer/gst-rtsp-server"]
 	path = packages/gstreamer/gst-rtsp-server
 	url = git://anongit.freedesktop.org/gstreamer/gst-rtsp-server
+	shallow = true
 [submodule "packages/piroverd"]
 	path = packages/piroverd/piroverd
 	url = git://github.com/ali1234/piroverd
+	shallow = true
+[submodule "firmware/firmware"]
+	path = firmware/firmware
+	url = git://github.com/raspberrypi/firmware
+	shallow = true
+[submodule "firmware/usbboot"]
+	path = firmware/usbboot
+	url = git://github.com/raspberrypi/usbboot
+	shallow = true
+
