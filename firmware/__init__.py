@@ -15,28 +15,27 @@ this_dir = pathlib.Path(__file__).parent
 stage = this_dir / 'stage'
 target = this_dir / 'firmware.tar.gz'
 
-multistrap_conf = this_dir / 'multistrap.conf'
+firmware = this_dir / 'firmware'
+
 sources = [this_dir / file for file in ['cmdline.txt', 'config.txt']]
-copy = ' '.join(str(s) for s in sources)
+sources.extend([f for f in (firmware / 'boot').glob('*') if not f.name.endswith('.dtb') and not f.name == 'overlays'])
+
+msd = this_dir / 'usbboot' / 'msd' / 'start.elf'
 
 
-@command(produces = [target], consumes = sources + [multistrap_conf])
+@command(produces = [target], consumes = sources + [msd])
 def build():
     call([
         f'rm -rf --one-file-system {stage}',
+        f'mkdir -p {stage}/boot',
 
-        f'mkdir -p {stage}/etc/apt/trusted.gpg.d/',
-        f'gpg --export 82B129927FA3303E > {stage}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
-        f'gpg --export 9165938D90FDDD2E > {stage}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
-        f'/usr/sbin/multistrap -d {stage} -f {multistrap_conf}',
+        f'cp {" ".join(str(s) for s in sources)} {stage}/boot/',
 
-        f'cp {stage}/usr/share/rpiboot/msd/start.elf {stage}/boot/msd.elf',
+        f'cp {msd} {stage}/boot/msd.elf',
         f'touch {stage}/boot/UART',
 
-        f'cp {copy} {stage}/boot/',
-
         f'tar -C {stage}/boot/ -czvf {target} .',
-    ], env=env, shell=True)
+    ], env=env)
 
 
 @command()
