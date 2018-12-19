@@ -10,9 +10,22 @@ the ramdisk must be customized for its task during the build process.
 
 ## Build Dependencies
 
-### Debian-based systems
+### Pydo
 
-This dependency list may be incomplete. If so, please report a bug on github.
+rpi-ramdisk uses a build tool called pydo which has been developed specifically
+to handle complex builds which don't produce executables and libraries. You must
+first download and install it:
+
+    git clone git://github.com/ali1234/pydo
+    cd pydo && pip3 install .
+
+### System packages
+
+rpi-ramdisk uses multistrap to collect packages. multistrap requires apt and
+as such is only supported on Debian based systems. It may be possible to use
+it on other distributions, but this has not been tested.
+
+In addition you need the following packages to build rpi-ramdisk:
 
     sudo apt install libc6:i386 libstdc++6:i386 libgcc1:i386 \
                      libncurses5:i386 libtinfo5:i386 zlib1g:i386 \
@@ -21,7 +34,9 @@ This dependency list may be incomplete. If so, please report a bug on github.
                      bison flex libglib2.0-dev gobject-introspection \
                      multistrap fakeroot fakechroot proot cpio \
                      qemu-user binfmt-support makedev \
-                     gtk-doc-tools valac scons
+                     gtk-doc-tools valac
+
+This dependency list may be incomplete. If so, please report a bug on github.
 
 Some build dependencies need to be fairly new:
 
@@ -72,22 +87,42 @@ You can also update individual repos manually:
 
 ## Compiling
 
-TODO: This section needs to be rewritten for scons.
+To build rpi-ramdisk the pydo build tool is used. First initialize the project:
 
+    cd rpi-ramdisk
+    pydo init .
+
+To build the whole project run:
+
+    pydo :build
+
+To clean the whole project run:
+
+    pydo :clean
+
+Pydo commands can be run at any level of the rpi-ramdisk tree after it has been
+initialized by prefixing them with ":". Without the prefix, pydo will execute the
+corresponding command for the current directory along with required dependencies.
+You can also explicitly run a command from a different subdirectory eg:
+
+    pydo packages.gstreamer:build
+
+You can see a list of all available commands for the current project with:
+
+    pydo -l
 
 ## Booting
 
 The build produces a boot/ directory containing everything needed to boot.
-A boot.zip is also created. This is just a zipped copy of the boot directory.
 
-### SD Card
+### Booting from SD Card
 
 The SD card first primary partition should be fat formatted. (This is the
 default for new, blank SD cards.) Copy the contents of the boot directory onto
 the fat partition on the SD card. Put the SD card in the Raspberry Pi and turn
 it on.
 
-### USB Mass Storage
+### Booting from USB Mass Storage
 
 USB mass storage booting must be enabled first:
 
@@ -121,7 +156,16 @@ Connect a Pi Zero or similar using a USB cable. Then run:
 
     sudo rpiboot -d boot
 
-**Note**: Raspbian image may be too big to boot using this method, see:
+**Note**: initrd images larger than about 28MB may be too big to boot using this method, see:
 
 https://github.com/raspberrypi/usbboot/issues/14
 
+## Firmware update mode
+
+rpi-ramdisk now installs the mass storage mode firmware for videocore. This makes USB device
+capable Raspberry Pis export their SD card as a mass storage device which can be mounted on
+the host PC for copying updated boot files. This is implemented using `bootcode.bin` GPIO 
+filters. See https://github.com/raspberrypi/firmware/issues/1076
+
+To enter this mode pull GPIO 5 low when powering on the device. The GPIO can be modified in
+`firmware/config.txt`.
