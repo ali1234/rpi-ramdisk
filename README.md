@@ -92,6 +92,10 @@ To build rpi-ramdisk the pydo build tool is used. First initialize the project:
     cd rpi-ramdisk
     pydo init .
 
+Set up the project configuration by copying one of the defaults:
+
+    cp configs/qmldemo.config.py config.py
+
 To build the whole project run:
 
     pydo :build
