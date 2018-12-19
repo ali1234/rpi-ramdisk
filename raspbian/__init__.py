@@ -58,6 +58,8 @@ def apply_excludes(root, exclude_data):
 
 multistrap_conf = this_dir / 'multistrap.conf'
 multistrap_conf_in = this_dir / 'multistrap.conf.in'
+hosts_in = this_dir / 'hosts.in'
+hosts = this_dir / 'hosts'
 overlay = this_dir / 'overlay'
 stage = this_dir / 'stage'
 initrd = this_dir / 'initrd'
@@ -80,10 +82,16 @@ def build_multistrap_conf():
     subst(multistrap_conf_in, multistrap_conf, {'@PACKAGES@': multistrap_packages})
 
 
+@command(produces=[hosts], consumes=[hosts_in], always=True)
+def build_hosts():
+    subst(hosts_in, hosts, {'@HOSTNAME@': config.hostname})
+
+
 @command(
     produces=[initrd],
     consumes=[
         multistrap_conf,
+        hosts,
         *dir_scan(overlay),
         *kernel_root_tarballs,
         *package_tarballs,
@@ -127,6 +135,9 @@ def build():
 
         # hostname
         f'echo {config.hostname} > {stage}/etc/hostname',
+
+        # hosts
+        f'cp {hosts} {stage}/etc/',
 
         # delete root password
         f'{chroot} {stage} passwd -d root',
@@ -196,5 +207,5 @@ def build():
 @command()
 def clean():
     call([
-        f'rm -rf --one-file-system {stage} {initrd} {multistrap_conf}'
+        f'rm -rf --one-file-system {stage} {initrd} {multistrap_conf} {hosts}'
     ])
