@@ -1,2 +1,2 @@
 hostname = 'infodisplay'
-packages = ['qmlrss', 'rygel']
+packages = ['net', 'qmlrss', 'rygel']

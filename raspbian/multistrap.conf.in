@@ -42,8 +42,8 @@ packages=findutils grep gzip init libc-bin login mount sed tar util-linux cpio
 packages=ncurses-base
 
 # Optional base debs
-packages=systemd udev kmod gpgv apt net-tools wpasupplicant crda
-packages=firmware-brcm80211 ca-certificates openssl tzdata
+packages=systemd udev kmod gpgv apt
+packages=tzdata
 
 # Debs required by /opt packages
 @PACKAGES@

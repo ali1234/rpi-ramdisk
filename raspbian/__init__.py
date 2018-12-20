@@ -167,20 +167,8 @@ def build():
         # ldconfig
         f'{stage}/sbin/ldconfig -r {stage}',
 
-        # network setup
-
         # reset default udev persistent-net rule
         f'rm -f {stage}/etc/udev/rules.d/*_persistent-net.rules',
-
-        # /etc/resolv.conf symlink
-        f'ln -sf /run/systemd/resolve/resolv.conf {stage}/etc/resolv.conf',
-
-        # enable network services
-        f'{chroot} {stage} /bin/systemctl reenable systemd-networkd',
-        f'{chroot} {stage} /bin/systemctl reenable systemd-resolved',
-        f'{chroot} {stage} /bin/systemctl reenable systemd-timesyncd',
-        f'{chroot} {stage} /bin/systemctl reenable systemd-networkd-wait-online.service',
-        f'{chroot} {stage} /bin/systemctl reenable wpa_supplicant@wlan0.service',
 
         # time used by timesyncd if no other is available
         f'touch {stage}/var/lib/systemd/clock',

@@ -1,2 +1,2 @@
 hostname = 'pirover'
-packages = ['piroverd']
+packages = ['net', 'piroverd']
