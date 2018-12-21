@@ -28,8 +28,8 @@ def relative_links(root):
             os.symlink(new_target, str(path))
 
 
-toolchain_tarball = this_dir / 'gcc-linaro-6.3.1-2017.05-x86_64_arm-linux-gnueabihf.tar.xz'
-toolchain_url = 'https://releases.linaro.org/components/toolchain/binaries/6.3-2017.05/arm-linux-gnueabihf/' + toolchain_tarball.name
+toolchain_tarball = this_dir / 'gcc-linaro-6.4.1-2018.05-x86_64_arm-linux-gnueabihf.tar.xz'
+toolchain_url = 'https://releases.linaro.org/components/toolchain/binaries/6.4-2018.05/arm-linux-gnueabihf/' + toolchain_tarball.name
 toolchain = this_dir / 'toolchain'
 sysroot = this_dir / 'sysroot'
 cross_compile = toolchain / 'bin/arm-linux-gnueabihf-'
