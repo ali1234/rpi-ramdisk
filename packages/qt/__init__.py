@@ -46,7 +46,7 @@ def build():
     call([
         f'rm -rf --one-file-system {stage} {qt_host}',
 
-        f'cd {repos[0]} && ./configure -release -opengl es2 -device linux-rasp-pi2-g++ \
+        f'cd {repos[0]} && ./configure -release -opengl es2 -device linux-rasp-pi-g++ \
             -qpa eglfs -no-libinput -no-linuxfb -no-xcb -no-kms -no-gbm \
             -no-gtk -no-widgets -no-compile-examples -no-sql-tds \
             -device-option CROSS_COMPILE={sysroot.cross_compile} -sysroot {sysroot.sysroot} \

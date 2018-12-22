@@ -4,6 +4,8 @@ import pathlib
 
 from pydo import *
 
+from ..toolchain import toolchain
+
 env = os.environ.copy()
 
 this_dir = pathlib.Path(__file__).parent
@@ -28,18 +30,15 @@ def relative_links(root):
             os.symlink(new_target, str(path))
 
 
-toolchain_tarball = this_dir / 'gcc-linaro-6.4.1-2018.05-x86_64_arm-linux-gnueabihf.tar.xz'
-toolchain_url = 'https://releases.linaro.org/components/toolchain/binaries/6.4-2018.05/arm-linux-gnueabihf/' + toolchain_tarball.name
-toolchain = this_dir / 'toolchain'
 sysroot = this_dir / 'sysroot'
 cross_compile = toolchain / 'bin/arm-linux-gnueabihf-'
 arch_cflags = ' '.join([
     '-pipe',
-    '-march=armv7-a',
+    '-march=armv6zk',
+#    '-mcpu=arm1176jzf-s',
     '-marm',
     '-mthumb-interwork',
-    '-mfpu=neon-vfpv4',
-    '-mtune=cortex-a7',
+    '-mfpu=vfp',
     '-mabi=aapcs-linux',
     '-mfloat-abi=hard',
 ])
@@ -75,19 +74,6 @@ env['LD_LIBRARY_PATH'] = str(sysroot / 'opt/vc/lib')
 env['XDG_DATA_DIRS'] = ':'.join(str(sysroot / p) for p in [
     'usr/share',
 ])
-
-
-@command(produces=[toolchain_tarball])
-def download_toolchain():
-    call([f'cd {toolchain_tarball.parent} && wget -N {toolchain_url}'], shell=True)
-
-
-@command(produces=[toolchain], consumes=[toolchain_tarball])
-def unpack_toolchain():
-    call([
-        f'mkdir -p {toolchain}',
-        f'tar -C {toolchain} --strip-components=1 -xf {toolchain_tarball}',
-    ])
 
 
 # delay importing packages until the sysroot variables are defined
@@ -136,5 +122,5 @@ def build():
 @command()
 def clean():
     call([
-        f'rm -rf --one-file-system {sysroot} {toolchain} {multistrap_conf}'
+        f'rm -rf --one-file-system {sysroot} {multistrap_conf}'
     ])

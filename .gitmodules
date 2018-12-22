@@ -135,4 +135,8 @@
 	path = firmware/usbboot
 	url = git://github.com/raspberrypi/usbboot
 	shallow = true
+[submodule "crosstool-ng"]
+	path = toolchain/crosstool-ng
+	url = git://github.com/crosstool-ng/crosstool-ng
+	shallow = true
 
