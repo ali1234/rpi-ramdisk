@@ -4,11 +4,6 @@
 	branch = rpi-4.9.y
 	ignore = untracked
 	shallow = true
-[submodule "kernel/tools"]
-	path = kernel/tools
-	url = git://github.com/raspberrypi/tools.git
-	ignore = untracked
-	shallow = true
 [submodule "packages/qt/qtbase"]
 	path = packages/qt/qtbase
 	url = git://code.qt.io/qt/qtbase.git

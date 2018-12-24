@@ -3,6 +3,8 @@ import pathlib
 
 from pydo import *
 
+from ..toolchain import toolchain
+
 
 class Kernel(object):
 
@@ -12,7 +14,7 @@ class Kernel(object):
         self.env = env
         self.build = command(
             produces=[self.boot, self.root],
-            consumes=[self.config, *git_repo_scan(self.repo, self.dir / 'tools')]
+            consumes=[toolchain, self.config]
         )(self._build)
 
     @property
@@ -69,7 +71,7 @@ class Kernel(object):
 
 env = os.environ.copy()
 env['ARCH'] = 'arm'
-env['CROSS_COMPILE'] = '../tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-'
+env['CROSS_COMPILE'] = f'{toolchain}/bin/arm-linux-gnueabihf-'
 
 this_dir = pathlib.Path(__file__).parent
 
