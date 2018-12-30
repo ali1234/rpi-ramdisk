@@ -3,7 +3,7 @@ import pathlib
 
 from pydo import *
 
-from ..toolchain import toolchain
+from ..sysroot import toolchain
 
 
 class Kernel(object):
