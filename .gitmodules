@@ -54,34 +54,34 @@
 	shallow = true
 [submodule "packages/rygel/gssdp"]
 	path = packages/rygel/gssdp
-	url = git://git.gnome.org/gssdp
+	url = https://gitlab.gnome.org/GNOME/gssdp.git
 	branch = gssdp_1.0
 	ignore = untracked
 	shallow = true
 [submodule "packages/rygel/gupnp"]
 	path = packages/rygel/gupnp
-	url = git://git.gnome.org/gupnp
+	url = https://gitlab.gnome.org/GNOME/gupnp.git
 	branch = gupnp-1.0
 	ignore = untracked
 	shallow = true
 [submodule "packages/rygel/gupnp-av"]
 	path = packages/rygel/gupnp-av
-	url = git://git.gnome.org/gupnp-av
+	url = https://gitlab.gnome.org/GNOME/gupnp-av.git
 	ignore = untracked
 	shallow = true
 [submodule "packages/rygel/gupnp-dlna"]
 	path = packages/rygel/gupnp-dlna
-	url = git://git.gnome.org/gupnp-dlna
+	url = https://gitlab.gnome.org/GNOME/gupnp-dlna.git
 	ignore = untracked
 	shallow = true
 [submodule "packages/rygel/gupnp-tools"]
 	path = packages/rygel/gupnp-tools
-	url = git://git.gnome.org/gupnp-tools
+	url = https://gitlab.gnome.org/GNOME/gupnp-tools.git
 	ignore = untracked
 	shallow = true
 [submodule "packages/rygel/rygel"]
 	path = packages/rygel/rygel
-	url = git://git.gnome.org/rygel
+	url = https://gitlab.gnome.org/GNOME/rygel.git
 	ignore = untracked
 	shallow = true
 [submodule "packages/pymtpd/pymtpd"]
