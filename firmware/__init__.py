@@ -12,22 +12,29 @@ except KeyError:
 
 this_dir = pathlib.Path(__file__).parent
 
+firmware_rev = '1ea87818b323d08e7bc8e74f930952f36f2f61f4'
+firmware_dir = this_dir / 'firmware'
+firmware_url = f'https://github.com/raspberrypi/firmware/archive/{firmware_rev}.zip'
+firmware = firmware_dir / f'{firmware_rev}.zip'
+
 stage = this_dir / 'stage'
 target = this_dir / 'firmware.tar.gz'
-
-firmware = this_dir / 'firmware'
-
 sources = [this_dir / file for file in ['cmdline.txt', 'config.txt']]
-sources.extend([f for f in (firmware / 'boot').glob('*') if not f.name.endswith('.dtb') and not f.name == 'overlays'])
-
 msd = this_dir / 'usbboot' / 'msd' / 'start.elf'
 
 
-@command(produces = [target], consumes = sources + [msd])
+@command(produces = [firmware])
+def download_firmware():
+    call([f'cd {firmware_dir} && wget -N {firmware_url}'], shell=True)
+
+
+@command(produces = [target], consumes = sources + [msd, firmware])
 def build():
     call([
         f'rm -rf --one-file-system {stage}',
         f'mkdir -p {stage}/boot',
+
+        f'unzip -oj {firmware} */boot/* -x */boot/*.dtb */boot/overlays/* -d {stage}/boot/',
 
         f'cp {" ".join(str(s) for s in sources)} {stage}/boot/',
 

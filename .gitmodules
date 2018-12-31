@@ -99,9 +99,6 @@
 [submodule "packages/piroverd"]
 	path = packages/piroverd/piroverd
 	url = git://github.com/ali1234/piroverd
-[submodule "firmware/firmware"]
-	path = firmware/firmware
-	url = git://github.com/raspberrypi/firmware
 [submodule "firmware/usbboot"]
 	path = firmware/usbboot
 	url = git://github.com/raspberrypi/usbboot

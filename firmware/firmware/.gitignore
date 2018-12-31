@@ -1,0 +1,6 @@
+# Directory for firmware snapshots
+
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore
