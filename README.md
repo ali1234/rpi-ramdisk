@@ -71,23 +71,15 @@ You may also need to do this on Ubuntu 16.10, 17.04, 17.10.
 
 ## Submodules
 
-This repository uses git submodules. After cloning the repository run:
+This repository uses git submodules. Clone with `--resursive` or after cloning
+the repository run:
 
-    git submodule update --init
-
-To pull changes from upstream run:
-
-    git submodule update --remote
-    git commit ...
-
-You can also update individual repos manually:
-
-    cd <repo> && git fetch && git checkout origin/master && cd ..
-    git commit <repo>
+    git submodule update --init --recursive
 
 ## Compiling
 
-To build rpi-ramdisk the pydo build tool is used. First initialize the project:
+To build rpi-ramdisk the [pydo build tool](https://github.com/ali1234/pydo) is used.
+First initialize the project:
 
     cd rpi-ramdisk
     pydo init .
