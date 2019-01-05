@@ -67,11 +67,12 @@ trusted keys with the following commands:
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 9165938D90FDDD2E
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E
 
-You may also need to do this on Ubuntu 16.10, 17.04, 17.10.
+You may also need to do this on Ubuntu 16.10, 17.04, 17.10 but it is not necessary
+on 18.04 and later.
 
 ## Submodules
 
-This repository uses git submodules. Clone with `--resursive` or after cloning
+This repository uses git submodules. Clone with `--recursive` or after cloning
 the repository run:
 
     git submodule update --init --recursive
@@ -138,9 +139,12 @@ Now put the SD card in the Pi and boot. Wired ethernet must be connected.
 You can leave dnsmasq running across rebuilds as the boot directory is
 not deleted and recreated.
 
-**Note**: TFTP booting is unreliable due to:
+**Note**: TFTP booting is sometimes unreliable due to:
 
 https://github.com/raspberrypi/firmware/issues/764
+
+As a workaround, enabling UART debugging seems to help reliability. rpi-ramdisk now does
+this by default.
 
 ### USB device boot
 
