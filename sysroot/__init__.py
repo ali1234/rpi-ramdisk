@@ -58,7 +58,12 @@ env['PKG_CONFIG_LIBDIR'] = ':'.join(str(sysroot / p) for p in [
     'usr/lib/pkgconfig',
     'usr/lib/arm-linux-gnueabihf/pkgconfig',
     'usr/share/pkgconfig',
+    'opt/vc/lib/pkgconfig',
 ])
+
+# symlink the brcm* pcs so that Qt etc can find them
+# brcmegl.pc needs content patches so that is handled in the overlay
+pkgconfig_links = ['glesv2.pc', 'vg.pc']
 
 # inform pkg-config wrapper the location of the packages basedir
 env['PACKAGES'] = str(this_dir.parent / 'packages')
@@ -114,6 +119,9 @@ def build():
         f'gpg --export 82B129927FA3303E > {sysroot}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
         f'gpg --export 9165938D90FDDD2E > {sysroot}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
         f'/usr/sbin/multistrap -d {sysroot} -f {multistrap_conf}',
+
+        # symbolic links for pkgconfig
+        *[f'ln -sf brcm{l} {sysroot}/opt/vc/lib/pkgconfig/{l}' for l in pkgconfig_links],
 
         # work around for the following bugs:
         #  https://github.com/raspberrypi/firmware/issues/1013
