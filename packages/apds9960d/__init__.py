@@ -17,7 +17,7 @@ package = {
 
 }
 
-from ... import sysroot
+from ... import sysroot, jobs
 
 env = sysroot.env.copy()
 
@@ -50,7 +50,7 @@ def build():
         f'mkdir -p {builddir}',
 
         f'cd {builddir} && cmake {cmake_opts} {repo}',
-        f'make -j8 -C {builddir}',
+        f'make -j{jobs} -C {builddir}',
 
         f'mkdir -p {stage}/etc/systemd/system',
         f'mkdir -p {stage}/{prefix}/bin',

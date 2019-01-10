@@ -1,4 +1,4 @@
-import pathlib
+import os, pathlib
 
 from pydo import *
 
@@ -9,6 +9,13 @@ try:
 except ImportError:
     print('Error: Project is not configured.')
     exit(-1)
+
+try:
+    jobs = int(os.environ['PYDOJOBS'], 10)
+except Exception:
+    import multiprocessing
+    jobs = multiprocessing.cpu_count()
+    print(f'Setting jobs to {jobs}.')
 
 from . import kernel, firmware, raspbian, sysroot, packages
 

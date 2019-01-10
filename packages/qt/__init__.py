@@ -25,7 +25,7 @@ package = {
 
 }
 
-from ... import sysroot
+from ... import sysroot, jobs
 
 env = sysroot.env.copy()
 
@@ -53,15 +53,15 @@ def build():
             -opensource -confirm-license -make libs -strip -optimize-size \
             -prefix {prefix} -extprefix {stage}/{prefix} -hostprefix {qt_host}',
     
-        f'make -j8 -C {repos[0]}',
-        f'make -j8 -C {repos[0]} install',
+        f'make -j{jobs} -C {repos[0]}',
+        f'make -j{jobs} -C {repos[0]} install',
     ], env=env, shell=True)
 
     for repo in repos[1:]:
         call([
             f'cd {repo} && {qmake}',
-            f'make -j8 -C {repo}',
-            f'make -j8 -C {repo} install',
+            f'make -j{jobs} -C {repo}',
+            f'make -j{jobs} -C {repo} install',
         ], env=env, shell=True)
 
     call([

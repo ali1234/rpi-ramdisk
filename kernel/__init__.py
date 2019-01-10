@@ -4,6 +4,7 @@ import pathlib
 from pydo import *
 
 from ..sysroot import toolchain
+from .. import jobs
 
 
 class Kernel(object):
@@ -44,10 +45,10 @@ class Kernel(object):
             f'rm -rf --one-file-system {self.stage}',
 
             f'cp {self.config} {self.repo}/.config',
-            f'make -j8 -C {self.repo} zImage modules dtbs',
+            f'make -j{jobs} -C {self.repo} zImage modules dtbs',
 
             f'mkdir -p {self.stage}/root {self.stage}/boot/overlays',
-            f'make -j8 -C {self.repo} INSTALL_MOD_PATH={self.stage}/root modules_install',
+            f'make -j{jobs} -C {self.repo} INSTALL_MOD_PATH={self.stage}/root modules_install',
 
             f'cp {self.repo}/arch/arm/boot/zImage {self.stage}/boot/{self.name}.img',
             f'cp {self.repo}/arch/arm/boot/dts/*.dtb {self.stage}/boot/',

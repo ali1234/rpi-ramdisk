@@ -13,6 +13,7 @@ package = {
 }
 
 from .. import qt
+from ... import jobs
 
 builddir = this_dir / 'build'
 stage = this_dir / 'stage'
@@ -28,7 +29,7 @@ def build():
         f'mkdir -p {builddir}',
 
         f'cd {builddir} && {qt.qmake} {repo}',
-        f'make -j8 -C {builddir}',
+        f'make -j{jobs} -C {builddir}',
 
         f'mkdir -p {stage}/etc/systemd/system',
         f'mkdir -p {stage}/{qt.prefix}/bin',

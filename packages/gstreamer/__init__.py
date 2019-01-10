@@ -29,7 +29,7 @@ package = {
 
 }
 
-from ... import sysroot
+from ... import sysroot, jobs
 
 env = sysroot.env.copy()
 
@@ -110,8 +110,8 @@ RPICAMSRC_OPTS = ' '.join([
 def build_repo(repo, extra_opts=''):
     call([
         f'cd {repo} && ./autogen.sh {CROSS_OPTS} {COMMON_OPTS} {NODEBUG_OPTS} {extra_opts}',
-        f'make -j8 -C {repo}',
-        f'make -j8 -C {repo} DESTDIR={stage} install-strip',
+        f'make -j{jobs} -C {repo}',
+        f'make -j{jobs} -C {repo} DESTDIR={stage} install-strip',
     ], env=env, shell=True)
 
 
@@ -149,8 +149,8 @@ def build():
     # rpicamsrc
     call([
         f'cd {repos[8]} && autoreconf --verbose --force --install && ./configure {CROSS_OPTS} {RPICAMSRC_OPTS} {COMMON_OPTS} {NODEBUG_OPTS}',
-        f'make -j8 -C {repos[8]}',
-        f'make -j8 -C {repos[8]} DESTDIR={stage} install-strip',
+        f'make -j{jobs} -C {repos[8]}',
+        f'make -j{jobs} -C {repos[8]} DESTDIR={stage} install-strip',
     ], env=env, shell=True)
 
     call([
