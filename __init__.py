@@ -7,7 +7,7 @@ this_dir = pathlib.Path(__file__).parent
 try:
     from . import config
 except ImportError:
-    print('Error: Project is not configured.')
+    log.error('Error: Project is not configured.')
     exit(-1)
 
 try:
@@ -15,7 +15,7 @@ try:
 except Exception:
     import multiprocessing
     jobs = multiprocessing.cpu_count()
-    print(f'Setting jobs to {jobs}.')
+    log.warning(f'Setting jobs to {jobs}.')
 
 from . import kernel, firmware, raspbian, sysroot, packages
 
