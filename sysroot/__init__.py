@@ -63,7 +63,7 @@ env['PKG_CONFIG_LIBDIR'] = ':'.join(str(sysroot / p) for p in [
 
 # symlink the brcm* pcs so that Qt etc can find them
 # brcmegl.pc needs content patches so that is handled in the overlay
-pkgconfig_links = ['glesv2.pc', 'vg.pc']
+pkgconfig_links = ['glesv2.pc', 'vg.pc', 'egl.pc']
 
 # inform pkg-config wrapper the location of the packages basedir
 env['PACKAGES'] = str(this_dir.parent / 'packages')

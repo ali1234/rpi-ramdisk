@@ -6,8 +6,8 @@ includedir=${prefix}/include
 Name: brcmEGL
 Description: Fake brcmEGL package for RPi
 Version: 10
-Requires: bcm_host
-Libs: -L${libdir} -lbrcmEGL -lbrcmGLESv2
+Requires.private: bcm_host brcmglesv2
+Libs: -L${libdir} -lbrcmEGL
 Cflags: -I${includedir} -I${includedir}/interface/vmcs_host/linux \
         -I${includedir}/interface/vcos/pthreads
 
