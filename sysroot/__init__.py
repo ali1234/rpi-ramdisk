@@ -120,9 +120,6 @@ def build():
         f'gpg --export 9165938D90FDDD2E > {sysroot}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
         f'/usr/sbin/multistrap -d {sysroot} -f {multistrap_conf}',
 
-        # symbolic links for pkgconfig
-        *[f'ln -sf brcm{l} {sysroot}/opt/vc/lib/pkgconfig/{l}' for l in pkgconfig_links],
-
         # work around for the following bugs:
         #  https://github.com/raspberrypi/firmware/issues/1013
         #  https://bugreports.qt.io/browse/QTBUG-62216
@@ -130,6 +127,9 @@ def build():
         # The workaround is simply to copy manually fixed pkgconfig files
         # somewhere where the build will find them.
         f'cp -r {overlay}/* {sysroot}',
+
+        # symbolic links for pkgconfig
+        *[f'ln -sf brcm{l} {sysroot}/opt/vc/lib/pkgconfig/{l}' for l in pkgconfig_links],
 
         # work around for libtool badness. is this still needed?
         # mkdir -p sysroot/opt
