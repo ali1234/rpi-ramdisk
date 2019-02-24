@@ -6,6 +6,6 @@ includedir=${prefix}/include
 Name: bcm_host
 Description: Broadcom VideoCore host API library
 Version: 1
-Libs: -L${libdir} -lbcm_host -lvchostif -pthread
+Libs: -L${libdir} -lbcm_host -pthread
 Libs.private: -lvcos -lvchiq_arm
 Cflags: -I${includedir} -I${includedir}/interface/vmcs_host/linux -I${includedir}/interface/vcos/pthreads -DUSE_VCHIQ_ARM
