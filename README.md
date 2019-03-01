@@ -83,7 +83,7 @@ To build rpi-ramdisk the [pydo build tool](https://github.com/ali1234/pydo) is u
 First initialize the project:
 
     cd rpi-ramdisk
-    pydo init .
+    pydo --init .
 
 Set up the project configuration by copying one of the defaults:
 
