@@ -77,6 +77,10 @@ the repository run:
 
     git submodule update --init --recursive
 
+Note that shallow cloning usually won't be possible because most of the upstream
+repositories do not allow shallow cloning arbitrary commits, only the tips of
+branches and tags.
+
 ## Compiling
 
 To build rpi-ramdisk the [pydo build tool](https://github.com/ali1234/pydo) is used.
