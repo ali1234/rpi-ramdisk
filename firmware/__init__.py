@@ -34,7 +34,7 @@ def build():
         f'rm -rf --one-file-system {stage}',
         f'mkdir -p {stage}/boot',
 
-        f'unzip -oj {firmware} */boot/* -x */boot/*.dtb */boot/overlays/* -d {stage}/boot/',
+        f'unzip -oj {firmware} */boot/* -x */boot/*.dtb */boot/kernel*.img */boot/overlays/* -d {stage}/boot/',
 
         f'cp {" ".join(str(s) for s in sources)} {stage}/boot/',
 
