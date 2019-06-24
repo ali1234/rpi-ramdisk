@@ -66,8 +66,16 @@ class Kernel(object):
             f'cp {self.config} {self.repo}/.config',
             f'make -C {self.repo} oldconfig',
             f'cp {self.repo}/.config {self.config}',
-        ], env=self.env)
+        ], env=self.env, interactive=True)
 
+
+    def update_config(self):
+        call([
+            f'make -C {self.repo} mrproper',
+            f'cp {self.config} {self.repo}/.config',
+            f'make -C {self.repo} menuconfig',
+            f'cp {self.repo}/.config {self.config}',
+        ], env=self.env, interactive=True)
 
 
 env = os.environ.copy()
@@ -77,7 +85,7 @@ env['CROSS_COMPILE'] = f'{toolchain}/bin/arm-linux-gnueabihf-'
 this_dir = pathlib.Path(__file__).parent
 
 
-kernels = [Kernel(k, this_dir, env) for k in ['kernel', 'kernel7']]
+kernels = [Kernel(k, this_dir, env) for k in ['kernel', 'kernel7', 'kernel7l']]
 
 
 @command()
@@ -88,6 +96,12 @@ def build():
 
 @command()
 def update_configs():
+    for k in kernels:
+        k.update_config()
+
+
+@command()
+def menu_configs():
     for k in kernels:
         k.update_config()
 
