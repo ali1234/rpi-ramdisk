@@ -12,7 +12,7 @@ except KeyError:
 
 this_dir = pathlib.Path(__file__).parent
 
-firmware_rev = '1ea87818b323d08e7bc8e74f930952f36f2f61f4'
+firmware_rev = '1.20190620'
 firmware_dir = this_dir / 'firmware'
 firmware_url = f'https://github.com/raspberrypi/firmware/archive/{firmware_rev}.zip'
 firmware = firmware_dir / f'{firmware_rev}.zip'
