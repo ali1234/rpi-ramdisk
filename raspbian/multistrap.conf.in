@@ -29,11 +29,11 @@ aptsources=Raspbian Foundation
 
 [Raspbian]
 source=http://mirrordirector.raspbian.org/raspbian
-suite=stretch
+suite=buster
 
 [Foundation]
 source=http://archive.raspberrypi.org/debian
-suite=stretch
+suite=buster
 
 
 # Required debs

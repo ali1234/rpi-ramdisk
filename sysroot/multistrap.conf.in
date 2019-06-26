@@ -8,11 +8,11 @@ allowrecommends=false
 
 [Raspbian]
 source=http://mirrordirector.raspbian.org/raspbian
-suite=stretch
+suite=buster
 
 [Foundation]
 source=http://archive.raspberrypi.org/debian
-suite=stretch
+suite=buster
 packages=build-essential
 
 # Debs required to build /opt packages

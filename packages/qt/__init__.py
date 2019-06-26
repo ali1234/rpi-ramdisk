@@ -16,7 +16,7 @@ package = {
     ],
 
     'root_debs': [
-        'libraspberrypi0', 'libpng12-0', 'libglib2.0-0', 'libmtdev1', 'libts-0.0-0', 'libfontconfig1',
+        'libraspberrypi0', 'libpng12-0', 'libglib2.0-0', 'libmtdev1', 'libts-bin', 'libfontconfig1',
         'libfreetype6', 'libssl1.0.2', 'libjpeg62-turbo',
     ],
 
