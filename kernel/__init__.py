@@ -78,7 +78,7 @@ class Kernel(object):
         ], env=self.env, interactive=True)
 
 
-env = sysroot.env.copy()
+env = os.environ.copy()
 env['ARCH'] = 'arm'
 env['CROSS_COMPILE'] = str(sysroot.cross_compile)
 
