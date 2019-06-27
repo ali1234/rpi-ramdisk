@@ -3,7 +3,7 @@ import pathlib
 
 from pydo import *
 
-from ..sysroot import toolchain
+from .. import sysroot
 from .. import jobs
 
 
@@ -15,7 +15,7 @@ class Kernel(object):
         self.env = env
         self.build = command(
             produces=[self.boot, self.root],
-            consumes=[toolchain, self.config]
+            consumes=[sysroot.toolchain, self.config]
         )(self._build)
 
     @property
@@ -78,9 +78,9 @@ class Kernel(object):
         ], env=self.env, interactive=True)
 
 
-env = os.environ.copy()
+env = sysroot.env.copy()
 env['ARCH'] = 'arm'
-env['CROSS_COMPILE'] = f'{toolchain}/bin/arm-linux-gnueabihf-'
+env['CROSS_COMPILE'] = str(sysroot.cross_compile)
 
 this_dir = pathlib.Path(__file__).parent
 
