@@ -45,10 +45,16 @@ Ubuntu 17.10 and newer, or from this PPA if you are on an older release:
 
   https://launchpad.net/~git-core/+archive/ubuntu/ppa
 
-Qemu >= 2.7 is needed for the getrandom() syscall. It is available in Ubuntu
-17.10 and newer, or from the Ubuntu Cloud Archive:
+Qemu >= 3.1 is needed for the getrandom() syscall. It is available in Ubuntu
+19.04 and newer. You can get it from the Ubuntu Cloud Archive, Stein repository
+for Ubuntu 18.04:
 
   https://wiki.ubuntu.com/OpenStack/CloudArchive
+
+Proot >= 5.1.0-1.3 is needed for the renameat2() syscall. It is available in
+Ubuntu 19.04 and newer. It is available in this PPA for Ubuntu 18.04:
+
+  https://launchpad.net/~a-j-buxton/+archive/ubuntu/backports/
 
 ## Keys
 
