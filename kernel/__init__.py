@@ -69,7 +69,7 @@ class Kernel(object):
         ], env=self.env, interactive=True)
 
 
-    def update_config(self):
+    def menu_config(self):
         call([
             f'make -C {self.repo} mrproper',
             f'cp {self.config} {self.repo}/.config',
@@ -85,7 +85,7 @@ env['CROSS_COMPILE'] = str(sysroot.cross_compile)
 this_dir = pathlib.Path(__file__).parent
 
 
-kernels = [Kernel(k, this_dir, env) for k in ['kernel', 'kernel7', 'kernel7l']]
+kernels = [Kernel(k, this_dir, env) for k in ['kernel-test', 'kernel-with']]
 
 
 @command()
@@ -103,7 +103,7 @@ def update_configs():
 @command()
 def menu_configs():
     for k in kernels:
-        k.update_config()
+        k.menu_config()
 
 
 @command()
