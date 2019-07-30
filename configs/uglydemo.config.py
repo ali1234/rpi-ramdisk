@@ -1,0 +1,2 @@
+hostname = 'uglydemo'
+packages = ['uglydemo']
