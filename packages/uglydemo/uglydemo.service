@@ -4,7 +4,7 @@ After=network.target
 Wants=network.target
 
 [Service]
-Environment=PYTHONPATH=/opt/ugly/lib/python3.6/site-packages
+Environment=PYTHONPATH=/opt/ugly/lib/python3.7/site-packages
 ExecStart=/opt/ugly/bin/uglydemo -r 2
 Restart=on-failure
 

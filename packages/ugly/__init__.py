@@ -35,7 +35,7 @@ def build():
     call([
         f'rm -rf --one-file-system {stage}',
 
-        f'cd {repo} && pip3 install --no-dependencies --system --root={stage} --prefix={prefix} .',
+        f'cd {repo} && python3.7 -m pip install --no-dependencies --system --root={stage} --prefix={prefix} .',
 
         f'tar -C {stage} --exclude=.{prefix}/doc --exclude=.{prefix}/include -czf {package["target"]} .',
     ], env=env, shell=True)

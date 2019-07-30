@@ -36,7 +36,7 @@ def build():
     call([
         f'rm -rf --one-file-system {stage}',
 
-        f'cd {repo} && pip3 install --system --root={stage} --prefix={prefix} .',
+        f'cd {repo} && python3.7 -m pip install --system --root={stage} --prefix={prefix} .',
 
         f'mkdir -p {stage}/etc/systemd/system',
         f'cp {service} {stage}/etc/systemd/system/',
