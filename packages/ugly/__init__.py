@@ -10,7 +10,7 @@ package = {
 
     'sysroot_debs': [],
 
-    'root_debs': ['python3'],
+    'root_debs': ['python3', 'python3-numpy'],
 
     'target': this_dir / 'ugly.tar.gz',
     'install': [],
@@ -35,7 +35,7 @@ def build():
     call([
         f'rm -rf --one-file-system {stage}',
 
-        f'cd {repo} && pip3 install --system --root={stage} --prefix={prefix} .',
+        f'cd {repo} && pip3 install --no-dependencies --system --root={stage} --prefix={prefix} .',
 
         f'tar -C {stage} --exclude=.{prefix}/doc --exclude=.{prefix}/include -czf {package["target"]} .',
     ], env=env, shell=True)

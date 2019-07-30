@@ -10,7 +10,7 @@ package = {
 
     'sysroot_debs': [],
 
-    'root_debs': [],
+    'root_debs': ['python3-pkg-resources', 'python3-unicornhathd'],
 
     'target': this_dir / 'uglydemo.tar.gz',
     'install': ['{chroot} {stage} /bin/systemctl reenable uglydemo.service'],
@@ -33,8 +33,6 @@ service = this_dir / 'uglydemo.service'
 def build():
     call([
         f'rm -rf --one-file-system {stage}',
-
-        f'pip3 install --system --root={stage} --prefix={prefix} unicornhathd',
 
         f'mkdir -p {stage}/etc/systemd/system',
         f'cp {service} {stage}/etc/systemd/system/',
