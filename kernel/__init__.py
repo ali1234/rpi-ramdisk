@@ -85,7 +85,7 @@ env['CROSS_COMPILE'] = str(sysroot.cross_compile)
 this_dir = pathlib.Path(__file__).parent
 
 
-kernels = [Kernel(k, this_dir, env) for k in ['kernel-test', 'kernel-with']]
+kernels = [Kernel(k, this_dir, env) for k in ['kernel', 'kernel7', 'kernel7l']]
 
 
 @command()
