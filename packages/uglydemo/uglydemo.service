@@ -1,0 +1,12 @@
+[Unit]
+Description=Ugly Demo
+After=network.target
+Wants=network.target
+
+[Service]
+Environment=PYTHONPATH=/opt/ugly/lib/python3.5/site-packages
+ExecStart=/opt/ugly/bin/uglydemo
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
