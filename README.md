@@ -27,6 +27,8 @@ it on other distributions, but this has not been tested.
 
 In addition you need the following packages to build rpi-ramdisk:
 
+For Ubuntu 18.04:
+
     sudo apt install libc6:i386 libstdc++6:i386 libgcc1:i386 \
                      libncurses5:i386 libtinfo5:i386 zlib1g:i386 \
                      build-essential git bc python zip wget gettext \
@@ -34,7 +36,7 @@ In addition you need the following packages to build rpi-ramdisk:
                      bison flex libglib2.0-dev gobject-introspection \
                      multistrap fakeroot fakechroot proot cpio \
                      qemu-user binfmt-support makedev \
-                     gtk-doc-tools valac
+                     gtk-doc-tools valac python3.7-minimal
 
 This dependency list may be incomplete. If so, please report a bug on github.
 
