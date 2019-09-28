@@ -197,3 +197,10 @@ def clean():
     call([
         f'rm -rf --one-file-system {stage} {initrd} {multistrap_conf} {hosts}'
     ])
+
+
+@command()
+def enter():
+    call([
+        f'{chroot} {stage} /bin/bash'
+    ])
