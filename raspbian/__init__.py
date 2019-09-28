@@ -105,16 +105,20 @@ def build():
         f'gpg --export 82B129927FA3303E > {stage}/etc/apt/trusted.gpg.d/raspberrypi-archive-keyring.gpg',
         f'gpg --export 9165938D90FDDD2E > {stage}/etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg',
         f'/usr/sbin/multistrap -d {stage} -f {multistrap_conf}',
+    ], shell=True, env=env)
 
-        # run preinst scripts
-        f'for script in {stage}/var/lib/dpkg/info/*.preinst; do \
-            [ "$script" = "{stage}/var/lib/dpkg/info/vpnc.preinst" ] && continue; \
-            echo "I: run preinst script ${{script##{stage}}}"; \
-            DPKG_MAINTSCRIPT_NAME=preinst \
-            DPKG_MAINTSCRIPT_PACKAGE="`basename $script .preinst`" \
-            {chroot} {stage} ${{script##{stage}}} install; \
-            done',
+    script_dir = stage / 'var/lib/dpkg/info'
+    for f in script_dir.iterdir():
+        if f.suffix == '.preinst':
+            script_env = env.copy()
+            script_env['DPKG_MAINTSCRIPT_NAME'] = 'preinst'
+            script_env['DPKG_MAINTSCRIPT_PACKAGE'] = f.stem
+            if f.stem not in ['vpnc']:
+                call([
+                    f'{chroot} {stage} {f.relative_to(stage)} install',
+                ], env=script_env)
 
+    call([
         # don't run makedev
         # we will create device nodes later, after we are done with the system dev
         f'rm -f {stage}/var/lib/dpkg/info/makedev.postinst',
