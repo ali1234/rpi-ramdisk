@@ -65,7 +65,8 @@ stage = this_dir / 'stage'
 initrd = this_dir / 'initrd'
 excludes = this_dir / 'excludes.conf'
 cleanup = this_dir / 'cleanup'
-chroot = 'proot -0 -q qemu-arm -w / -r'
+chroot = 'proot -b /dev -0 -q qemu-arm -w / -r'
+chroot_nobind = 'proot -0 -q qemu-arm -w / -r'
 kernel_root_tarballs = [k.root for k in kernel.kernels]
 package_tarballs = [p.package['target'] for p in packages.packages.values()]
 
@@ -185,7 +186,7 @@ def build():
         f'cd {stage}/dev && fakeroot /sbin/MAKEDEV std',
 
         # pack rootfs into initrd
-        f'{chroot} {stage} sh -c "cd / && find * -xdev -not \( \
+        f'{chroot_nobind} {stage} sh -c "cd / && find * -xdev -not \( \
                   -path host-rootfs -prune \
                   -path run -prune \
                   -path proc -prune \
