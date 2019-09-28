@@ -1,10 +1,6 @@
 #!/bin/sh -e
 
-docker rm rpi-ramdisk || true
-docker build -t rpi-ramdisk .
-echo
-echo "Now starting a shell in the docker container. Run 'make -j8' to build."
-echo "Copy build products out of the container before exiting the shell."
-echo
-
-docker run --name rpi-ramdisk -it rpi-ramdisk
+docker build --build-arg UID=$(id -u) --build-arg GID=$(id -g) -t rpi-ramdisk .
+docker run -v $PWD:/home/rpi-ramdisk/rpi-ramdisk --network host -e APT_HTTP_PROXY -e PYDOJOBS \
+           --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --privileged \
+           --rm -it rpi-ramdisk
