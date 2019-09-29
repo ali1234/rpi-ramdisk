@@ -10,6 +10,9 @@ RUN dpkg --add-architecture i386 && apt-get update -qy && apt-get -qy install \
  gtk-doc-tools valac python3.7-minimal python3-pip \
  libssl-dev gpg nano cmake dnsmasq
 
+# make dnsmasq setuid so we can run it in the container without being root
+RUN chmod u+s /usr/sbin/dnsmasq
+
 # https://gitlab.gnome.org/GNOME/gobject-introspection/issues/314
 RUN sed -i \
  -e 's/filter(lambda x: x.endswith(".la"), libraries)/list(filter(lambda x: x.endswith(".la"), libraries))/' \
