@@ -208,4 +208,4 @@ def clean():
 def enter():
     call([
         f'{chroot} {stage} /bin/bash'
-    ])
+    ], interactive=True, check=False)
