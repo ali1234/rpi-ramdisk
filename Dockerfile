@@ -26,14 +26,14 @@ RUN git clone git://github.com/mesonbuild/meson && cd meson && pip3 install .
 
 ARG UID=1000
 ARG GID=1000
+ARG USER=rpi-ramdisk
+ARG GROUP=rpi-ramdisk
 
-RUN groupadd -g $GID rpi-ramdisk
-RUN useradd -ms /bin/bash -u $UID -g $GID rpi-ramdisk
+RUN groupadd -g $GID $GROUP
+RUN useradd -ms /bin/bash -u $UID -g $GID $USER
 
-USER rpi-ramdisk
-WORKDIR /home/rpi-ramdisk
+USER $USER
 
 RUN gpg --recv-key 9165938D90FDDD2E # raspbian-archive-keyring
 RUN gpg --recv-key 82B129927FA3303E # foundation key
 
-WORKDIR /home/rpi-ramdisk/rpi-ramdisk
