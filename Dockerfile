@@ -1,4 +1,4 @@
-FROM ubuntu:disco
+FROM ubuntu:eoan
 
 RUN dpkg --add-architecture i386 && apt-get update -qy && apt-get -qy install \
  libc6:i386 libstdc++6:i386 libgcc1:i386 \
