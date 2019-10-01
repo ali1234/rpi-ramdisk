@@ -117,7 +117,7 @@ def build():
 
     call([
         f'mkdir -p {stage}/etc/ld.so.conf.d',
-        f'echo {prefix}/lib > {stage}/etc/ld.so.conf.d/opt-gstreamer.conf',
+        f'echo {prefix}/lib > {stage}/etc/ld.so.conf.d/opt-rygel.conf',
 
         f'tar -C {stage} --exclude=.{prefix}/doc --exclude=.{prefix}/include \
             --exclude=.{prefix}/lib/pkgconfig --exclude=.{prefix}/share/man \
