@@ -8,7 +8,8 @@ RUN dpkg --add-architecture i386 && apt-get update -qy && apt-get -qy install \
  bison flex libglib2.0-dev gobject-introspection \
  multistrap proot qemu-user binfmt-support makedev cpio \
  gtk-doc-tools valac python3.7-minimal python3-pip \
- libssl-dev gpg nano cmake dnsmasq ninja-build
+ libssl-dev gpg nano cmake dnsmasq ninja-build \
+ strace
 
 # make dnsmasq setuid so we can run it in the container without being root
 RUN chmod u+s /usr/sbin/dnsmasq
