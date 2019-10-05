@@ -14,8 +14,7 @@ this_dir = pathlib.Path(__file__).parent
 
 firmware_rev = '1.20190620'
 firmware_dir = this_dir / 'firmware'
-firmware_url = f'https://github.com/raspberrypi/firmware/archive/{firmware_rev}.zip'
-firmware = firmware_dir / f'{firmware_rev}.zip'
+firmware = download(firmware_dir, f'https://github.com/raspberrypi/firmware/archive/{firmware_rev}.zip')
 
 stage = this_dir / 'stage'
 target = this_dir / 'firmware.tar.gz'
@@ -23,12 +22,7 @@ sources = [this_dir / file for file in ['cmdline.txt', 'config.txt']]
 msd = this_dir / 'usbboot' / 'msd' / 'start.elf'
 
 
-@command(produces = [firmware])
-def download_firmware():
-    call([f'cd {firmware_dir} && wget -N {firmware_url}'], shell=True)
-
-
-@command(produces = [target], consumes = sources + [msd, firmware])
+@command(produces = [target], consumes = [*sources, msd, firmware])
 def build():
     call([
         f'rm -rf --one-file-system {stage}',
