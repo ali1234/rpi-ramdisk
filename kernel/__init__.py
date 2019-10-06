@@ -5,6 +5,7 @@ from pydo import *
 
 from .. import sysroot
 from .. import jobs
+from .. import config
 
 
 class Kernel(object):
@@ -85,7 +86,7 @@ env['CROSS_COMPILE'] = str(sysroot.cross_compile)
 this_dir = pathlib.Path(__file__).parent
 
 
-kernels = [Kernel(k, this_dir, env) for k in ['kernel', 'kernel7', 'kernel7l']]
+kernels = [Kernel(k, this_dir, env) for k in config.kernels]
 
 
 @command()
