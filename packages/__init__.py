@@ -31,3 +31,9 @@ def list():
 def clean():
     for m in packages.values():
         m.clean()
+
+
+@command()
+def build():
+    for m in packages.values():
+        m.build()
