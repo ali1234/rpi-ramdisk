@@ -44,6 +44,8 @@ env['CFLAGS'] = f'--sysroot={sysroot.sysroot} {sysroot.arch_cflags}'
 env['LDFLAGS'] = ' '.join([
     f'--sysroot={sysroot.sysroot}',
     f'-L{sysroot.sysroot}/opt/vc/lib',
+    # for rpi-camsrc:
+    f'-Wl,--rpath-link,{sysroot.sysroot}/opt/vc/lib',
     f'-L{stage}/opt/gstreamer/lib',
 ])
 
