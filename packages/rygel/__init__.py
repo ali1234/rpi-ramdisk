@@ -84,6 +84,11 @@ RYGEL_OPTS = ' '.join([
 def build_repo(repo, extra_opts):
     call([
         f'cd {repo} && ./autogen.sh {CROSS_OPTS} {gstreamer.COMMON_OPTS} {gstreamer.NODEBUG_OPTS} {extra_opts}',
+
+        # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=297726
+        # reverse debian-specific change in libtool that breaks cross compiling
+        f'cd {repo} && sed -i -e "s/^link_all_deplibs=no$/link_all_deplibs=unknown/" libtool',
+
         f'make -j8 -C {repo}',
         # gupnp-dlna parallel install fails
         # see https://bugzilla.gnome.org/show_bug.cgi?id=720053
