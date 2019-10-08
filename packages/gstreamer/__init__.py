@@ -45,7 +45,6 @@ env['LDFLAGS'] = ' '.join([
     f'--sysroot={sysroot.sysroot}',
     f'-L{sysroot.sysroot}/opt/vc/lib',
     f'-L{stage}/opt/gstreamer/lib',
-    '-Wl,--unresolved-symbols=ignore-in-shared-libs',
 ])
 
 env['CPPFLAGS'] = ' '.join([
@@ -110,6 +109,11 @@ RPICAMSRC_OPTS = ' '.join([
 def build_repo(repo, extra_opts=''):
     call([
         f'cd {repo} && ./autogen.sh {CROSS_OPTS} {COMMON_OPTS} {NODEBUG_OPTS} {extra_opts}',
+
+        # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=297726
+        # reverse debian-specific change in libtool that breaks cross compiling
+        f'cd {repo} && sed -i -e "s/^link_all_deplibs=no$/link_all_deplibs=unknown/" libtool',
+
         f'make -j{jobs} -C {repo}',
         f'make -j{jobs} -C {repo} DESTDIR={stage} install-strip',
     ], env=env, shell=True)
