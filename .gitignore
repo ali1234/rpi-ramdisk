@@ -5,4 +5,5 @@
 /dnsmasq.conf
 /.idea
 /.virtualenv
+/.venv
 __pycache__
