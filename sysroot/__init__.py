@@ -27,8 +27,7 @@ def relative_links(root):
             # print(path, ':', link_target, '->', new_target)
             os.symlink(new_target, str(path))
 
-
-toolchain_tarball = download(this_dir, 'https://github.com/ali1234/rpi-toolchain/releases/download/0/gcc-linaro-6.4.1-2018.05+rpi0-x86_64_arm-linux-gnueabihf.tar.xz')
+toolchain_tarball = download(this_dir, 'https://github.com/ali1234/rpi-toolchain/releases/download/buster-0/toolchain-raspbian-buster-0-x86_64-arm-linux-gnueabihf.tar.xz')
 toolchain = this_dir / 'toolchain'
 sysroot = this_dir / 'sysroot'
 cross_compile = toolchain / 'bin/arm-linux-gnueabihf-'
