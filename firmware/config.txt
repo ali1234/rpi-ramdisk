@@ -12,7 +12,6 @@ dtparam=spi=on
 dtoverlay=dwc2
 
 gpu_mem=64
-lcd_rotate=2
 
 gpio=5=ip,pu
 
