@@ -35,6 +35,6 @@ RUN useradd -ms /bin/bash -u $UID -g $GID $USER
 
 USER $USER
 
-RUN gpg --recv-key 9165938D90FDDD2E # raspbian-archive-keyring
-RUN gpg --recv-key 82B129927FA3303E # foundation key
+RUN gpg --keyserver hkps://keyserver.ubuntu.com --recv-key 9165938D90FDDD2E # raspbian-archive-keyring
+RUN gpg --keyserver hkps://keyserver.ubuntu.com --recv-key 82B129927FA3303E # foundation key
 
