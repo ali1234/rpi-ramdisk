@@ -63,8 +63,8 @@ Ubuntu 19.04 and newer. It is available in this PPA for Ubuntu 18.04:
 Multistrap/apt needs public keys to verify the repositories. You must import
 the required keys into your local gpg keyring with the following commands:
 
-    gpg --recv-key 9165938D90FDDD2E # raspbian-archive-keyring
-    gpg --recv-key 82B129927FA3303E # raspberrypi-archive-keyring
+    gpg --keyserver hkps://keyserver.ubuntu.com --recv-key 9165938D90FDDD2E # raspbian-archive-keyring
+    gpg --keyserver hkps://keyserver.ubuntu.com --recv-key 82B129927FA3303E # raspberrypi-archive-keyring
 
 You should take necessary steps to ensure that you have authentic versions of
 these keys. Once received, rpi-ramdisk will export them as and when required.
